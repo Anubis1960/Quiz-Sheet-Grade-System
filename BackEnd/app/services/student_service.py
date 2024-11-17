@@ -38,3 +38,17 @@ def get_student_by_id(student_id):
             return student
     except Exception as e:
         return {"error": str(e)}
+    
+def delete_student_by_id(student_id):
+    try:
+        print("Inside delete_student_by_id()...")
+        student_to_be_deleted = get_student_by_id(student_id)
+        print("Student to be deleted is: ", student_to_be_deleted.to_dict())
+
+        # Delete the reference of the student
+        student_ref = db.collection('students').document(student_id)
+        student_ref.delete()
+
+        return {"message":f"Student with id: {student_id} deleted successfully"}
+    except Exception as e:
+        return {"message":str(e)}
