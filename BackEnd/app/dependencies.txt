@@ -1,2 +1,0 @@
-pip install firebase_admin
-pip install flask
