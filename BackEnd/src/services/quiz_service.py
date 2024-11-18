@@ -1,5 +1,5 @@
-from database import db
-from entities.Quiz import Quiz
+from src.database import db
+from src.entities.Quiz import Quiz
 
 def create_quiz(quiz: Quiz):
     # Convert quiz to a dictionary

@@ -1,4 +1,4 @@
-from entities.Option import Option
+from src.entities.Option import Option
 
 class Question:
     def __init__(self,text, options = None, correct_answers = None):
