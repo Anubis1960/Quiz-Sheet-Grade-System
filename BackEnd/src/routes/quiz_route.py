@@ -4,6 +4,8 @@ from flask import Blueprint, request, jsonify
 from src.entities.Quiz import Quiz
 from src.services.quiz_service import *
 from src.entities.Question import Question
+from src.exceptions.NoDataFoundError import NoDataFoundError
+from src.exceptions.StringLengthError  import StringLengthError
 
 #
 #	Define URL for quizzes
@@ -21,15 +23,20 @@ quiz_blueprint = Blueprint('quiz',__name__, url_prefix= QUIZ_URL)
 def get_quizzes() -> jsonify:
 	logging.info("\tRoutes Layer ==>	Requesting quizzes list loading...")
 
-	# Retrieve quizzes
-	quizzes_data = get_quizzes_data()
+	try:
+		# Retrieve quizzes
+		quizzes_data = get_quizzes_data()
 
-	# Verify if data exists
-	if quizzes_data is None:
-		return jsonify({"status:": "error",
-						"message": "No quizzes available"}), HTTPStatus.NOT_FOUND
-	
-	return jsonify({"quizzes": quizzes_data}), HTTPStatus.OK
+		# Verify if data exists
+		if quizzes_data is None:
+			return jsonify({"status:": "error",
+							"message": "No quizzes available"}), HTTPStatus.NOT_FOUND
+		
+		return jsonify({"quizzes": quizzes_data}), HTTPStatus.OK
+
+	except NoDataFoundError as e:
+		return jsonify({"status": "error", 
+						"message": str(e)}), HTTPStatus.NOT_FOUND
 
 
 #
@@ -64,6 +71,10 @@ def add_quiz() -> jsonify:
 
 		return jsonify({"status": "success", 
 						"message": "Quiz created successfully."}), HTTPStatus.OK
+	
+	except StringLengthError as e:
+		return jsonify({"status": "error", 
+						"message": str(e)}), HTTPStatus.BAD_REQUEST
 	
 	except Exception as e:
 		# Catch unexpected errors
