@@ -3,6 +3,7 @@ from http import HTTPStatus
 from flask import Blueprint,request,jsonify
 from src.services.teacher_service import *
 from src.entities.Teacher import Teacher
+from src.util.encryption.encrypt import *
 
 #
 #	Define URL for teachers
@@ -18,16 +19,21 @@ teacher_blueprint = Blueprint('teacher',__name__, url_prefix= TEACHER_URL)
 #
 @teacher_blueprint.route('/', methods = ['GET'])
 def get_teachers() -> jsonify:
-	logging.info("\tRoutes Layer ==>	Requesting teachers list.")
+	try:
+		logging.info("\tRoutes Layer ==>	Requesting teachers list.")
 
-	# Fetch teachers data from db
-	teachers_data = get_teachers_data()
+		# Fetch teachers data from db
+		teachers_data = get_teachers_data()
 
-	if teachers_data is None:
-		return jsonify({"status: " : "error",
-						"message": "No teachers data."}), HTTPStatus.NOT_FOUND
+		if teachers_data is None:
+			return jsonify({"status: " : "error",
+							"message": "No teachers data."}), HTTPStatus.NOT_FOUND
+		
+		return jsonify({"teachers": teachers_data}), HTTPStatus.OK
 	
-	return jsonify({"teachers": teachers_data}), HTTPStatus.OK
+	except NoDataFoundError as e:
+		return jsonify({"status": "error", 
+						"message": str(e)}), HTTPStatus.NOT_FOUND
 	
 	
 
@@ -68,12 +74,22 @@ def add_teacher() -> jsonify:
 		email = data['email']
 		password = data['password']
 
+		# Encrypt password
+		encrypted_password = sha256(password)
+		
 		# Create object
-		teacher = Teacher(name, email, password)
-		result = create_teacher(teacher)
+		teacher = Teacher(name, email, encrypted_password)
+		create_teacher(teacher)
 
 		return jsonify({"status": "success", 
 						"message": "Teacher added successfully."}), HTTPStatus.OK
+	
+	except ValueError as e:
+		logging.error(f"\tRoutes Layer ==> Error: {str(e)}")
+		return jsonify({
+			"status": "error",
+			"message": str(e)
+		}), HTTPStatus.BAD_REQUEST
 	
 	except Exception as e:
 		# Catch unexpected errors
@@ -87,15 +103,19 @@ def add_teacher() -> jsonify:
 def delete_teacher(teacher_id: str) -> jsonify:
 	logging.info("\tRoutes Layer ==>	Deleting teacher loading...")
 	try:
-		teacher_to_be_deleted = delete_teacher_by_id(teacher_id)
-
-		# Verify received data
-		if isinstance(teacher_to_be_deleted,dict) and "error" in teacher_to_be_deleted:
-			return jsonify(teacher_to_be_deleted), HTTPStatus.NOT_FOUND
+		# Calling service function
+		delete_teacher_by_id(teacher_id)
 		
 		return jsonify({"status": "success", 
 						"message": "Teacher deleted successfully."}), HTTPStatus.OK
 
+	except LookupError as e:
+		logging.error(f"\tRoutes Layer ==> Error: {str(e)}")
+		return jsonify({
+			"status": "error",
+			"message": str(e)
+		}), HTTPStatus.NOT_FOUND
+	
 	except Exception as e:
 		# Catch unexpected errors
 		return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR

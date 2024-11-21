@@ -1,19 +1,14 @@
 import logging
 from src.database import db
 from src.entities.Teacher import Teacher
+from src.exceptions.NoDataFoundError import NoDataFoundError
 
 COLLECTION_NAME = 'teachers'
-
-####################################
-#
-#   CRUD Operations
-#
-####################################
 
 #
 #  Retrieve teachers
 #
-def get_teachers_data():
+def get_teachers_data() -> list[Teacher]:
 	logging.info("\tService Layer ==>	Retrieve teachers loading...")
 	
 	# Fetch teachers data from Firestore
@@ -29,7 +24,7 @@ def get_teachers_data():
 	# Check if data exists
 	if not teachers_list:
 		logging.warning("\tService Layer ==>	No teachers in database.")
-		return None
+		raise NoDataFoundError("No teachers found in database.")
 	
 	logging.info("\tService Layer ==>	Successfully retrieved teachers data.")
 	return teachers_list
@@ -38,51 +33,71 @@ def get_teachers_data():
 #
 #   Retrieve teacher by id
 #
-def get_teacher_by_id(teacher_id):
-	try:
-		print("Inside get_teacher_by_id...")
-		# Fetch the document from Firestore
-		doc = db.collection(COLLECTION_NAME).document(teacher_id).get()
+def get_teacher_by_id(teacher_id: str) -> dict:
+	logging.info("\tService Layer ==>	Retrieve teacher by id loading...")
 
-		if doc.exists:
-			print("doc exists...")
-			# Convert Firestore data into a Teacher object
-			teacher = Teacher.from_dict(doc.to_dict())
-			print("Retreived Teacher: ",teacher.to_dict())
-			return teacher
-	except Exception as e:
-		return {"error:": str(e)}
-	
+	# Fetch the document from Firestore
+	teacher_snapshot = db.collection(COLLECTION_NAME).document(teacher_id).get()
+
+	if not teacher_snapshot.exists:
+		logging.warning(f"\tService Layer ==>	No data found for teacher with id: {teacher_id}")
+		return None
+
+	logging.info(f"\tService Layer ==>	Successfully retrieved teacher with id: {teacher_id}")
+	return teacher_snapshot.to_dict()
+
+
+####################################
+#
+#   CRUD Operations
+#
+####################################
+
 #
 #   Add teacher
 #
-def create_teacher(teacher: Teacher):
-	# Convert teacher to dictionary
-	teacher_data = teacher.to_dict()
-	print("Teacher data:",teacher_data)
-	try: 
-		# Add teacher data to firestore
-		_,teacher_ref = db.collection(COLLECTION_NAME).add(teacher_data)
-		return {"message": f"Teacher {teacher.name} added with ID: {teacher_ref.id}"}
-	except Exception as e:
-		return {"error:": str(e)}
+def create_teacher(teacher: Teacher) -> None:
+	logging.info("\tRoutes Layer ==>	Adding new teacher loading...")
+
+	# Converting teacher into dict
+	teacher_dict = teacher.to_dict()
+
+	#
+	#	Validations
+	#
+
+	try:
+		# Retrieve existing teachers
+		teachers_list = get_teachers_data()
+
+		# Check for duplicate email if the list is not empty
+		for teacher_data in teachers_list:
+			if teacher_data['email'] == teacher_dict['email']:
+				logging.warning(f"\tEmail: {teacher_dict['email']} already existing.")
+				raise ValueError(f"Teacher email: {teacher_dict['email']} already exists.")
+			
+	except NoDataFoundError:	
+		# Handle case where no teachers exist
+		logging.info("\tService Layer ==> No existing teachers. Proceeding with the addition.")
+
+	# Add teacher data to firestore
+	db.collection(COLLECTION_NAME).add(teacher_dict)
+	logging.info("\tService Layer ==>	Successfully added teacher.")
+
 
 #
 #   Delete teacher by id
 #
-def delete_teacher_by_id(teacher_id):
-	try:
-		print("Inside delete_teacher in service...")
-		teacher_to_be_deleted = get_teacher_by_id(teacher_id)
+def delete_teacher_by_id(teacher_id: str) -> None:
+	# Fetch teacher by id
+	teacher_dict = get_teacher_by_id(teacher_id)
 
-		# if "error" in teacher_to_be_deleted:
-		#     return teacher_to_be_deleted
-		print("Teacher to be deleted is: ", teacher_to_be_deleted.to_dict())
+	# Verify if teacher_dict exists
+	if teacher_dict is None:
+		logging.warning("\tService Layer ==> Teacher not found.")
+		raise LookupError(f"Teacher with ID '{teacher_id}' not found.")
+	
+	# Delete the reference of the teacher
+	db.collection(COLLECTION_NAME).document(teacher_id).delete()
+	logging.info("\tService Layer ==>	Teacher deleted successfully.")
 
-		# Delete the reference of the teacher
-		teacher_ref = db.collection(COLLECTION_NAME).document(teacher_id)
-		teacher_ref.delete()
-
-		return {"message": f"Teacher with ID: {teacher_id} deleted successfully"}
-	except Exception as e:
-		return {"error:": str(e)}
