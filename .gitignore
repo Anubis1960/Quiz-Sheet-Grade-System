@@ -177,3 +177,4 @@ package-lock.json
 # Environment variables
 .env
 *.env
+**/__init__.py
