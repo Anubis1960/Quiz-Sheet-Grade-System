@@ -10,6 +10,7 @@ from src.routes.quiz_route import quiz_blueprint
 #
 ####################
 import sys
+
 sys.path.append("src")
 
 app = Flask(__name__)
@@ -20,9 +21,9 @@ app = Flask(__name__)
 #
 ####################
 logging.basicConfig(
-	level = logging.INFO,
-	format =  '%(levelname)s - %(message)s',
-	handlers = [logging.StreamHandler()]
+    level=logging.INFO,
+    format='%(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler()]
 )
 
 ####################
@@ -35,4 +36,4 @@ app.register_blueprint(student_blueprint)
 app.register_blueprint(quiz_blueprint)
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run(debug=True)
