@@ -1,8 +1,11 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
+import os
+
 
 # Initialize Firestore Admin
-cred = credentials.Certificate('/home/catalin/Downloads/quiz-grader-firebase-adminsdk-jbul6-4bd261f030.json')
+key = os.getenv('FIREBASE')
+cred = credentials.Certificate(key)
 
 app = firebase_admin.initialize_app(cred)
 
