@@ -3,22 +3,15 @@ from src.database import db
 from src.models.teacher import Teacher
 from src.exceptions.NoDataFoundError import NoDataFoundError
 
-COLLECTION_NAME = 'teachers'
+COLLECTION = 'teachers'
 
 
 #
 #  Retrieve teachers
 #
 def get_teachers_data() -> list[dict]:
-    logging.info("\tService Layer ==>	Retrieve teachers loading...")
-
-    # Fetch teachers data from Firestore
-    teachers_data = db.collection(COLLECTION_NAME).stream()
-
-    # Process data
+    teachers_data = db.collection(COLLECTION).stream()
     teachers_list = [teacher.to_dict() for teacher in teachers_data]
-
-    logging.info("\tService Layer ==>	Successfully retrieved teachers data.")
     return teachers_list
 
 
@@ -26,69 +19,63 @@ def get_teachers_data() -> list[dict]:
 #   Retrieve teacher by id
 #
 def get_teacher_by_id(teacher_id: str) -> dict:
-    logging.info("\tService Layer ==>	Retrieve teacher by id loading...")
-
-    # Fetch the document from Firestore
-    teacher_snapshot = db.collection(COLLECTION_NAME).document(teacher_id).get()
-
-    if not teacher_snapshot.exists:
-        logging.warning(f"\tService Layer ==>	No data found for teacher with id: {teacher_id}")
-        return None
-
-    logging.info(f"\tService Layer ==>	Successfully retrieved teacher with id: {teacher_id}")
-    return teacher_snapshot.to_dict()
-
-
-####################################
-#
-#   CRUD Operations
-#
-####################################
+    teacher_snapshot = db.collection(COLLECTION).document(teacher_id).get()
+    if teacher_snapshot.exists:
+        return teacher_snapshot.to_dict()
+    return {}
 
 #
 #   Add teacher
 #
-def create_teacher(teacher: Teacher) -> None:
-    logging.info("\tRoutes Layer ==>	Adding new teacher loading...")
-
-    # Converting teacher into dict
-    teacher_dict = teacher.to_dict()
-
-    #
-    #	Validations
-    #
-
+def create_teacher(teacher: Teacher) -> dict:
     try:
-        # Retrieve existing teachers
-        teachers_list = get_teachers_data()
+        db.collection(COLLECTION).add(teacher.to_dict())
+        return teacher.to_dict()
 
-        # Check for duplicate email if the list is not empty
-        for teacher_data in teachers_list:
-            if teacher_data['email'] == teacher_dict['email']:
-                logging.warning(f"\tEmail: {teacher_dict['email']} already existing.")
-                raise ValueError(f"Teacher email: {teacher_dict['email']} already exists.")
+    except KeyError as e:
+        return {"error": f"Key Error: {str(e)}"}
 
-    except NoDataFoundError:
-        # Handle case where no teachers exist
-        logging.info("\tService Layer ==> No existing teachers. Proceeding with the addition.")
+    except Exception as e:
+        return {"error": f"Unexpected error: {str(e)}"}
 
-    # Add teacher data to firestore
-    db.collection(COLLECTION_NAME).add(teacher_dict)
-    logging.info("\tService Layer ==>	Successfully added teacher.")
+
+#
+#   Update teacher by id
+#
+def update_teacher_by_id(teacher_id: str, teacher: Teacher) -> dict:
+    try:
+        teacher_ref = db.collection(COLLECTION).document(teacher_id)
+
+        teacher_snapshot = teacher_ref.get()
+        if not teacher_snapshot.exists:
+            return {"error": f"No data found for id: {teacher_id}"}
+
+        teacher_ref.update(teacher.to_dict())
+        return teacher.to_dict()
+
+    except KeyError as e:
+        return {"error": f"Key missing: {str(e)}"}
+
+    except Exception as e:
+        raise Exception(f"Unexpected error: {str(e)}")
 
 
 #
 #   Delete teacher by id
 #
-def delete_teacher_by_id(teacher_id: str) -> None:
-    # Fetch teacher by id
-    teacher_dict = get_teacher_by_id(teacher_id)
+def delete_teacher_by_id(teacher_id: str) -> dict:
+    try:
+        teacher_ref = db.collection(COLLECTION).document(teacher_id)
 
-    # Verify if teacher_dict exists
-    if teacher_dict is None:
-        logging.warning("\tService Layer ==> Teacher not found.")
-        raise LookupError(f"Teacher with ID '{teacher_id}' not found.")
+        teacher_snapshot = teacher_ref.get()
+        if not teacher_snapshot.exists:
+            return {"error": f"No data found for id: {teacher_id}"}
 
-    # Delete the reference of the teacher
-    db.collection(COLLECTION_NAME).document(teacher_id).delete()
-    logging.info("\tService Layer ==>	Teacher deleted successfully.")
+        teacher_ref.delete()
+        return teacher_snapshot.to_dict()
+
+    except KeyError as e:
+        return {"error": f"Key missing: {str(e)}"}
+
+    except Exception as e:
+        raise Exception(f"Unexpected error: {str(e)}")

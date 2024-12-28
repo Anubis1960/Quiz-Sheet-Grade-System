@@ -7,6 +7,7 @@ import imutils
 import matplotlib.pyplot as plt
 import cv2
 
+QUESTIONS = {0: [1, 2, 3, 4], 1: [4], 2: [0], 3: [3], 4: [1], 5: [1], 6: [1], 7: [1], 8: [1], 9: [1]}
 
 def get_bubble_contours(thresh: MatLike) -> MatLike:
     # finding contours in the thresholded image, then initializing the list of contours that correspond to questions
@@ -22,85 +23,57 @@ def get_bubble_contours(thresh: MatLike) -> MatLike:
         print(f"Width: {w}, Height: {h}, Aspect Ratio: {ar}")
         # in order to label the contour as a question, region should be sufficiently wide, sufficiently tall,
         # and have an aspect ratio approximately equal to 1
-        if w >= 20 and h >= 20 and 0.9 <= ar <= 1.1:
+        if w >= 20 and h >= 20 and 0.9 <= ar <= 1.4:
             question_cnts.append(c)
 
     # sorting the question contours top-to-bottom, then initializing the total number of correct answers
     question_cnts = contours.sort_contours(question_cnts, method="top-to-bottom")[0]
 
+    # loop over the question contours
+    # for q in question_cnts:
+    #     (x, y, w, h) = cv2.boundingRect(q)
+    #     cv2.rectangle(thresh, (x, y), (x + w, y + h), (0, 255, 0), 2)
+    #
+    # plt.imshow(thresh)
+    # plt.show()
+
     return question_cnts
 
 
-def get_document_contours(image: MatLike) -> MatLike:
-    cnts = cv2.findContours(
-        image.copy(),
-        cv2.RETR_EXTERNAL,
-        cv2.CHAIN_APPROX_SIMPLE
-    )
-
-    cnts = imutils.grab_contours(cnts)
-    doc_cnt = None
-
-    if len(cnts) > 0:
-        # sorting the contours according to their size in descending order
-        cnts = sorted(cnts, key=cv2.contourArea, reverse=True)
-
-        # looping over the sorted contours
-        for c in cnts:
-            # approximating the contour
-            peri = cv2.arcLength(c, True)
-            approx = cv2.approxPolyDP(c, 0.02 * peri, True)
-
-            # if our approximated contour has four points, then we can assume we have found the paper
-            if len(approx) == 4:
-                doc_cnt = approx
-    else:
-        print("No contours found")
-        return None
-
-    if doc_cnt is None:
-        print("No document found")
-        return None
-
-    return doc_cnt
-
-
-def parser(img: str):
-    image = cv2.imread(img)
-
+def parse_quiz(image):
     # convert the image to grayscale, blur it, and find edges in the image
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     # apply GaussianBlur to the gray image to reduce noise
-    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+    # blurred = cv2.GaussianBlur(gray, (5, 5), 0)
 
     # apply Canny edge detection to find the edges in the image
-    edged = cv2.Canny(blurred, 75, 200)
+    # edged = cv2.Canny(blurred, 75, 200)
 
-    img_contured = get_document_contours(edged)
+    # img_contured = get_document_contours(edged)
 
-    if img_contured is None:
-        thresh = cv2.threshold(gray, 0, 255,cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU
-                               )[1]
-    else:
-        paper = four_point_transform(image, img_contured.reshape(4, 2))
-        warped = four_point_transform(gray, img_contured.reshape(4, 2))
-        thresh = cv2.threshold(warped, 0, 255,
-                               cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU
-                               )[1]
+    # if img_contured is None:
+    thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU
+                           )[1]
+    # else:
+    #     paper = four_point_transform(image, img_contured.reshape(4, 2))
+    #     warped = four_point_transform(gray, img_contured.reshape(4, 2))
+    #     thresh = cv2.threshold(warped, 0, 255,
+    #                            cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU
+    #                            )[1]
 
     bubble_contours = [
         c for c in get_bubble_contours(thresh)
     ]
 
-    if img_contured is not None:
-        return check_image(thresh, paper, bubble_contours, QUESTIONS, nz_threshold=1000)
-    else:
-        return check_image(thresh, image, bubble_contours, QUESTIONS, nz_threshold=1400)
+    # if img_contured is not None:
+    #     return check_image(thresh, paper, bubble_contours, QUESTIONS, nz_threshold=1000)
+    # else:
+    return solve_quiz(thresh, image, bubble_contours, QUESTIONS, nz_threshold=1400)
 
 
-def check_image(thresh: MatLike, paper: MatLike, bubble_contours: List[MatLike], questions: Dict[int, List[int]],
-                nz_threshold: int = 1400) -> Dict[int, List[int]]:
+def solve_quiz(thresh: MatLike, paper: MatLike, bubble_contours: List[MatLike], questions: Dict[int, List[int]],
+               nz_threshold: int = 1400) -> Dict[int, List[int]]:
     num_correct = 0
     answers = {}
 
@@ -136,6 +109,9 @@ def check_image(thresh: MatLike, paper: MatLike, bubble_contours: List[MatLike],
 
         print(f"Bubbled: {bubbled}")
 
+        if bubbled is None:
+            continue
+
         # initialize the index of the question
         k = questions[q]
         current_correct = 0
@@ -170,6 +146,5 @@ def check_image(thresh: MatLike, paper: MatLike, bubble_contours: List[MatLike],
     return answers
 
 
-QUESTIONS = {0: [1, 2, 3, 4], 1: [4], 2: [0], 3: [3], 4: [1]}
-
-answers = parser("test.png")
+if __name__ == '__main__':
+    answers = parse_quiz(cv2.imread("ftest.png"))
