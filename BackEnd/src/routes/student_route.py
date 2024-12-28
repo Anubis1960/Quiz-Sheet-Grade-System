@@ -15,40 +15,28 @@ student_blueprint = Blueprint('student', __name__, url_prefix=STUDENT_URL)
 
 
 #
-#	Route to retrieve all students from the Firestore DB
+#	Route to get all students from the db
 #
 @student_blueprint.route("/", methods=['GET'])
 def get_students() -> jsonify:
-    logging.info("\tRoutes Layer ==>	Requesting students list loading...")
-
-    # Retrieve students data
-    students_data = get_students_data()
-
-    if students_data is []:
-        return jsonify([]), HTTPStatus.NOT_FOUND
-
-    return jsonify(students_data), HTTPStatus.OK
+    students = get_students_data()
+    return jsonify(students), HTTPStatus.OK
 
 
 # 
-# 	Route to get a student from the Firestore Database
+# 	Route to get a student from the db
 #     
 @student_blueprint.route("/<student_id>", methods=['GET'])
 def get_student(student_id: str) -> jsonify:
-    logging.info("\tRoutes Layer ==>	Requesting student by id loading...")
     try:
-        # Fetch data by id
-        result = get_student_by_id(student_id)
-
-        # Check if data exists
-        if not result:
+        student = get_student_by_id(student_id)
+        if not student:
             return jsonify({"status": "error", "message":
                 f"No data found for id: {student_id}"}), HTTPStatus.NOT_FOUND
 
-        return jsonify(result.to_dict()), HTTPStatus.OK
+        return jsonify(student), HTTPStatus.OK
 
     except Exception as e:
-        # Catch unexpected errors
         return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
@@ -57,28 +45,44 @@ def get_student(student_id: str) -> jsonify:
 #
 @student_blueprint.route("/", methods=['POST'])
 def add_student() -> jsonify:
-    logging.info("\tRoutes Layer ==>	Creating new student loading...")
     try:
-        # Retrieve JSON
         data = request.get_json()
-
-        # Retrieve JSON data
         unique_id = data['unique_id']
         email = data['email']
 
-        # Create object
-        student = Student(unique_id, email)
+        student = create_student(Student(unique_id, email))
 
-        # Send data to service layer function
-        response = create_student(student)
+        # Check if student has an error key
+        if "error" in student:
+            return jsonify({"status": "error", "message": student["error"]}), HTTPStatus.BAD_REQUEST
 
-        # Check for errors
-        if response is "error":
-            return jsonify({"status": "failure",
-                            "error": response["error"]}), HTTPStatus.BAD_REQUEST
+        return jsonify(student), HTTPStatus.CREATED
 
-        return jsonify({"status": "success",
-                        "message": "Student added successfully."}), HTTPStatus.OK
+    except Exception as e:
+        # Catch unexpected errors
+        return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+#
+#    Route to update a student in the Firestore Database
+#
+@student_blueprint.route("/<student_id>", methods=['PUT'])
+def update_student(student_id: str) -> jsonify:
+
+    try:
+        data = request.get_json()
+
+        # Extract data
+        unique_id = data['unique_id']
+        email = data['email']
+
+        student = update_student_data(student_id, Student(unique_id, email))
+
+        # Check if student has an error key
+        if "error" in student:
+            return jsonify({"status": "error", "message": student["error"]}), HTTPStatus.BAD_REQUEST
+
+        return jsonify(student), HTTPStatus.OK
 
     except Exception as e:
         # Catch unexpected errors
@@ -90,18 +94,14 @@ def add_student() -> jsonify:
 #
 @student_blueprint.route("/<student_id>", methods=['DELETE'])
 def delete_student(student_id: str) -> jsonify:
-    logging.info("\tRoutes Layer ==>	Deleting student loading...")
+
     try:
-        student_to_be_deleted = delete_student_by_id(student_id)
+        student = delete_student_by_id(student_id)
 
-        # Verify if result is a dictionary and contains an 'error' key
-        if isinstance(student_to_be_deleted, dict) and "error" in student_to_be_deleted:
-            return jsonify({"status": "error",
-                            "message": f"No data found for id: {student_id}"}), HTTPStatus.NOT_FOUND
+        if "error" in student:
+            return jsonify({"status": "error", "message": student["error"]}), HTTPStatus.NOT_FOUND
 
-        return jsonify({"status": "success",
-                        "message": "Student deleted successfully."}), HTTPStatus.OK
+        return jsonify(student), HTTPStatus.OK
 
     except Exception as e:
-        # Catch unexpected errors
         return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
