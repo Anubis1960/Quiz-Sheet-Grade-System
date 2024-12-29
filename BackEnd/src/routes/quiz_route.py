@@ -97,7 +97,7 @@ def delete_quiz(quiz_id: str) -> jsonify:
         return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
-@quiz_blueprint.route("/<quiz_id>/pdf", methods=['GET'])
+@quiz_blueprint.route("/pdf/<quiz_id>", methods=['GET'])
 def export_pdf(quiz_id: str) -> jsonify:
     try:
         quiz = get_quiz_by_id(quiz_id)

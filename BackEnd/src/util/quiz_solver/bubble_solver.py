@@ -69,11 +69,11 @@ def parse_quiz(image):
     # if img_contured is not None:
     #     return check_image(thresh, paper, bubble_contours, QUESTIONS, nz_threshold=1000)
     # else:
-    return solve_quiz(thresh, image, bubble_contours, QUESTIONS, nz_threshold=1400)
+    return solve_quiz(thresh, image, bubble_contours, QUESTIONS, nz_threshold=1000)
 
 
 def solve_quiz(thresh: MatLike, paper: MatLike, bubble_contours: List[MatLike], questions: Dict[int, List[int]],
-               nz_threshold: int = 1400) -> Dict[int, List[int]]:
+               nz_threshold: int = 1000) -> Dict[int, List[int]]:
     num_correct = 0
     answers = {}
 
@@ -100,6 +100,8 @@ def solve_quiz(thresh: MatLike, paper: MatLike, bubble_contours: List[MatLike], 
             # if the current total has a larger number of total
             # non-zero pixels, then we are examining the currently
             # bubbled-in answer
+
+            print(f"Total: {total}")
 
             if total > nz_threshold:
                 if bubbled is None:
