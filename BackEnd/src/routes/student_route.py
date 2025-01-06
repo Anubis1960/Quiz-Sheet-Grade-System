@@ -31,8 +31,7 @@ def get_student(student_id: str) -> jsonify:
     try:
         student = get_student_by_id(student_id)
         if not student:
-            return jsonify({"status": "error", "message":
-                f"No data found for id: {student_id}"}), HTTPStatus.NOT_FOUND
+            return jsonify({"status": "error", "message": f"No data found for id: {student_id}"}), HTTPStatus.NOT_FOUND
 
         return jsonify(student), HTTPStatus.OK
 
@@ -68,7 +67,6 @@ def add_student() -> jsonify:
 #
 @student_blueprint.route("/<student_id>", methods=['PUT'])
 def update_student(student_id: str) -> jsonify:
-
     try:
         data = request.get_json()
 
@@ -94,7 +92,6 @@ def update_student(student_id: str) -> jsonify:
 #
 @student_blueprint.route("/<student_id>", methods=['DELETE'])
 def delete_student(student_id: str) -> jsonify:
-
     try:
         student = delete_student_by_id(student_id)
 

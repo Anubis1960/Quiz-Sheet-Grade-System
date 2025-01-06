@@ -1,5 +1,5 @@
 class Question:
-    def __init__(self, text: str, options: list[str] = None, correct_answers: list[str] = None):
+    def __init__(self, text: str, options: list[str] = None, correct_answers: list[int] = None):
         self.text = text
         self.options = options or []
         self.correct_answers = correct_answers or []

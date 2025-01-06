@@ -47,9 +47,7 @@ def rescale_image(image, width=595, height=842):
     return scaled_image
 
 
-def parser(img: str):
-    image = cv2.imread(img)
-
+def parser(image):
     # Convert the image to grayscale, blur it, and find edges in the image
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     blurred = cv2.GaussianBlur(gray, (5, 5), 0)
@@ -83,8 +81,8 @@ def parser(img: str):
     print(student_id)
 
     # Parse the quiz from the bubble sheet (replace with actual parsing logic)
-    quiz_data = parse_quiz(bubble_sheet)
-    return quiz_data
+    # quiz_data = parse_quiz(bubble_sheet)
+    return bubble_sheet, student_id, quiz_id
 
 
 def crop_bubble_sheet(paper: MatLike) -> MatLike:
@@ -114,8 +112,6 @@ def crop_id_box(paper: MatLike) -> MatLike:
 
 
 def scan_qr_code(image):
-    # load the input image
-
     # find the qrcode in the image
     detector = cv2.QRCodeDetector()
     data, bbox, _ = detector.detectAndDecode(image)
@@ -127,6 +123,7 @@ def scan_qr_code(image):
 
 
 if __name__ == "__main__":
-    parser("wtxt.png")
+    img = cv2.imread("frid.png")
+    parser(img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()

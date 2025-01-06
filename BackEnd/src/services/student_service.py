@@ -1,3 +1,5 @@
+from google.cloud.firestore_v1 import FieldFilter
+
 from src.database import db
 from src.models.student import Student
 
@@ -23,6 +25,12 @@ def get_student_by_id(student_id: str) -> dict:
     return {}
 
 
+def get_student_by_unique_id(unique_id: str) -> list[dict]:
+    students = db.collection(COLLECTION).where(filter=FieldFilter("unique_id", "==", unique_id)).stream()
+    student_list = [student.to_dict() for student in students]
+    return student_list
+
+
 #
 #   Add
 #
@@ -41,7 +49,6 @@ def create_student(student: Student) -> dict:
 #
 #	Update
 #
-
 def update_student_data(student_id: str, student: Student) -> dict:
     try:
         student_ref = db.collection(COLLECTION).document(student_id)
