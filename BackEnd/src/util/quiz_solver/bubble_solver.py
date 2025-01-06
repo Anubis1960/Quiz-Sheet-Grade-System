@@ -1,16 +1,16 @@
-from cv2.typing import MatLike
-from imutils.perspective import four_point_transform
 from typing import Dict, List
-from imutils import contours
-import numpy as np
-import imutils
-import matplotlib.pyplot as plt
+
 import cv2
+import imutils
+import numpy as np
+from cv2.typing import MatLike
+from imutils import contours
 
 QUESTIONS = {0: [1, 2, 3, 4], 1: [4], 2: [0], 3: [3], 4: [1], 5: [1], 6: [1], 7: [1], 8: [1], 9: [1]}
 
+
 def get_bubble_contours(thresh: MatLike) -> MatLike:
-    # finding contours in the thresholded image, then initializing the list of contours that correspond to questions
+    # finding contours in the threshold image, then initializing the list of contours that correspond to questions
     cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
     question_cnts = []
@@ -20,7 +20,6 @@ def get_bubble_contours(thresh: MatLike) -> MatLike:
         (x, y, w, h) = cv2.boundingRect(c)
         ar = w / float(h)
 
-        print(f"Width: {w}, Height: {h}, Aspect Ratio: {ar}")
         # in order to label the contour as a question, region should be sufficiently wide, sufficiently tall,
         # and have an aspect ratio approximately equal to 1
         if w >= 20 and h >= 20 and 0.9 <= ar <= 1.4:
@@ -41,41 +40,21 @@ def get_bubble_contours(thresh: MatLike) -> MatLike:
 
 
 def parse_quiz(image):
-    # convert the image to grayscale, blur it, and find edges in the image
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-    # apply GaussianBlur to the gray image to reduce noise
-    # blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-
-    # apply Canny edge detection to find the edges in the image
-    # edged = cv2.Canny(blurred, 75, 200)
-
-    # img_contured = get_document_contours(edged)
-
-    # if img_contured is None:
     thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU
                            )[1]
-    # else:
-    #     paper = four_point_transform(image, img_contured.reshape(4, 2))
-    #     warped = four_point_transform(gray, img_contured.reshape(4, 2))
-    #     thresh = cv2.threshold(warped, 0, 255,
-    #                            cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU
-    #                            )[1]
 
     bubble_contours = [
         c for c in get_bubble_contours(thresh)
     ]
 
-    # if img_contured is not None:
-    #     return check_image(thresh, paper, bubble_contours, QUESTIONS, nz_threshold=1000)
-    # else:
     return solve_quiz(thresh, image, bubble_contours, QUESTIONS, nz_threshold=1000)
 
 
 def solve_quiz(thresh: MatLike, paper: MatLike, bubble_contours: List[MatLike], questions: Dict[int, List[int]],
                nz_threshold: int = 1000) -> Dict[int, List[int]]:
     num_correct = 0
-    answers = {}
+    ans = {}
 
     # each question has 5 possible answers, to loop over the question in batches of 5
     for (q, i) in enumerate(np.arange(0, len(bubble_contours), 5)):
@@ -101,7 +80,7 @@ def solve_quiz(thresh: MatLike, paper: MatLike, bubble_contours: List[MatLike], 
             # non-zero pixels, then we are examining the currently
             # bubbled-in answer
 
-            print(f"Total: {total}")
+            # print(f"Total: {total}")
 
             if total > nz_threshold:
                 if bubbled is None:
@@ -109,7 +88,7 @@ def solve_quiz(thresh: MatLike, paper: MatLike, bubble_contours: List[MatLike], 
                 else:
                     bubbled.append((total, j))
 
-        print(f"Bubbled: {bubbled}")
+        # print(f"Bubbled: {bubbled}")
 
         if bubbled is None:
             continue
@@ -133,10 +112,10 @@ def solve_quiz(thresh: MatLike, paper: MatLike, bubble_contours: List[MatLike], 
 
         # update the list of correct answers
         for b in bubbled:
-            if answers.get(q) is None:
-                answers[q] = [b[1]]
+            if ans[q] is None:
+                ans[q] = [b[1]]
             else:
-                answers[q].append(b[1])
+                ans[q].append(b[1])
 
     # grab the test taker
     score = (num_correct / len(questions)) * 100
@@ -145,8 +124,8 @@ def solve_quiz(thresh: MatLike, paper: MatLike, bubble_contours: List[MatLike], 
     cv2.imshow("Exam", paper)
     cv2.waitKey(0)
 
-    return answers
+    return ans
 
 
 if __name__ == '__main__':
-    answers = parse_quiz(cv2.imread("ftest.png"))
+    answers = parse_quiz(cv2.imread("../ftest.png"))

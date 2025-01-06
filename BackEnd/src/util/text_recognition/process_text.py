@@ -1,8 +1,7 @@
 import os
 import cv2
 import numpy as np
-import tensorflow as tf
-from tensorflow.keras import datasets, layers, models
+from tensorflow.keras import models
 
 
 # Load the model
@@ -13,7 +12,7 @@ def load_model(name: str) -> models.Model:
 
 def non_max_suppression_fast(boxes: np.ndarray, overlap_thresh: float = 0.3) -> np.ndarray:
     if len(boxes) == 0:
-        return []
+        return np.ndarray(0)
 
     boxes = np.array(boxes)
     pick = []
@@ -52,9 +51,7 @@ def non_max_suppression_fast(boxes: np.ndarray, overlap_thresh: float = 0.3) -> 
     return boxes[pick].astype("int")
 
 
-def process_image(image_path: str) -> tuple:
-    img = cv2.imread(image_path)
-
+def process_image(img) -> tuple:
     # Convert the image to grayscale
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
@@ -64,15 +61,13 @@ def process_image(image_path: str) -> tuple:
     # Apply Canny edge detection to find the edges in the image
     edged = cv2.Canny(blurred, 30, 150)
 
-    return img, gray, blurred, edged
+    return gray, blurred, edged
 
 
-def parse_image(image_path: str) -> None:
-    if not os.path.exists(image_path):
-        print("Image not found")
-        return
+def read_id(img) -> str:
+    model = load_model(os.path.dirname(__file__) + "/text-recognizer.keras")
 
-    img, gray, blurred, edged = process_image(image_path)
+    gray, blurred, edged = process_image(img)
 
     # Find contours and hierarchy
     cnts, hierarchy = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -84,13 +79,14 @@ def parse_image(image_path: str) -> None:
 
     # Extract bounding boxes and apply NMS
     boxes = [cv2.boundingRect(c) for c in valid_contours]
-    boxes = non_max_suppression_fast(boxes)
 
     chrs = []
     for box in boxes:
         (x, y, w, h) = box
-
-        if w >= 10 and h >= 15:  # Filter boxes by size
+        ar = w / float(h)
+        # print(f"Width: {w}, Height: {h}, Aspect Ratio: {ar}")
+        if w >= 5 and h >= 5 and 0.38 <= ar <= 2.0:
+            # print(f"Width: {w}, Height: {h}, Aspect Ratio: {ar}")
             roi = gray[y:y + h, x:x + w]
             thresh = cv2.threshold(roi, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
 
@@ -105,19 +101,24 @@ def parse_image(image_path: str) -> None:
                                         value=(0, 0, 0))
             padded = cv2.resize(padded, (28, 28))
 
+            # cv2.imshow("Padded Image", padded)
+            # cv2.waitKey(0)
+
             padded = padded.astype("float32") / 255.0
             chrs.append((padded, box))
 
     if not chrs:
         print("No characters detected.")
-        return
+        return ""
 
     chrs_data = np.array([c[0] for c in chrs], dtype="float32")
     predictions = model.predict(chrs_data)
-
-    for i, (padded, (x, y, w, h)) in enumerate(chrs):
+    text = ""
+    for i, (padded, (x, y, w, h)) in sorted(enumerate(chrs), key=lambda _: _[1][1][0]):
         prediction = np.argmax(predictions[i])
         label = chr(prediction + 55) if prediction >= 10 else str(prediction)
+
+        text += label
 
         cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
         cv2.putText(img, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
@@ -126,6 +127,11 @@ def parse_image(image_path: str) -> None:
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
+    return text
 
-model = load_model("text-recognizer.keras")
-parse_image("hello.png")
+
+if __name__ == "__main__":
+    img = cv2.imread("hello.png")
+    print(img.shape)
+    txt = read_id(img)
+    print(txt)

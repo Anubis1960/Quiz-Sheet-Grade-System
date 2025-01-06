@@ -18,6 +18,7 @@ STUDENT_ID_BOX_WIDTH = 200
 STUDENT_ID_BOX_HEIGHT = 20
 BUBBLE_SHEET_HEIGHT = 500
 BUBBLE_SHEET_MARGIN = 200
+STUDENT_ID_BOX_MARGIN = 120
 
 
 def generate_pdf(quiz_id: str, quiz_data: dict) -> BytesIO:
@@ -26,7 +27,7 @@ def generate_pdf(quiz_id: str, quiz_data: dict) -> BytesIO:
 
     # Fixed position for the bubble sheet
     bubble_sheet_y_position = MARGIN + 10  # 10 points spacing from the bottom
-    add_bubble_sheet(c, os.path.join(os.path.dirname(__file__), "FINAL.png"), bubble_sheet_y_position)
+    add_bubble_sheet(c, os.path.join(os.path.dirname(__file__), "ftest.png"), bubble_sheet_y_position)
 
     # Add a QR code with the quiz ID
     add_qr_code(c, quiz_id)
@@ -36,10 +37,12 @@ def generate_pdf(quiz_id: str, quiz_data: dict) -> BytesIO:
     add_title(c, quiz_data["title"], title_y)
 
     # Add the description and teacher
-    teacher_y = add_description_and_teacher(c, quiz_data["description"], quiz_data["teacher"], title_y)
+    add_description_and_teacher(c, quiz_data["description"], quiz_data["teacher"], title_y)
+
+    student_y_position = bubble_sheet_y_position + BUBBLE_SHEET_HEIGHT + SPACING
 
     # Add a box for the student ID
-    student_id_box_y = add_student_id_box(c, teacher_y)
+    add_student_id_box(c, student_y_position)
 
     # Start a new page for questions
     c.showPage()
@@ -95,13 +98,12 @@ def add_description_and_teacher(c: canvas.Canvas, description: str, teacher: str
 
 def add_student_id_box(c: canvas.Canvas, y_position: float) -> float:
     c.setFont("Helvetica", TEXT_FONT_SIZE)
-    student_id_label_y = y_position - SPACING
-    student_id_box_y = student_id_label_y - STUDENT_ID_BOX_HEIGHT
+    student_id_label_y = y_position + SPACING
 
     c.drawString(MARGIN, student_id_label_y, "Student ID:")
-    c.rect(MARGIN + 100, student_id_box_y, STUDENT_ID_BOX_WIDTH, STUDENT_ID_BOX_HEIGHT)
+    c.rect(STUDENT_ID_BOX_MARGIN, student_id_label_y, STUDENT_ID_BOX_WIDTH, STUDENT_ID_BOX_HEIGHT)
 
-    return student_id_box_y - SPACING
+    return student_id_label_y - SPACING
 
 
 def add_bubble_sheet(c: canvas.Canvas, image_path: str, y_position: float):
@@ -111,11 +113,9 @@ def add_bubble_sheet(c: canvas.Canvas, image_path: str, y_position: float):
 def add_questions(c: canvas.Canvas, questions: list):
     c.setFont("Helvetica", TEXT_FONT_SIZE)
     y = PAGE_HEIGHT - MARGIN
-    max_line_width = PAGE_WIDTH - 2 * MARGIN
 
     for q_index, question in enumerate(questions):
-        wall_txt = []
-        wall_txt.append(f"{q_index + 1}: {question['text']}")
+        wall_txt = [f"{q_index + 1}: {question['text']}"]
         for o_idx, option in enumerate(question["options"]):
             wall_txt.append(f"  {chr(65 + o_idx)}. {option}")
 
@@ -134,10 +134,11 @@ def add_questions(c: canvas.Canvas, questions: list):
                     y -= SPACING
 
 
-
 if __name__ == '__main__':
     q_data = {
-        "description": "Description of Quizfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgdghghghghghghghghghghghghghghghghghghghghghghgh 1",
+        "description": "Description of "
+                       "Quizfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfg"
+                       "fgfgdghghghghghghghghghghghghghghghghghghghghghghgh 1",
         "questions": [
             {
                 "correct_answers": [
@@ -148,7 +149,10 @@ if __name__ == '__main__':
                     "4",
                     "5"
                 ],
-                "text": "What is 2+2?aaaaaaaaaaaaaaaaaaaaaaaaafffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                "text": "What is "
+                        "2+2"
+                        "?aaaaaaaaaaaaaaaaaaaaaaaaaffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+                        "fffffaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
             },
             {
                 "correct_answers": [
@@ -254,7 +258,8 @@ if __name__ == '__main__':
                     "1"
                 ],
                 "options": [
-                    "33333333333333333333333333333333333333333333333333333333hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh33333333333333333333333333333333333333333333333333",
+                    "33333333333333333333333333333333333333333333333333333333hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh"
+                    "hhh33333333333333333333333333333333333333333333333333",
                     "4",
                     "5"
                 ],
