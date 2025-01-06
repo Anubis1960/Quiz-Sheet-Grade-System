@@ -1,16 +1,14 @@
-﻿from cv2.typing import MatLike
-from imutils.perspective import four_point_transform
-from typing import Dict, List
-from imutils import contours
-import numpy as np
-import imutils
-import matplotlib.pyplot as plt
-import cv2
-import qrcode
-from src.util.quiz_solver.bubble_solver import *
+﻿from imutils.perspective import four_point_transform
+
 from src.util.pdf_gen import *
+from src.util.quiz_solver.bubble_solver import *
+from src.util.text_recognition.process_text import *
+
 
 def get_document_contours(image: MatLike) -> MatLike:
+    if len(image.shape) == 3:
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
     cnts = cv2.findContours(
         image.copy(),
         cv2.RETR_EXTERNAL,
@@ -45,9 +43,7 @@ def get_document_contours(image: MatLike) -> MatLike:
 
 
 def rescale_image(image, width=595, height=842):
-    print(f"Original image size: {image.shape}")
     scaled_image = cv2.resize(image, (width, height))
-    print(f"Scaled image size: {scaled_image.shape}")
     return scaled_image
 
 
@@ -66,6 +62,9 @@ def parser(img: str):
         # Perform a perspective transformation to isolate the document
         paper = four_point_transform(image, img_contoured.reshape(4, 2))
 
+    else:
+        paper = image
+
     # Attempt to scan the QR code to retrieve the quiz ID
     quiz_id = scan_qr_code(paper)
     tries = 0
@@ -78,9 +77,15 @@ def parser(img: str):
 
     bubble_sheet = crop_bubble_sheet(paper)
 
+    student_id_box = crop_id_box(paper)
+
+    student_id = read_id(student_id_box)
+    print(student_id)
+
     # Parse the quiz from the bubble sheet (replace with actual parsing logic)
     quiz_data = parse_quiz(bubble_sheet)
     return quiz_data
+
 
 def crop_bubble_sheet(paper: MatLike) -> MatLike:
     # Dynamically calculate bubble sheet coordinates using constants and scaling
@@ -96,6 +101,18 @@ def crop_bubble_sheet(paper: MatLike) -> MatLike:
 
     return bubble_sheet
 
+
+def crop_id_box(paper: MatLike) -> MatLike:
+    # Dynamically calculate student ID box coordinates using constants and scaling
+    student_id_box_y = int(PAGE_HEIGHT - BUBBLE_SHEET_HEIGHT - MARGIN - 10 - 2 * SPACING - STUDENT_ID_BOX_HEIGHT)
+    student_id_box_x = STUDENT_ID_BOX_MARGIN
+
+    student_id_box = paper[student_id_box_y:student_id_box_y + STUDENT_ID_BOX_HEIGHT,
+                     student_id_box_x:student_id_box_x + STUDENT_ID_BOX_WIDTH]
+
+    return student_id_box
+
+
 def scan_qr_code(image):
     # load the input image
 
@@ -108,7 +125,8 @@ def scan_qr_code(image):
         return data
     return ""
 
+
 if __name__ == "__main__":
-    parser("exam2.png")
+    parser("wtxt.png")
     cv2.waitKey(0)
     cv2.destroyAllWindows()

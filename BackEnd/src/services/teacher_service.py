@@ -1,7 +1,5 @@
-import logging
 from src.database import db
 from src.models.teacher import Teacher
-from src.exceptions.NoDataFoundError import NoDataFoundError
 
 COLLECTION = 'teachers'
 
@@ -23,6 +21,7 @@ def get_teacher_by_id(teacher_id: str) -> dict:
     if teacher_snapshot.exists:
         return teacher_snapshot.to_dict()
     return {}
+
 
 #
 #   Add teacher

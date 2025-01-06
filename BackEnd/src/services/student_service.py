@@ -1,5 +1,3 @@
-import logging
-
 from src.database import db
 from src.models.student import Student
 
@@ -23,6 +21,7 @@ def get_student_by_id(student_id: str) -> dict:
     if student_data.exists:
         return student_data.to_dict()
     return {}
+
 
 #
 #   Add

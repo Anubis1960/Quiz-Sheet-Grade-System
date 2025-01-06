@@ -14,6 +14,7 @@ def get_quizzes_data() -> list[Quiz]:
     quizzes_list = [quiz.to_dict() for quiz in quizzes_data]
     return quizzes_list
 
+
 #
 # 	Retrieve quiz by id
 # 	
@@ -25,11 +26,11 @@ def get_quiz_by_id(quiz_id: str) -> dict:
 
     return quiz_snapshot.to_dict()
 
+
 #
 #   Add
 #
 def create_quiz(quiz: Quiz) -> dict:
-
     for q in quiz.questions:
         if len(q.text) > MAX_QUESTION_LENGTH:
             return {"error": f"Question text exceeds {MAX_QUESTION_LENGTH} characters."}
