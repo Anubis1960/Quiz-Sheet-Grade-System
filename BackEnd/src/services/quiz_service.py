@@ -1,5 +1,9 @@
 from src.database import db
 from src.models.quiz import Quiz
+from src.services.student_service import get_student_by_unique_id
+from src.util.mail_gen import send_email
+from src.util.quiz_solver.bubble_solver import solve_quiz
+from src.util.quiz_solver.process_quiz import parser
 
 COLLECTION_NAME = 'quizzes'
 MAX_QUESTION_LENGTH = 250
@@ -88,3 +92,16 @@ def delete_quiz_by_id(quiz_id: str) -> dict:
 
     except Exception as e:
         return {"error": f"Unexpected error: {str(e)}"}
+
+
+def grade_quiz(img):
+    bubble_sheet, student_id, quiz_id = parser(img)
+    quiz = get_quiz_by_id(quiz_id)
+    if not quiz:
+        return "Quiz not found"
+    correct_answers = [q['correct_answers'] for q in quiz['questions']]
+    ans, score = solve_quiz(bubble_sheet, correct_answers)
+    email = get_student_by_unique_id(student_id)[0]['email']
+    send_email("Quiz Results", str(score), email)
+    return score
+

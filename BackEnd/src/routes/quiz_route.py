@@ -1,4 +1,7 @@
 from http import HTTPStatus
+
+import cv2
+import numpy as np
 from flask import Blueprint, request, jsonify
 from flask import send_file
 from src.util.pdf_gen import generate_pdf
@@ -117,3 +120,35 @@ def export_pdf(quiz_id: str) -> jsonify:
 
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+@quiz_blueprint.route("/grade", methods=['POST'])
+def grade():
+    try:
+        if 'image' not in request.files:
+            return jsonify({"status": "error", "message": "No file part in the request"}), HTTPStatus.BAD_REQUEST
+
+        file = request.files['image']
+
+        if file.filename == '':
+            return jsonify({"status": "error", "message": "No selected file"}), HTTPStatus.BAD_REQUEST
+
+        # Debugging log to check the file name and type
+        print(f"File received: {file.filename}")
+        print(f"File type: {file.mimetype}")
+
+        b_file = file.read()
+
+        nparr = np.frombuffer(b_file, np.uint8)
+
+        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+        if img is None:
+            return jsonify({"status": "error", "message": "Failed to decode the image"}), HTTPStatus.BAD_REQUEST
+
+        # Your image processing function
+        gr = grade_quiz(img)
+        return jsonify(gr), HTTPStatus.OK
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": f"An error occurred: {str(e)}"}), HTTPStatus.INTERNAL_SERVER_ERROR

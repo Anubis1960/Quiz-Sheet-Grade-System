@@ -73,7 +73,6 @@ def add_teacher() -> jsonify:
         return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
-
 #
 #    Route to update a teacher in the Firestore Database
 #
@@ -104,6 +103,7 @@ def update_teacher(teacher_id: str) -> jsonify:
 
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
+
 
 #
 #	Route to delete a teacher from Firestore Database
