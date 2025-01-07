@@ -29,6 +29,10 @@ def get_teacher_by_id(teacher_id: str) -> dict:
 def create_teacher(teacher: Teacher) -> dict:
     try:
         db.collection(COLLECTION).add(teacher.to_dict())
+
+        if get_teacher_by_email(teacher.email):
+            return {"error": f"An account with email {teacher.email} already exists."}
+
         return teacher.to_dict()
 
     except KeyError as e:
@@ -48,6 +52,10 @@ def update_teacher_by_id(teacher_id: str, teacher: Teacher) -> dict:
         teacher_snapshot = teacher_ref.get()
         if not teacher_snapshot.exists:
             return {"error": f"No data found for id: {teacher_id}"}
+
+        if teacher_ref.get().to_dict()['email'] != teacher.email:
+            if get_teacher_by_email(teacher.email):
+                return {"error": f"An account with email {teacher.email} already exists."}
 
         teacher_ref.update(teacher.to_dict())
         return teacher.to_dict()
@@ -78,3 +86,8 @@ def delete_teacher_by_id(teacher_id: str) -> dict:
 
     except Exception as e:
         raise Exception(f"Unexpected error: {str(e)}")
+
+
+def get_teacher_by_email(email: str) -> list[dict]:
+    teacher = db.collection(COLLECTION).where('email', '==', email).stream()
+    return [t.to_dict() for t in teacher]

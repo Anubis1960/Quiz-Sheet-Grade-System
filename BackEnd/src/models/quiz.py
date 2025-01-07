@@ -1,5 +1,6 @@
 from src.models.question import Question
 
+
 class Quiz:
     def __init__(self, title: str, description: str, teacher: str, questions: list[Question] = None):
         self.title = title

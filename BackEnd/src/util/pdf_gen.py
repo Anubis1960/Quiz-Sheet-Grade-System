@@ -21,7 +21,7 @@ BUBBLE_SHEET_MARGIN = 200
 STUDENT_ID_BOX_MARGIN = 120
 
 
-def generate_pdf(quiz_id: str, quiz_data: dict) -> BytesIO:
+def generate_pdf(quiz_id: str, quiz_data: dict, teacher_name: str) -> BytesIO:
     buf = BytesIO()
     c = canvas.Canvas(buf, pagesize=A4)
 
@@ -37,7 +37,7 @@ def generate_pdf(quiz_id: str, quiz_data: dict) -> BytesIO:
     add_title(c, quiz_data["title"], title_y)
 
     # Add the description and teacher
-    add_description_and_teacher(c, quiz_data["description"], quiz_data["teacher"], title_y)
+    add_description_and_teacher(c, quiz_data["description"], teacher_name, title_y)
 
     student_y_position = bubble_sheet_y_position + BUBBLE_SHEET_HEIGHT + SPACING
 
@@ -284,7 +284,7 @@ if __name__ == '__main__':
     }
 
     q_id = "5HOnQYKhJtrnC0MMDDFk"
-    b = generate_pdf(q_id, q_data)
+    b = generate_pdf(q_id, q_data, "John Dadaoe")
 
     with open(f"{q_id}.pdf", "wb") as f:
         f.write(b.read())
