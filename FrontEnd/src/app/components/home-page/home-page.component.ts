@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { FileUploadEvent } from 'primeng/fileupload';
 
 @Component({
   selector: 'app-home-page',
@@ -7,10 +6,5 @@ import { FileUploadEvent } from 'primeng/fileupload';
   styleUrls: ['./home-page.component.css']
 })
 export class HomePageComponent {
-  uploadedFiles: any[] = [];
-
-  onUpload($event: FileUploadEvent) {
-    throw new Error('Method not implemented.');
-  }
 
 }
