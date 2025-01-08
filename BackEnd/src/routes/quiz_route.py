@@ -7,6 +7,7 @@ from flask import send_file
 from src.util.pdf_gen import generate_pdf
 from src.models.question import Question
 from src.services.quiz_service import *
+from src.services.teacher_service import get_teacher_by_id
 
 #
 #	Define URL for quizzes
@@ -51,10 +52,11 @@ def add_quiz() -> jsonify:
 
         title = data.get('title')
         description = data.get('description')
-        teacher = data.get('teacher')
         questions = data.get('questions', [])
+        teacher_id = data.get('teacher')
 
-        quiz = create_quiz(Quiz(title, description, teacher, [Question(**q) for q in questions]))
+        quiz = create_quiz(
+            Quiz(title, description, teacher_id, [Question.from_dict(question) for question in questions]))
 
         if "error" in quiz:
             return jsonify({"status": "error", "message": quiz["error"]}), HTTPStatus.BAD_REQUEST
@@ -109,7 +111,14 @@ def export_pdf(quiz_id: str) -> jsonify:
             return jsonify({"status": "error", "message":
                 f"No data found for id: {quiz_id}"}), HTTPStatus.NOT_FOUND
 
-        pdf_buffer = generate_pdf(quiz_id, quiz)
+        teacher_id = get_teacher_id(quiz['id'])
+        if not teacher_id:
+            return jsonify({"status": "error", "message":
+                f"No teacher found for quiz id: {quiz_id}"}), HTTPStatus.NOT_FOUND
+
+        teacher = get_teacher_by_id(teacher_id)
+
+        pdf_buffer = generate_pdf(quiz_id, quiz, teacher['name'])
 
         return send_file(
             pdf_buffer,

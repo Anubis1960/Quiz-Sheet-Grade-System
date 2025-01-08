@@ -1,5 +1,6 @@
 from src.database import db
 from src.models.quiz import Quiz
+from src.models.quizDTO import QuizDTO
 from src.services.student_service import get_student_by_unique_id
 from src.util.mail_gen import send_email
 from src.util.quiz_solver.bubble_solver import solve_quiz
@@ -13,10 +14,10 @@ MAX_ANSWER_LENGTH = 100
 #
 #   Retrieve all quizzes
 #
-def get_quizzes_data() -> list[Quiz]:
-    quizzes_data = db.collection(COLLECTION_NAME).stream()
-    quizzes_list = [quiz.to_dict() for quiz in quizzes_data]
-    return quizzes_list
+def get_quizzes_data() -> list[dict]:
+    quizDTOs = [QuizDTO(quiz.id, quiz.to_dict()['title'], quiz.to_dict()['description'], quiz.to_dict()['questions']).to_dict()
+                for quiz in db.collection(COLLECTION_NAME).stream()]
+    return quizDTOs
 
 
 #
@@ -28,24 +29,16 @@ def get_quiz_by_id(quiz_id: str) -> dict:
     if not quiz_snapshot.exists:
         return {}
 
-    return quiz_snapshot.to_dict()
+    return QuizDTO(quiz_id, quiz_snapshot.get('title'), quiz_snapshot.get('description'), quiz_snapshot.get('questions')).to_dict()
 
 
 #
 #   Add
 #
 def create_quiz(quiz: Quiz) -> dict:
-    for q in quiz.questions:
-        if len(q.text) > MAX_QUESTION_LENGTH:
-            return {"error": f"Question text exceeds {MAX_QUESTION_LENGTH} characters."}
-
-        for option in q.options:
-            if len(option) > MAX_ANSWER_LENGTH:
-                return {"error": f"Option text exceeds {MAX_ANSWER_LENGTH} characters."}
-
     try:
-        db.collection(COLLECTION_NAME).add(quiz.to_dict())
-        return quiz.to_dict()
+        _, quiz_ref = db.collection(COLLECTION_NAME).add(quiz.to_dict())
+        return QuizDTO(quiz_ref.id, quiz.title, quiz.description, [question.to_dict() for question in quiz.questions]).to_dict()
 
     except KeyError as e:
         return {"error": f"Key missing: {str(e)}"}
@@ -66,7 +59,7 @@ def update_quiz_data(updated_data: dict, quiz_id: str) -> dict:
             return {"error": f"No data found for id: {quiz_id}"}
 
         quiz_ref.update(updated_data)
-        return updated_data
+        return QuizDTO(quiz_id, updated_data['title'], updated_data['description'], updated_data['questions']).to_dict()
 
     except KeyError as e:
         return {"error": f"Key missing: {str(e)}"}
@@ -85,7 +78,7 @@ def delete_quiz_by_id(quiz_id: str) -> dict:
         if not quiz.exists:
             return {"error": f"No data found for id: {quiz_id}"}
         quiz_ref.delete()
-        return quiz.to_dict()
+        return QuizDTO(quiz_id, quiz['title'], quiz['description'], quiz['questions']).to_dict()
 
     except KeyError as e:
         return {"error": f"Key missing: {str(e)}"}
@@ -97,11 +90,18 @@ def delete_quiz_by_id(quiz_id: str) -> dict:
 def grade_quiz(img):
     bubble_sheet, student_id, quiz_id = parser(img)
     quiz = get_quiz_by_id(quiz_id)
+    print(quiz)
     if not quiz:
         return "Quiz not found"
     correct_answers = [q['correct_answers'] for q in quiz['questions']]
     ans, score = solve_quiz(bubble_sheet, correct_answers)
-    email = get_student_by_unique_id(student_id)[0]['email']
-    send_email("Quiz Results", str(score), email)
+    if student_id is not "":
+        email = get_student_by_unique_id(student_id)[0]['email']
+        send_email("Quiz Results", str(score), email)
     return score
 
+
+def get_teacher_id(quiz_id: str) -> str:
+    quiz_snapshot = db.collection(COLLECTION_NAME).document(quiz_id).get()
+    print(quiz_snapshot.to_dict())
+    return quiz_snapshot.get('teacher')

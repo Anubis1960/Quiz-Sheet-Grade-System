@@ -41,19 +41,18 @@ def solve_quiz(image, ans):
         c for c in get_bubble_contours(thresh)
     ]
 
-    # if img_contured is not None:
-    #     return check_image(thresh, paper, bubble_contours, QUESTIONS, nz_threshold=1000)
-    # else:
     return solve(thresh, bubble_contours, ans, nz_threshold=1000)
 
 
 def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: Dict[int, List[int]],
-          nz_threshold: int = 1000) -> tuple[Dict[int, List[int]] , float]:
+          nz_threshold: int = 1000) -> tuple[Dict[int, List[int]], float]:
     num_correct = 0
     answers = {}
 
     # each question has 5 possible answers, to loop over the question in batches of 5
     for (q, i) in enumerate(np.arange(0, len(bubble_contours), 5)):
+        if q >= len(questions):
+            break
         # sorting the contours for the current question from left to right, then initializing the index of the
         # bubbled answer
         cnts = contours.sort_contours(bubble_contours[i:i + 5])[0]
@@ -103,7 +102,7 @@ def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: Dict[int, 
                 # color = (0, 0, 255)
             # cv2.drawContours(paper, [cnts[ans]], -1, color, 3)
 
-        if current_correct == len(k):
+        if current_correct == len(k) and current_correct == len(bubbled):
             num_correct += 1
 
         # update the list of correct answers
@@ -124,5 +123,5 @@ def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: Dict[int, 
 
 
 if __name__ == '__main__':
-    answers, score = solve_quiz(cv2.imread("../ftest.png"), QUESTIONS)
+    answers, score = solve_quiz(cv2.imread("../cmpl-sheet.png"), QUESTIONS)
     print(answers, score)

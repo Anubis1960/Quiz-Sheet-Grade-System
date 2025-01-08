@@ -1,26 +1,27 @@
 from src.models.question import Question
 
 
-class Quiz:
-    def __init__(self, title: str, description: str, teacher: str, questions: list[Question] = None):
+class QuizDTO:
+    def __init__(self, quiz_id: str, title: str, description: str, questions: list[dict]):
+        self.id = quiz_id
         self.title = title
         self.description = description
-        self.teacher = teacher
-        self.questions = questions or []
+        self.questions = questions
 
     def to_dict(self) -> dict:
         return {
+            "id": self.id,
             "title": self.title,
             "description": self.description,
-            "teacher": self.teacher,
-            "questions": [question.to_dict() for question in self.questions],
+            "questions": [question for question in self.questions],
         }
 
     @staticmethod
-    def from_dict(data: dict) -> "Quiz":
-        return Quiz(
+    def from_dict(data: dict) -> "QuizDTO":
+        return QuizDTO(
+            quiz_id=data.get("id"),
             title=data.get("title"),
             description=data.get("description"),
-            teacher=data.get("teacher"),
             questions=data.get("questions", [])
         )
+

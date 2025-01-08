@@ -19,15 +19,16 @@ STUDENT_ID_BOX_HEIGHT = 20
 BUBBLE_SHEET_HEIGHT = 500
 BUBBLE_SHEET_MARGIN = 200
 STUDENT_ID_BOX_MARGIN = 120
+QUESTION_SPACING = 20
 
 
-def generate_pdf(quiz_id: str, quiz_data: dict) -> BytesIO:
+def generate_pdf(quiz_id: str, quiz_data: dict, teacher_name: str) -> BytesIO:
     buf = BytesIO()
     c = canvas.Canvas(buf, pagesize=A4)
 
     # Fixed position for the bubble sheet
     bubble_sheet_y_position = MARGIN + 10  # 10 points spacing from the bottom
-    add_bubble_sheet(c, os.path.join(os.path.dirname(__file__), "ftest.png"), bubble_sheet_y_position)
+    add_bubble_sheet(c, os.path.join(os.path.dirname(__file__), "cmpl-sheet.png"), bubble_sheet_y_position)
 
     # Add a QR code with the quiz ID
     add_qr_code(c, quiz_id)
@@ -37,7 +38,7 @@ def generate_pdf(quiz_id: str, quiz_data: dict) -> BytesIO:
     add_title(c, quiz_data["title"], title_y)
 
     # Add the description and teacher
-    add_description_and_teacher(c, quiz_data["description"], quiz_data["teacher"], title_y)
+    add_description_and_teacher(c, quiz_data["description"], teacher_name, title_y)
 
     student_y_position = bubble_sheet_y_position + BUBBLE_SHEET_HEIGHT + SPACING
 
@@ -115,23 +116,39 @@ def add_questions(c: canvas.Canvas, questions: list):
     y = PAGE_HEIGHT - MARGIN
 
     for q_index, question in enumerate(questions):
-        wall_txt = [f"{q_index + 1}: {question['text']}"]
-        for o_idx, option in enumerate(question["options"]):
-            wall_txt.append(f"  {chr(65 + o_idx)}. {option}")
+        # Wrap question text
+        question_text_lines = wrap(f"{q_index + 1}: {question['text']}", 90)
+        question_height = len(question_text_lines) * SPACING
 
-        for line in wall_txt:
+        # Prepare options lines
+        option_lines = []
+        max_line_width = 90  # Maximum characters per line
+
+        for i, option in enumerate(question['options']):
+            wrapped_option = wrap(f"{chr(65 + i)}. {option}", max_line_width)
+            option_lines.extend(wrapped_option)
+
+        options_height = len(option_lines) * SPACING
+
+        # Check if question and options fit on the current page
+        total_height = question_height + options_height + QUESTION_SPACING
+        if y - total_height < MARGIN:
+            c.showPage()
+            y = PAGE_HEIGHT - MARGIN
+            c.setFont("Helvetica", TEXT_FONT_SIZE)
+
+        # Draw question text
+        for line in question_text_lines:
+            c.drawString(MARGIN, y, line)
             y -= SPACING
+
+        # Draw options
+        for line in option_lines:
+            c.drawString(MARGIN, y, line)
             y -= SPACING
-            lines = wrap(line, 90)
-            for l in lines:
-                c.drawString(MARGIN, y, l)
-                y -= SPACING
-                if y < MARGIN:
-                    c.showPage()
-                    y = PAGE_HEIGHT - MARGIN
-                    c.setFont("Helvetica", TEXT_FONT_SIZE)
-                    c.drawString(MARGIN, y, l)
-                    y -= SPACING
+
+        # Add spacing between questions
+        y -= QUESTION_SPACING
 
 
 if __name__ == '__main__':
@@ -258,8 +275,7 @@ if __name__ == '__main__':
                     "1"
                 ],
                 "options": [
-                    "33333333333333333333333333333333333333333333333333333333hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh"
-                    "hhh33333333333333333333333333333333333333333333333333",
+                    "33333333333333333333333333333333333333333333333333333333hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh33333333333333333333333333333333333333333333333333",
                     "4",
                     "5"
                 ],
@@ -284,7 +300,7 @@ if __name__ == '__main__':
     }
 
     q_id = "5HOnQYKhJtrnC0MMDDFk"
-    b = generate_pdf(q_id, q_data)
+    b = generate_pdf(q_id, q_data, "John Dadaoe")
 
     with open(f"{q_id}.pdf", "wb") as f:
         f.write(b.read())
