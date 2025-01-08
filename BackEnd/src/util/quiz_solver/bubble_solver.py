@@ -123,5 +123,5 @@ def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: Dict[int, 
 
 
 if __name__ == '__main__':
-    answers, score = solve_quiz(cv2.imread("../ftest.png"), QUESTIONS)
+    answers, score = solve_quiz(cv2.imread("../cmpl-sheet.png"), QUESTIONS)
     print(answers, score)

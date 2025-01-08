@@ -73,6 +73,11 @@ def read_id(img) -> str:
     cnts, hierarchy = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     valid_contours = []
+
+    if len(cnts) == 0:
+        print("No contours found.")
+        return ""
+
     for i, h in enumerate(hierarchy[0]):
         if h[3] == -1:  # Include only outermost contours
             valid_contours.append(cnts[i])
@@ -80,11 +85,13 @@ def read_id(img) -> str:
     # Extract bounding boxes and apply NMS
     boxes = [cv2.boundingRect(c) for c in valid_contours]
 
+    print(boxes)
+
     chrs = []
     for box in boxes:
         (x, y, w, h) = box
         ar = w / float(h)
-        # print(f"Width: {w}, Height: {h}, Aspect Ratio: {ar}")
+        print(f"Width: {w}, Height: {h}, Aspect Ratio: {ar}")
         if w >= 5 and h >= 5 and 0.38 <= ar <= 2.0:
             # print(f"Width: {w}, Height: {h}, Aspect Ratio: {ar}")
             roi = gray[y:y + h, x:x + w]

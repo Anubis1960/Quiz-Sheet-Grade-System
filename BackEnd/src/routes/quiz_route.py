@@ -53,9 +53,10 @@ def add_quiz() -> jsonify:
         title = data.get('title')
         description = data.get('description')
         questions = data.get('questions', [])
-        teacher_id = data.get('teacher_id')
+        teacher_id = data.get('teacher')
 
-        quiz = create_quiz(Quiz(title, description, teacher_id, [Question.from_dict(question) for question in questions]))
+        quiz = create_quiz(
+            Quiz(title, description, teacher_id, [Question.from_dict(question) for question in questions]))
 
         if "error" in quiz:
             return jsonify({"status": "error", "message": quiz["error"]}), HTTPStatus.BAD_REQUEST
