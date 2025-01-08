@@ -1,0 +1,40 @@
+<router-outlet></router-outlet>
+<app-sidebar></app-sidebar>
+<div class="create-paperwork">
+    <h2>Create paperwork</h2>
+    <button (click)="addQuestion()">Add Question</button>
+
+    <div *ngFor="let question of questions; let qIndex = index" class="question-block">
+        <h3>Question {{qIndex + 1}}</h3>
+        <input 
+            type="text"
+            placeholder="Enter the question text"
+            [(ngModel)] = "question.text"
+            class="question-input"
+        />
+
+        <button (click)="addAnswer(qIndex)">Add Answer</button>
+        <ul>
+            <li *ngFor="let answer of question.answers; let aIndex = index">
+                <input 
+                    type="text" 
+                    placeholder="Enter the answer text"
+                    [(ngModel)]="answer.text"
+                    class="answer-input"
+                />
+                <label>
+                    Correct Answer
+                    <input 
+                        type="checkbox" 
+                        [(ngModel)]="answer.isCorrect"
+                    />
+                    
+                </label>
+                <button (click)="removeAnswer(qIndex, aIndex)">Remove Answer</button>
+            </li>
+        </ul>
+        <button (click)="removeQuestion(qIndex)">Remove Question</button>
+    </div>
+    <button (click)="savePaperwork()">Save Paperwork</button>
+</div>
+  

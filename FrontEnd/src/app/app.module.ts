@@ -8,11 +8,23 @@ import { HomePageComponent } from './components/home-page/home-page.component';
 import { SplitterModule } from 'primeng/splitter';
 import { FileUploadModule } from 'primeng/fileupload';
 import { HttpClientModule } from '@angular/common/http';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { SidebarModule } from 'primeng/sidebar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PanelMenuModule } from 'primeng/panelmenu';
+import { CreatePaperworkComponent } from './components/create-paperwork/create-paperwork.component';
+import { UploadPaperworkComponent } from './components/upload-paperwork/upload-paperwork.component';
+import { BadgeModule } from 'primeng/badge';
+import { CardModule } from 'primeng/card';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomePageComponent,
+    SidebarComponent,
+    CreatePaperworkComponent,
+    UploadPaperworkComponent,
   ],
   imports: [
     BrowserModule,
@@ -20,7 +32,13 @@ import { HttpClientModule } from '@angular/common/http';
     RouterOutlet,
     SplitterModule,
     FileUploadModule,
-    HttpClientModule
+    HttpClientModule,
+    SidebarModule,
+    BrowserAnimationsModule,
+    PanelMenuModule,
+    BadgeModule,
+    CardModule,
+    FormsModule
   ],
   providers: [
     provideClientHydration()
