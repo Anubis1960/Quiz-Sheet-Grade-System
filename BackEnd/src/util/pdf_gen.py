@@ -15,7 +15,7 @@ SUBTITLE_FONT_SIZE = 14
 TEXT_FONT_SIZE = 12
 SPACING = 15
 STUDENT_ID_BOX_WIDTH = 200
-STUDENT_ID_BOX_HEIGHT = 20
+STUDENT_ID_BOX_HEIGHT = 40
 BUBBLE_SHEET_HEIGHT = 500
 BUBBLE_SHEET_MARGIN = 200
 STUDENT_ID_BOX_MARGIN = 120
@@ -28,7 +28,7 @@ def generate_pdf(quiz_id: str, quiz_data: dict, teacher_name: str) -> BytesIO:
 
     # Fixed position for the bubble sheet
     bubble_sheet_y_position = MARGIN + 10  # 10 points spacing from the bottom
-    add_bubble_sheet(c, os.path.join(os.path.dirname(__file__), "cmpl-sheet.png"), bubble_sheet_y_position)
+    add_bubble_sheet(c, os.path.join(os.path.dirname(__file__), "sheet.png"), bubble_sheet_y_position)
 
     # Add a QR code with the quiz ID
     add_qr_code(c, quiz_id)

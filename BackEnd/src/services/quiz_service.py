@@ -95,7 +95,7 @@ def grade_quiz(img):
         return "Quiz not found"
     correct_answers = [q['correct_answers'] for q in quiz['questions']]
     ans, score = solve_quiz(bubble_sheet, correct_answers)
-    if student_id is not "":
+    if student_id != "":
         email = get_student_by_unique_id(student_id)[0]['email']
         send_email("Quiz Results", str(score), email)
     return score
@@ -105,3 +105,9 @@ def get_teacher_id(quiz_id: str) -> str:
     quiz_snapshot = db.collection(COLLECTION_NAME).document(quiz_id).get()
     print(quiz_snapshot.to_dict())
     return quiz_snapshot.get('teacher')
+
+
+def get_quizzes_by_teacher_id(teacher_id: str) -> list[dict]:
+    quizDTOs = [QuizDTO(quiz.id, quiz.to_dict()['title'], quiz.to_dict()['description'], quiz.to_dict()['questions']).to_dict()
+                for quiz in db.collection(COLLECTION_NAME).where('teacher', '==', teacher_id).stream()]
+    return quizDTOs

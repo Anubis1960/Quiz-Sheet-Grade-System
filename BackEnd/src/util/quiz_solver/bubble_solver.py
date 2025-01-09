@@ -119,6 +119,9 @@ def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: Dict[int, 
     # cv2.imshow("Exam", paper)
     # cv2.waitKey(0)
 
+    print(f"Score: {sc}")
+    print(f"Answers: {answers}")
+
     return answers, sc
 
 
