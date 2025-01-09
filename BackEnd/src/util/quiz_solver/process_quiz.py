@@ -77,9 +77,9 @@ def parser(image):
 
     student_id_box = crop_id_box(paper)
 
-    cv2.imshow("Bubble Sheet", bubble_sheet)
-    cv2.imshow("Student ID Box", student_id_box)
-    cv2.waitKey(0)
+    # cv2.imshow("Bubble Sheet", bubble_sheet)
+    # cv2.imshow("Student ID Box", student_id_box)
+    # cv2.waitKey(0)
 
     student_id = read_id(student_id_box)
     print(student_id)
@@ -109,8 +109,8 @@ def crop_id_box(paper: MatLike) -> MatLike:
     student_id_box_y = int(PAGE_HEIGHT - BUBBLE_SHEET_HEIGHT - MARGIN - 10 - 2 * SPACING - STUDENT_ID_BOX_HEIGHT)
     student_id_box_x = STUDENT_ID_BOX_MARGIN
 
-    student_id_box = paper[student_id_box_y+1:student_id_box_y + STUDENT_ID_BOX_HEIGHT-1,
-                     student_id_box_x+1:student_id_box_x + STUDENT_ID_BOX_WIDTH-1]
+    student_id_box = paper[student_id_box_y-1:student_id_box_y + STUDENT_ID_BOX_HEIGHT+1,
+                     student_id_box_x-1:student_id_box_x + STUDENT_ID_BOX_WIDTH+1]
 
     return student_id_box
 

@@ -95,7 +95,7 @@ def grade_quiz(img):
         return "Quiz not found"
     correct_answers = [q['correct_answers'] for q in quiz['questions']]
     ans, score = solve_quiz(bubble_sheet, correct_answers)
-    if student_id is not "":
+    if student_id != "":
         email = get_student_by_unique_id(student_id)[0]['email']
         send_email("Quiz Results", str(score), email)
     return score
