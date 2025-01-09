@@ -89,9 +89,8 @@ def read_id(image) -> str:
 
             char_boxes.append((x, y, w, h))
 
-            # Visualize for debugging
-            cv2.imshow("Character", char_image)
-            cv2.waitKey(0)
+            # cv2.imshow("Character", char_image)
+            # cv2.waitKey(0)
 
     id_prediction = ""
 

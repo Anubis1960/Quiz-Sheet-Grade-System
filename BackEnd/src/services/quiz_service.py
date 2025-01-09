@@ -105,3 +105,9 @@ def get_teacher_id(quiz_id: str) -> str:
     quiz_snapshot = db.collection(COLLECTION_NAME).document(quiz_id).get()
     print(quiz_snapshot.to_dict())
     return quiz_snapshot.get('teacher')
+
+
+def get_quizzes_by_teacher_id(teacher_id: str) -> list[dict]:
+    quizDTOs = [QuizDTO(quiz.id, quiz.to_dict()['title'], quiz.to_dict()['description'], quiz.to_dict()['questions']).to_dict()
+                for quiz in db.collection(COLLECTION_NAME).where('teacher', '==', teacher_id).stream()]
+    return quizDTOs

@@ -161,3 +161,11 @@ def grade():
 
     except Exception as e:
         return jsonify({"status": "error", "message": f"An error occurred: {str(e)}"}), HTTPStatus.INTERNAL_SERVER_ERROR
+
+@quiz_blueprint.route("/all/<teacher_id>", methods=['GET'])
+def get_by_teacher_id(teacher_id: str) -> jsonify:
+    try:
+        quizzes = get_quizzes_by_teacher_id(teacher_id)
+        return jsonify(quizzes), HTTPStatus.OK
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
