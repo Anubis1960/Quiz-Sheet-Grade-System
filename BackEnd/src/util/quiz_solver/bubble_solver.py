@@ -41,7 +41,7 @@ def solve_quiz(image, ans):
         c for c in get_bubble_contours(thresh)
     ]
 
-    return solve(thresh, bubble_contours, ans, nz_threshold=1000)
+    return solve(thresh, bubble_contours, ans, nz_threshold=600)
 
 
 def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: Dict[int, List[int]],
