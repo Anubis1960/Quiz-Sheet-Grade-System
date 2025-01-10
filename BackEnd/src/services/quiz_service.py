@@ -89,14 +89,18 @@ def delete_quiz_by_id(quiz_id: str) -> dict:
 
 def grade_quiz(img):
     bubble_sheet, student_id, quiz_id = parser(img)
+    print(student_id)
+    print(quiz_id)
     quiz = get_quiz_by_id(quiz_id)
-    print(quiz)
     if not quiz:
         return "Quiz not found"
     correct_answers = [q['correct_answers'] for q in quiz['questions']]
     ans, score = solve_quiz(bubble_sheet, correct_answers)
     if student_id != "":
-        email = get_student_by_unique_id(student_id)[0]['email']
+        students = get_student_by_unique_id(student_id)
+        if len(students) == 0:
+            return "Student not found"
+        email = students[0]['email']
         send_email("Quiz Results", str(score), email)
     return score
 

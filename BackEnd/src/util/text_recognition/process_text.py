@@ -1,6 +1,8 @@
 import os
 import cv2
+import imutils
 import numpy as np
+from imutils.perspective import four_point_transform
 from tensorflow.keras import models
 
 
@@ -10,54 +12,56 @@ def load_model(name: str) -> models.Model:
     return model
 
 
-def non_max_suppression_fast(boxes: np.ndarray, overlap_thresh: float = 0.3) -> np.ndarray:
-    if len(boxes) == 0:
-        return np.ndarray(0)
+def get_box_contours(image):
+    if len(image.shape) == 3:
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    boxes = np.array(boxes)
-    pick = []
+    cnts = cv2.findContours(
+        image.copy(),
+        cv2.RETR_EXTERNAL,
+        cv2.CHAIN_APPROX_SIMPLE
+    )
 
-    # Coordinates of bounding boxes
-    x1 = boxes[:, 0]
-    y1 = boxes[:, 1]
-    x2 = boxes[:, 0] + boxes[:, 2]
-    y2 = boxes[:, 1] + boxes[:, 3]
+    cnts = imutils.grab_contours(cnts)
+    doc_cnt = None
+    if len(cnts) > 0:
+        cnts = sorted(cnts, key=cv2.contourArea, reverse=True)
+        for c in cnts:
+            peri = cv2.arcLength(c, True)
+            approx = cv2.approxPolyDP(c, 0.02 * peri, True)
+            print(len(approx))
+            if len(approx) == 4:
+                doc_cnt = approx
+    else:
+        print("No contours found")
+        return None
 
-    # Compute areas and sort by bottom-right y-coordinate
-    area = (x2 - x1 + 1) * (y2 - y1 + 1)
-    idxs = np.argsort(y2)
+    if doc_cnt is None:
+        print("No document found")
+        return None
 
-    while len(idxs) > 0:
-        last = len(idxs) - 1
-        i = idxs[last]
-        pick.append(i)
-
-        # Find intersection
-        xx1 = np.maximum(x1[i], x1[idxs[:last]])
-        yy1 = np.maximum(y1[i], y1[idxs[:last]])
-        xx2 = np.minimum(x2[i], x2[idxs[:last]])
-        yy2 = np.minimum(y2[i], y2[idxs[:last]])
-
-        # Compute width and height of intersection
-        w = np.maximum(0, xx2 - xx1 + 1)
-        h = np.maximum(0, yy2 - yy1 + 1)
-
-        # Compute overlap ratio
-        overlap = (w * h) / area[idxs[:last]]
-
-        # Remove indices where overlap > threshold
-        idxs = np.delete(idxs, np.concatenate(([last], np.where(overlap > overlap_thresh)[0])))
-
-    return boxes[pick].astype("int")
+    return doc_cnt
 
 
 def read_id(image) -> str:
     model = load_model(os.path.dirname(__file__) + "/text-recognizer.keras")
 
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+    edged = cv2.Canny(blurred, 75, 200)
+
+    cv2.imshow("Edge", edged)
+    cv2.waitKey(0)
+
+    doc_cnts = get_box_contours(edged)
+
+    if doc_cnts is None:
+        paper = image
+    else:
+        paper = four_point_transform(image, doc_cnts.reshape(4, 2))
 
     # Preprocess the image
-    _, thresh = cv2.threshold(gray, 128, 255, cv2.THRESH_BINARY_INV)
+    _, thresh = cv2.threshold(paper, 128, 255, cv2.THRESH_BINARY_INV)
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
     thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
 
@@ -65,6 +69,9 @@ def read_id(image) -> str:
 
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
     dilated = cv2.dilate(thresh, kernel, iterations=1)
+
+    if len(dilated.shape) > 2:
+        dilated = cv2.cvtColor(dilated, cv2.COLOR_BGR2GRAY)
 
     # Find contours
     contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -80,17 +87,8 @@ def read_id(image) -> str:
             y = max(0, y - margin)
             w += 2 * margin
             h += 2 * margin
-            char_image = dilated[y:y + h, x:x + w]
-
-            # Resize with padding
-            char_image = cv2.resize(char_image, (20, 20))
-            char_image = cv2.copyMakeBorder(char_image, 4, 4, 4, 4, cv2.BORDER_CONSTANT, value=0)
-            char_image = cv2.resize(char_image, (28, 28))
 
             char_boxes.append((x, y, w, h))
-
-            # cv2.imshow("Character", char_image)
-            # cv2.waitKey(0)
 
     id_prediction = ""
 
@@ -100,13 +98,15 @@ def read_id(image) -> str:
         char_image = cv2.resize(char_image, (20, 20))
         char_image = cv2.copyMakeBorder(char_image, 4, 4, 4, 4, cv2.BORDER_CONSTANT, value=0)
         char_image = cv2.resize(char_image, (28, 28))
+
+        cv2.imshow("Char", char_image)
+        cv2.waitKey(0)
+
         char_image = char_image.reshape(1, 28, 28, 1)
         char_image = char_image / 255.0
 
         prediction = model.predict(char_image)
         id_prediction += chr(prediction.argmax() + 55) if prediction.argmax() >= 10 else str(prediction.argmax())
-
-
 
     print(f"Predicted ID: {id_prediction}")
 

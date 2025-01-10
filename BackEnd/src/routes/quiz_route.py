@@ -142,10 +142,6 @@ def grade():
         if file.filename == '':
             return jsonify({"status": "error", "message": "No selected file"}), HTTPStatus.BAD_REQUEST
 
-        # Debugging log to check the file name and type
-        print(f"File received: {file.filename}")
-        print(f"File type: {file.mimetype}")
-
         b_file = file.read()
 
         nparr = np.frombuffer(b_file, np.uint8)
@@ -161,6 +157,7 @@ def grade():
 
     except Exception as e:
         return jsonify({"status": "error", "message": f"An error occurred: {str(e)}"}), HTTPStatus.INTERNAL_SERVER_ERROR
+
 
 @quiz_blueprint.route("/all/<teacher_id>", methods=['GET'])
 def get_by_teacher_id(teacher_id: str) -> jsonify:

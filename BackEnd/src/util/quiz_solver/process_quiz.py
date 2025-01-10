@@ -1,5 +1,5 @@
 ﻿from imutils.perspective import four_point_transform
-
+import numpy as np
 from src.util.pdf_gen import *
 from src.util.quiz_solver.bubble_solver import *
 from src.util.text_recognition.process_text import *
@@ -17,6 +17,8 @@ def get_document_contours(image: MatLike) -> MatLike:
 
     cnts = imutils.grab_contours(cnts)
     doc_cnt = None
+    min_area = 0.5 * image.shape[0] * image.shape[1]  # Example: at least 50% of the image
+    max_area = 0.95 * image.shape[0] * image.shape[1]  # Example: no more than 95% of the image
 
     if len(cnts) > 0:
         # sorting the contours according to their size in descending order
@@ -24,13 +26,12 @@ def get_document_contours(image: MatLike) -> MatLike:
 
         # looping over the sorted contours
         for c in cnts:
-            # approximating the contour
-            peri = cv2.arcLength(c, True)
-            approx = cv2.approxPolyDP(c, 0.02 * peri, True)
-
-            # if our approximated contour has four points, then we can assume we have found the paper
-            if len(approx) == 4:
-                doc_cnt = approx
+            area = cv2.contourArea(c)
+            if min_area < area < max_area:
+                peri = cv2.arcLength(c, True)
+                approx = cv2.approxPolyDP(c, 0.02 * peri, True)
+                if len(approx) == 4:
+                    doc_cnt = approx
     else:
         print("No contours found")
         return None
@@ -49,6 +50,15 @@ def rescale_image(image, width=595, height=842):
 
 def parser(image):
     # Convert the image to grayscale, blur it, and find edges in the image
+    quiz_id = scan_qr_code(image)
+    tries = 0
+    while quiz_id == "" and tries < 10:
+        quiz_id = scan_qr_code(image)
+        tries += 1
+
+    print(quiz_id)
+
+    image = rescale_image(image)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     blurred = cv2.GaussianBlur(gray, (5, 5), 0)
     edged = cv2.Canny(blurred, 75, 200)
@@ -63,29 +73,14 @@ def parser(image):
     else:
         paper = image
 
-    # Attempt to scan the QR code to retrieve the quiz ID
-    quiz_id = scan_qr_code(paper)
-    tries = 0
-    while quiz_id == "" and tries < 10:
-        quiz_id = scan_qr_code(paper)
-        tries += 1
-
-    # Rescale the paper to A4 size for consistent coordinates
     paper = rescale_image(paper)
 
     bubble_sheet = crop_bubble_sheet(paper)
 
     student_id_box = crop_id_box(paper)
 
-    # cv2.imshow("Bubble Sheet", bubble_sheet)
-    # cv2.imshow("Student ID Box", student_id_box)
-    # cv2.waitKey(0)
-
     student_id = read_id(student_id_box)
-    print(student_id)
 
-    # Parse the quiz from the bubble sheet (replace with actual parsing logic)
-    # quiz_data = parse_quiz(bubble_sheet)
     return bubble_sheet, student_id, quiz_id
 
 
@@ -99,7 +94,7 @@ def crop_bubble_sheet(paper: MatLike) -> MatLike:
     bubble_height = int(BUBBLE_SHEET_HEIGHT)
 
     # Crop the bubble sheet from the paper
-    bubble_sheet = paper[bubble_y:bubble_y + bubble_height, bubble_x:bubble_x + bubble_width]
+    bubble_sheet = paper[bubble_y-10:bubble_y + bubble_height+10, bubble_x:bubble_x + bubble_width+10]
 
     return bubble_sheet
 
@@ -109,8 +104,8 @@ def crop_id_box(paper: MatLike) -> MatLike:
     student_id_box_y = int(PAGE_HEIGHT - BUBBLE_SHEET_HEIGHT - MARGIN - 10 - 2 * SPACING - STUDENT_ID_BOX_HEIGHT)
     student_id_box_x = STUDENT_ID_BOX_MARGIN
 
-    student_id_box = paper[student_id_box_y-1:student_id_box_y + STUDENT_ID_BOX_HEIGHT+1,
-                     student_id_box_x-1:student_id_box_x + STUDENT_ID_BOX_WIDTH+1]
+    student_id_box = paper[student_id_box_y-10:student_id_box_y + STUDENT_ID_BOX_HEIGHT+10,
+                     student_id_box_x-10:student_id_box_x + STUDENT_ID_BOX_WIDTH+10]
 
     return student_id_box
 
@@ -127,7 +122,7 @@ def scan_qr_code(image):
 
 
 if __name__ == "__main__":
-    img = cv2.imread("tid.png")
+    img = cv2.imread("IMG_20250110_185701.jpg")
     parser(img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
