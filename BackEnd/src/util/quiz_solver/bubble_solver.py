@@ -6,7 +6,7 @@ import numpy as np
 from cv2.typing import MatLike
 from imutils import contours
 
-QUESTIONS = {0: [1, 2, 3, 4], 1: [4], 2: [0], 3: [3], 4: [1], 5: [1], 6: [1], 7: [1], 8: [1], 9: [1]}
+QUESTIONS = [[1, 2, 3, 4], [4], [0], [3], [1], [1], [1], [1], [1], [1]]
 
 
 def get_bubble_contours(thresh: MatLike) -> MatLike:
@@ -32,7 +32,34 @@ def get_bubble_contours(thresh: MatLike) -> MatLike:
     return question_cnts
 
 
-def solve_quiz(image, ans):
+def stabilize_threshold_level(bubble_contours: List[MatLike], thresh: MatLike) -> int:
+    # initialize a list of bubble regions
+    bubble_regions = []
+
+    # loop over the question regions
+    for c in bubble_contours:
+        # compute the bounding box of the contour
+        (x, y, w, h) = cv2.boundingRect(c)
+
+        # initialize a mask that will be used to crop the region of interest
+        mask = np.zeros(thresh.shape, dtype="uint8")
+        cv2.drawContours(mask, [c], -1, 255, -1)
+
+        # apply the mask to the thresholded image, then append the bounding box region to the list of bubble regions
+        mask = cv2.bitwise_and(thresh, thresh, mask=mask)
+        total = cv2.countNonZero(mask)
+        bubble_regions.append((total, (x, y, w, h)))
+
+    # sort the bubble regions by the total number of non-zero pixels in the bubble area
+    bubble_regions = sorted(bubble_regions, key=lambda x: x[0], reverse=True)
+
+    for region in bubble_regions:
+        print(f"Total: {region[0]}")
+
+    return int(bubble_regions[0][0]*0.5) if int(bubble_regions[0][0]*0.5) > 700 else 700
+
+
+def solve_quiz(image: MatLike, ans: List[List[int]]):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU
                            )[1]
@@ -41,10 +68,14 @@ def solve_quiz(image, ans):
         c for c in get_bubble_contours(thresh)
     ]
 
-    return solve(thresh, bubble_contours, ans, nz_threshold=600)
+    thresh_level = stabilize_threshold_level(bubble_contours, thresh)
+
+    print(f"Threshold Level: {thresh_level}")
+
+    return solve(thresh, bubble_contours, ans, nz_threshold=thresh_level)
 
 
-def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: Dict[int, List[int]],
+def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: List[List[int]],
           nz_threshold: int = 1000) -> tuple[Dict[int, List[int]], float]:
     num_correct = 0
     answers = {}
@@ -99,8 +130,8 @@ def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: Dict[int, 
                 # color = (0, 255, 0)
                 current_correct += 1
             # else:
-                # color = (0, 0, 255)
-            # cv2.drawContours(paper, [cnts[ans]], -1, color, 3)
+            #     color = (0, 0, 255)
+            # cv2.drawContours(image, [cnts[ans]], -1, color, 3)
 
         if current_correct == len(k) and current_correct == len(bubbled):
             num_correct += 1
@@ -114,9 +145,9 @@ def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: Dict[int, 
 
     # grab the test taker
     sc = (num_correct / len(questions)) * 100
-    # cv2.putText(paper, "{:.2f}%".format(sc), (10, 30),
+    # cv2.putText(image, "{:.2f}%".format(sc), (10, 30),
     #             cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
-    # cv2.imshow("Exam", paper)
+    # cv2.imshow("Exam", image)
     # cv2.waitKey(0)
 
     print(f"Score: {sc}")

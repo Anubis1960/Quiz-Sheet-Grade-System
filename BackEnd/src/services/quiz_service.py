@@ -1,3 +1,5 @@
+from cv2.typing import MatLike
+
 from src.database import db
 from src.models.quiz import Quiz
 from src.models.quizDTO import QuizDTO
@@ -87,7 +89,7 @@ def delete_quiz_by_id(quiz_id: str) -> dict:
         return {"error": f"Unexpected error: {str(e)}"}
 
 
-def grade_quiz(img):
+def grade_quiz(img: MatLike):
     bubble_sheet, student_id, quiz_id = parser(img)
     print(student_id)
     print(quiz_id)
@@ -95,13 +97,13 @@ def grade_quiz(img):
     if not quiz:
         return "Quiz not found"
     correct_answers = [q['correct_answers'] for q in quiz['questions']]
+    print(correct_answers)
     ans, score = solve_quiz(bubble_sheet, correct_answers)
     if student_id != "":
         students = get_student_by_unique_id(student_id)
-        if len(students) == 0:
-            return "Student not found"
-        email = students[0]['email']
-        send_email("Quiz Results", str(score), email)
+        if len(students) != 0:
+            email = students[0]['email']
+            send_email("Quiz Results", str(score), email)
     return score
 
 
