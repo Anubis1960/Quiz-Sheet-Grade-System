@@ -1,6 +1,3 @@
-from src.models.question import Question
-
-
 class QuizDTO:
     def __init__(self, quiz_id: str, title: str, description: str, questions: list[dict]):
         self.id = quiz_id
@@ -24,4 +21,3 @@ class QuizDTO:
             description=data.get("description"),
             questions=data.get("questions", [])
         )
-

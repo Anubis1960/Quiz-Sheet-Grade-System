@@ -1,9 +1,7 @@
-﻿from imutils.perspective import four_point_transform
-import numpy as np
+﻿from qreader import QReader
+
 from src.util.pdf_gen import *
-from src.util.quiz_solver.bubble_solver import *
 from src.util.text_recognition.process_text import *
-from qreader import QReader
 
 
 def get_document_contours(image: MatLike) -> MatLike:
@@ -33,6 +31,7 @@ def get_document_contours(image: MatLike) -> MatLike:
                 approx = cv2.approxPolyDP(c, 0.02 * peri, True)
                 if len(approx) == 4:
                     doc_cnt = approx
+                    break
     else:
         print("No contours found")
         return None
@@ -49,7 +48,7 @@ def rescale_image(image: MatLike, width: int = 595, height: int = 842) -> MatLik
     return scaled_image
 
 
-def parser(image:MatLike) -> tuple[MatLike, str, str]:
+def parser(image: MatLike) -> tuple[MatLike, str, str]:
     # Convert the image to grayscale, blur it, and find edges in the image
     quiz_id = scan_qr_code(image)
     tries = 0
@@ -76,8 +75,8 @@ def parser(image:MatLike) -> tuple[MatLike, str, str]:
         paper = four_point_transform(image, img_contoured.reshape(4, 2))
 
     else:
-        paper = image
-
+        return None, "", ""
+        # paper = image
     paper = rescale_image(paper)
 
     bubble_sheet = crop_bubble_sheet(paper)
@@ -99,7 +98,7 @@ def crop_bubble_sheet(paper: MatLike) -> MatLike:
     bubble_height = int(BUBBLE_SHEET_HEIGHT)
 
     # Crop the bubble sheet from the paper
-    bubble_sheet = paper[bubble_y-10:bubble_y + bubble_height-10, bubble_x:bubble_x + bubble_width+10]
+    bubble_sheet = paper[bubble_y - 10:bubble_y + bubble_height - 10, bubble_x:bubble_x + bubble_width + 10]
 
     return bubble_sheet
 
@@ -109,8 +108,8 @@ def crop_id_box(paper: MatLike) -> MatLike:
     student_id_box_y = int(PAGE_HEIGHT - BUBBLE_SHEET_HEIGHT - MARGIN - 10 - 2 * SPACING - STUDENT_ID_BOX_HEIGHT)
     student_id_box_x = STUDENT_ID_BOX_MARGIN
 
-    student_id_box = paper[student_id_box_y-10:student_id_box_y + STUDENT_ID_BOX_HEIGHT+10,
-                     student_id_box_x-10:student_id_box_x + STUDENT_ID_BOX_WIDTH+10]
+    student_id_box = paper[student_id_box_y - 10:student_id_box_y + STUDENT_ID_BOX_HEIGHT + 10,
+                     student_id_box_x - 10:student_id_box_x + STUDENT_ID_BOX_WIDTH + 10]
 
     return student_id_box
 
@@ -123,7 +122,7 @@ def scan_qr_code(image: MatLike) -> str:
 
 
 if __name__ == "__main__":
-    img = cv2.imread("IMG_20250111_210805.jpg")
+    img = cv2.imread("IMG_20250110_181809.jpg")
     parser(img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()

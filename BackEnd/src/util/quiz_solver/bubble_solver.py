@@ -51,7 +51,7 @@ def stabilize_threshold_level(bubble_contours: List[MatLike], thresh: MatLike) -
         bubble_regions.append((total, (x, y, w, h)))
 
     # sort the bubble regions by the total number of non-zero pixels in the bubble area
-    bubble_regions = sorted(bubble_regions, key=lambda x: x[0], reverse=True)
+    bubble_regions = sorted(bubble_regions, key=lambda ics: ics[0], reverse=True)
 
     for region in bubble_regions:
         print(f"Total: {region[0]}")
@@ -78,7 +78,7 @@ def solve_quiz(image: MatLike, ans: List[List[int]]):
 def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: List[List[int]], image: MatLike = None,
           nz_threshold: int = 1000) -> tuple[Dict[int, List[int]], float]:
     num_correct = 0
-    answers = {}
+    a = {}
 
     # each question has 5 possible answers, to loop over the question in batches of 5
     for (q, i) in enumerate(np.arange(0, len(bubble_contours), 5)):
@@ -138,22 +138,22 @@ def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: List[List[
 
         # update the list of correct answers
         for b in bubbled:
-            if answers.get(q) is None:
-                answers[q] = [b[1]]
+            if a.get(q) is None:
+                a[q] = [b[1]]
             else:
-                answers[q].append(b[1])
+                a[q].append(b[1])
 
     # grab the test taker
     sc = (num_correct / len(questions)) * 100
-    cv2.putText(image, "{:.2f}%".format(sc), (10, 30),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
-    cv2.imshow("Exam", image)
-    cv2.waitKey(0)
+    # cv2.putText(image, "{:.2f}%".format(sc), (10, 30),
+    #             cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
+    # cv2.imshow("Exam", image)
+    # cv2.waitKey(0)
 
     print(f"Score: {sc}")
-    print(f"Answers: {answers}")
+    print(f"Answers: {a}")
 
-    return answers, sc
+    return a, sc
 
 
 if __name__ == '__main__':
