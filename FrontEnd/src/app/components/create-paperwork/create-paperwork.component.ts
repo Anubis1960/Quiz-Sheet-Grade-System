@@ -5,6 +5,7 @@ import { QuizService } from '../../services/quiz.service';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { error } from 'console';
 
 @Component({
   selector: 'app-create-paperwork',
@@ -104,7 +105,7 @@ export class CreatePaperworkComponent implements OnInit {
     let teacher = 'teacher';
     let questions = this.quizForm.value.questions.map((question: any) => {
       let text = question.text;
-      let answers: string[] = question.answers.map((answer: any) => answer.a_text); // Collect answer texts
+      let options: string[] = question.answers.map((answer: any) => answer.a_text); // Collect answer texts
       let correct_answers: number[] = question.answers
         .map((answer: any, index: number) => {
           if (answer.is_correct) {
@@ -115,22 +116,22 @@ export class CreatePaperworkComponent implements OnInit {
         .filter((index: number | null) => index !== null) as number[];
       return {
         text,
-        answers,
+        options,
         correct_answers
       };
     });
     console.log('Creating quiz:', title, description, teacher, questions);
     this.quiz_service
       .post_quiz(
-        this.quizForm.value.title,
-        this.quizForm.value.description,
+        title,
+        description,
         teacher,
-        this.quizForm.value.questions
+        questions
       )
       .subscribe(
         (res: any) => {
           console.log(res);
-          this.router.navigate(['/quizes/']);
+          this.router.navigate(['']);
         },
         (error) => {
           console.log('Error ! ! !');
@@ -138,6 +139,21 @@ export class CreatePaperworkComponent implements OnInit {
           this.showMessage('error', 'Add Quiz Error', this.errorMessage);
         }
       );
+  }
+
+  deleteQuiz(id:string){
+    console.log("Inside deleteQuiz...");
+    if(confirm("Are you sure that you want to delete this quiz?")){
+      this.quiz_service.delete_quiz(id).subscribe(()=>{
+        console.log("Quiz with id " + id + " deleted successfully!");
+        location.reload()
+      },(error: any) =>{
+        console.log("Error deleting the quiz!");
+        this.errorMessage = error.error;
+        this.showMessage('error', 'Delete Quiz Error', this.errorMessage);
+        location.reload()
+      });
+    }
   }
 
   savePaperwork() {
