@@ -1,40 +1,63 @@
 <router-outlet></router-outlet>
 <app-sidebar></app-sidebar>
 <div class="create-paperwork">
-    <h2>Create paperwork</h2>
-    <button (click)="addQuestion()">Add Question</button>
-
-    <div *ngFor="let question of questions; let qIndex = index" class="question-block">
-        <h3>Question {{qIndex + 1}}</h3>
-        <input 
-            type="text"
-            placeholder="Enter the question text"
-            [(ngModel)] = "question.text"
-            class="question-input"
-        />
-
-        <button (click)="addAnswer(qIndex)">Add Answer</button>
-        <ul>
-            <li *ngFor="let answer of question.answers; let aIndex = index">
-                <input 
-                    type="text" 
-                    placeholder="Enter the answer text"
-                    [(ngModel)]="answer.text"
-                    class="answer-input"
-                />
-                <label>
-                    Correct Answer
-                    <input 
-                        type="checkbox" 
-                        [(ngModel)]="answer.isCorrect"
-                    />
-                    
-                </label>
-                <button (click)="removeAnswer(qIndex, aIndex)">Remove Answer</button>
-            </li>
-        </ul>
-        <button (click)="removeQuestion(qIndex)">Remove Question</button>
-    </div>
-    <button (click)="savePaperwork()">Save Paperwork</button>
-</div>
+  <h2>Create Paperwork</h2>
   
+  <form [formGroup]="quizForm" (ngSubmit)="createQuiz()">
+    <!-- Quiz Details -->
+    <div class="quiz-details">
+      <label>
+        Title:
+        <input type="text" formControlName="title" placeholder="Enter quiz title" />
+      </label>
+      <label>
+        Description:
+        <textarea formControlName="description" placeholder="Enter quiz description"></textarea>
+      </label>
+      <label>
+        Teacher:
+        <input type="text" formControlName="teacher" placeholder="Enter teacher's name" />
+      </label>
+    </div>
+
+    <button type="button" (click)="addQuestion(new_question_text)">Add Question</button>
+
+    <div *ngFor="let question of questions.controls; let qIndex = index" [formGroupName]="qIndex" class="question-block">
+      <h3>Question {{ qIndex + 1 }}</h3>
+      
+      <!-- Question Input -->
+      <input 
+        type="text" 
+        formControlName="text" 
+        placeholder="Enter the question text" 
+        class="question-input"
+      />
+      
+      <button type="button" (click)="addAnswer(qIndex)">Add Answer</button>
+      
+      <!-- Answers Section -->
+      <ul>
+        <li *ngFor="let answer of getAnswers(qIndex).controls; let aIndex = index" [formGroupName]="aIndex">
+          <input 
+            type="text" 
+            formControlName="answer" 
+            placeholder="Enter the answer text" 
+            class="answer-input"
+          />
+          <label>
+            Correct Answer
+            <input 
+              type="checkbox" 
+              formControlName="isCorrect"
+              (change)="toggleCorrectAnswer(qIndex, aIndex, $event)"
+            />
+          </label>
+          <button type="button" (click)="removeAnswer(qIndex, aIndex)">Remove Answer</button>
+        </li>
+      </ul>
+      <button type="button" (click)="removeQuestion(qIndex)">Remove Question</button>
+    </div>
+
+    <button type="submit">Save Paperwork</button>
+  </form>
+</div>
