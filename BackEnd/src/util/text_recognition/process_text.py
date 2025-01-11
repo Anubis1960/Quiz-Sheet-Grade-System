@@ -2,6 +2,7 @@ import os
 import cv2
 import imutils
 import numpy as np
+from cv2.typing import MatLike
 from imutils.perspective import four_point_transform
 from tensorflow.keras import models
 
@@ -12,56 +13,70 @@ def load_model(name: str) -> models.Model:
     return model
 
 
-def get_box_contours(image):
-    if len(image.shape) == 3:
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+def get_box_contours(image: MatLike) -> MatLike:
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    cnts = cv2.findContours(
-        image.copy(),
-        cv2.RETR_EXTERNAL,
-        cv2.CHAIN_APPROX_SIMPLE
-    )
+    thresh = cv2.adaptiveThreshold(
+        gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 21, 5)
 
-    cnts = imutils.grab_contours(cnts)
-    doc_cnt = None
-    if len(cnts) > 0:
-        cnts = sorted(cnts, key=cv2.contourArea, reverse=True)
-        for c in cnts:
-            peri = cv2.arcLength(c, True)
-            approx = cv2.approxPolyDP(c, 0.02 * peri, True)
-            print(len(approx))
-            if len(approx) == 4:
-                doc_cnt = approx
+    contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    contours = sorted(contours, key=cv2.contourArea, reverse=True)
+
+    contour = contours[0]
+    epsilon = 0.02 * cv2.arcLength(contour, True)
+    approx = cv2.approxPolyDP(contour, epsilon, True)
+
+    if len(approx) == 4:  # Ensure it's a quadrilateral
+        # Step 2: Define the source points (contour corners)
+        pts_src = np.float32([point[0] for point in approx])  # Extract the 4 points
+
+        # Step 3: Define the destination points (rectangle)
+        # Sort the points to ensure consistent mapping
+        pts_src = sorted(pts_src, key=lambda x: (x[1], x[0]))  # Sort by y, then x
+        top_left, top_right = sorted(pts_src[:2], key=lambda x: x[0])
+        bottom_left, bottom_right = sorted(pts_src[2:], key=lambda x: x[0])
+        pts_src = np.array([top_left, top_right, bottom_left, bottom_right], dtype=np.float32)
+
+        width = int(max(
+            np.linalg.norm(top_right - top_left),
+            np.linalg.norm(bottom_right - bottom_left)
+        ))
+        height = int(max(
+            np.linalg.norm(top_left - bottom_left),
+            np.linalg.norm(top_right - bottom_right)
+        ))
+        pts_dst = np.float32([
+            [0, 0],
+            [width - 1, 0],
+            [0, height - 1],
+            [width - 1, height - 1]
+        ])
+
+        # Step 4: Compute the perspective transform matrix
+        matrix = cv2.getPerspectiveTransform(pts_src, pts_dst)
+
+        # Step 5: Apply the warp
+        warped_image = cv2.warpPerspective(image, matrix, (width, height))
+
+        # Display or save results
+        cv2.imshow("Warped Image", warped_image)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+        return warped_image
     else:
-        print("No contours found")
-        return None
-
-    if doc_cnt is None:
-        print("No document found")
-        return None
-
-    return doc_cnt
+        print("Contour cannot be approximated to a quadrilateral.")
+        return image
 
 
-def read_id(image) -> str:
+def read_id(image: MatLike) -> str:
     model = load_model(os.path.dirname(__file__) + "/text-recognizer.keras")
 
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-    edged = cv2.Canny(blurred, 75, 200)
-
-    cv2.imshow("Edge", edged)
-    cv2.waitKey(0)
-
-    doc_cnts = get_box_contours(edged)
-
-    if doc_cnts is None:
-        paper = image
-    else:
-        paper = four_point_transform(image, doc_cnts.reshape(4, 2))
+    image = get_box_contours(image)
 
     # Preprocess the image
-    _, thresh = cv2.threshold(paper, 128, 255, cv2.THRESH_BINARY_INV)
+    _, thresh = cv2.threshold(image, 128, 255, cv2.THRESH_BINARY_INV)
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
     thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
 
@@ -78,11 +93,14 @@ def read_id(image) -> str:
 
     # Process each contour
     margin = 2
-    min_width, min_height = 10, 10
+    min_width, min_height = 5, 5
+    max_width, max_height = 60, 60
     char_boxes = []
     for cnt in contours:
         x, y, w, h = cv2.boundingRect(cnt)
-        if w >= min_width and h >= min_height:
+        ar = w / h
+        print(f"Width {w}; Height {h}; Aspect Ratio {ar}")
+        if min_width <= w <= max_width and min_height <= h <= max_height and 0.5 <= ar <= 2.0:
             x = max(0, x - margin)
             y = max(0, y - margin)
             w += 2 * margin

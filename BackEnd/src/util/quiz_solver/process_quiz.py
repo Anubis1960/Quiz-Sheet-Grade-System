@@ -43,12 +43,12 @@ def get_document_contours(image: MatLike) -> MatLike:
     return doc_cnt
 
 
-def rescale_image(image, width=595, height=842):
+def rescale_image(image: MatLike, width: int = 595, height: int = 842) -> MatLike:
     scaled_image = cv2.resize(image, (width, height))
     return scaled_image
 
 
-def parser(image):
+def parser(image:MatLike) -> tuple[MatLike, str, str]:
     # Convert the image to grayscale, blur it, and find edges in the image
     quiz_id = scan_qr_code(image)
     tries = 0
@@ -110,7 +110,7 @@ def crop_id_box(paper: MatLike) -> MatLike:
     return student_id_box
 
 
-def scan_qr_code(image):
+def scan_qr_code(image: MatLike) -> str:
     # find the qrcode in the image
     detector = cv2.QRCodeDetector()
     data, bbox, _ = detector.detectAndDecode(image)
@@ -122,7 +122,7 @@ def scan_qr_code(image):
 
 
 if __name__ == "__main__":
-    img = cv2.imread("IMG_20250110_185701.jpg")
+    img = cv2.imread("tid.png")
     parser(img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
