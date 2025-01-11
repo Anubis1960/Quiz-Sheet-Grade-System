@@ -16,7 +16,8 @@ import { CreatePaperworkComponent } from './components/create-paperwork/create-p
 import { UploadPaperworkComponent } from './components/upload-paperwork/upload-paperwork.component';
 import { BadgeModule } from 'primeng/badge';
 import { CardModule } from 'primeng/card';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MessageService } from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -38,9 +39,11 @@ import { FormsModule } from '@angular/forms';
     PanelMenuModule,
     BadgeModule,
     CardModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [
+    MessageService,
     provideClientHydration()
   ],
   bootstrap: [AppComponent]
