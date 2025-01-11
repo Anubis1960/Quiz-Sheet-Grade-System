@@ -72,10 +72,10 @@ def solve_quiz(image: MatLike, ans: List[List[int]]):
 
     print(f"Threshold Level: {thresh_level}")
 
-    return solve(thresh, bubble_contours, ans, nz_threshold=thresh_level)
+    return solve(thresh, bubble_contours, ans, image, nz_threshold=thresh_level)
 
 
-def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: List[List[int]],
+def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: List[List[int]], image: MatLike = None,
           nz_threshold: int = 1000) -> tuple[Dict[int, List[int]], float]:
     num_correct = 0
     answers = {}
@@ -114,7 +114,7 @@ def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: List[List[
                 else:
                     bubbled.append((total, j))
 
-        # print(f"Bubbled: {bubbled}")
+        print(f"Bubbled: {bubbled}")
 
         if bubbled is None:
             continue
@@ -127,11 +127,11 @@ def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: List[List[
             if ans >= len(cnts):
                 continue
             if ans in [b[1] for b in bubbled]:
-                # color = (0, 255, 0)
+                color = (0, 255, 0)
                 current_correct += 1
-            # else:
-            #     color = (0, 0, 255)
-            # cv2.drawContours(image, [cnts[ans]], -1, color, 3)
+            else:
+                color = (0, 0, 255)
+            cv2.drawContours(image, [cnts[ans]], -1, color, 3)
 
         if current_correct == len(k) and current_correct == len(bubbled):
             num_correct += 1
@@ -145,10 +145,10 @@ def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: List[List[
 
     # grab the test taker
     sc = (num_correct / len(questions)) * 100
-    # cv2.putText(image, "{:.2f}%".format(sc), (10, 30),
-    #             cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
-    # cv2.imshow("Exam", image)
-    # cv2.waitKey(0)
+    cv2.putText(image, "{:.2f}%".format(sc), (10, 30),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
+    cv2.imshow("Exam", image)
+    cv2.waitKey(0)
 
     print(f"Score: {sc}")
     print(f"Answers: {answers}")

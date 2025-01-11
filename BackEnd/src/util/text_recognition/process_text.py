@@ -57,7 +57,7 @@ def get_box_contours(image: MatLike) -> MatLike:
         matrix = cv2.getPerspectiveTransform(pts_src, pts_dst)
 
         # Step 5: Apply the warp
-        warped_image = cv2.warpPerspective(image, matrix, (width, height))
+        warped_image = cv2.warpPerspective(image, matrix, (width-2, height-2))
 
         # Display or save results
         cv2.imshow("Warped Image", warped_image)
@@ -74,9 +74,8 @@ def read_id(image: MatLike) -> str:
     model = load_model(os.path.dirname(__file__) + "/text-recognizer.keras")
 
     image = get_box_contours(image)
-
     # Preprocess the image
-    _, thresh = cv2.threshold(image, 128, 255, cv2.THRESH_BINARY_INV)
+    _, thresh = cv2.threshold(image, 140, 255, cv2.THRESH_BINARY_INV)
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
     thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
 
@@ -99,7 +98,7 @@ def read_id(image: MatLike) -> str:
     for cnt in contours:
         x, y, w, h = cv2.boundingRect(cnt)
         ar = w / h
-        print(f"Width {w}; Height {h}; Aspect Ratio {ar}")
+        print(f"Width {w}; Height {h}; Aspect Ratio {ar} X {x} Y {y}")
         if min_width <= w <= max_width and min_height <= h <= max_height and 0.5 <= ar <= 2.0:
             x = max(0, x - margin)
             y = max(0, y - margin)
