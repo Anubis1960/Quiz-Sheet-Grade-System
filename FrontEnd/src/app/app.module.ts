@@ -7,7 +7,7 @@ import { RouterOutlet } from '@angular/router';
 import { HomePageComponent } from './components/home-page/home-page.component';
 import { SplitterModule } from 'primeng/splitter';
 import { FileUploadModule } from 'primeng/fileupload';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, provideHttpClient, withFetch } from '@angular/common/http';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { SidebarModule } from 'primeng/sidebar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -44,7 +44,8 @@ import { MessageService } from 'primeng/api';
   ],
   providers: [
     MessageService,
-    provideClientHydration()
+    provideClientHydration(),
+    provideHttpClient(withFetch())
   ],
   bootstrap: [AppComponent]
 })

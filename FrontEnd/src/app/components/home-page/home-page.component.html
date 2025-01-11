@@ -3,7 +3,18 @@
 <p-splitter [style]="{ height: '300px' }" styleClass="mb-5">
     <ng-template pTemplate>
         <div class="col flex align-items-center justify-content-center">
-            Panel 1
+            <h3>Quizzez created by you</h3>
+            <div *ngIf="quizzes.length > 0; else noQuizzes">
+                <ul>
+                    <li *ngFor="let quiz in quizzes">
+                        <h3>{{quiz.title}}</h3>
+                        <p>{{quiz.description}}</p>
+                    </li>
+                </ul>
+            </div>
+            <ng-template #noQuizzes>
+                <p>No quizzes found for this teacher.</p>
+            </ng-template>
         </div>
     </ng-template>
 </p-splitter>

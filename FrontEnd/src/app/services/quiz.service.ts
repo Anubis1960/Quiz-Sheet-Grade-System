@@ -21,4 +21,12 @@ export class QuizService {
     };
     return this.http.post(`${BASE_URL}/api/quizzes/`,body,{responseType:'text'});
   }
+
+  delete_quiz(id:string){
+    return this.http.delete(`${BASE_URL}/api/quizzes/${id}`)
+  }
+
+  get_quizzes_by_teacher(teacher_id:string){
+    return this.http.get(`${BASE_URL}/api/quizzes/all/${teacher_id}`)
+  }
 }
