@@ -2,62 +2,31 @@
 <app-sidebar></app-sidebar>
 <div class="create-paperwork">
   <h2>Create Paperwork</h2>
-  
-  <form [formGroup]="quizForm" (ngSubmit)="createQuiz()">
-    <!-- Quiz Details -->
-    <div class="quiz-details">
-      <label>
-        Title:
-        <input type="text" formControlName="title" placeholder="Enter quiz title" />
-      </label>
-      <label>
-        Description:
-        <textarea formControlName="description" placeholder="Enter quiz description"></textarea>
-      </label>
-      <label>
-        Teacher:
-        <input type="text" formControlName="teacher" placeholder="Enter teacher's name" />
-      </label>
+
+  <form [formGroup]="quizForm">
+    <div>
+      <label>Title</label>
+      <input formControlName="title" />
     </div>
-
-    <button type="button" (click)="addQuestion(new_question_text)">Add Question</button>
-
-    <div *ngFor="let question of questions.controls; let qIndex = index" [formGroupName]="qIndex" class="question-block">
-      <h3>Question {{ qIndex + 1 }}</h3>
-      
-      <!-- Question Input -->
-      <input 
-        type="text" 
-        formControlName="text" 
-        placeholder="Enter the question text" 
-        class="question-input"
-      />
-      
-      <button type="button" (click)="addAnswer(qIndex)">Add Answer</button>
-      
-      <!-- Answers Section -->
-      <ul>
-        <li *ngFor="let answer of getAnswers(qIndex).controls; let aIndex = index" [formGroupName]="aIndex">
-          <input 
-            type="text" 
-            formControlName="answer" 
-            placeholder="Enter the answer text" 
-            class="answer-input"
-          />
-          <label>
-            Correct Answer
-            <input 
-              type="checkbox" 
-              formControlName="isCorrect"
-              (change)="toggleCorrectAnswer(qIndex, aIndex, $event)"
-            />
-          </label>
-          <button type="button" (click)="removeAnswer(qIndex, aIndex)">Remove Answer</button>
-        </li>
-      </ul>
-      <button type="button" (click)="removeQuestion(qIndex)">Remove Question</button>
+    <div>
+      <label>Description</label>
+      <textarea formControlName="description"></textarea>
     </div>
-
-    <button type="submit">Save Paperwork</button>
+    <div formArrayName="questions">
+      <div *ngFor="let question of questions.controls; let i = index" [formGroupName]="i">
+        <label>Question {{ i + 1 }}</label>
+        <input formControlName="text" />
+        <div formArrayName="answers">
+          <div *ngFor="let answer of getAnswers(i).controls; let j = index" [formGroupName]="j">
+            <label>Answer {{ j + 1 }}</label>
+            <input formControlName="a_text" />
+            <input type="checkbox" formControlName="is_correct" (change)="toggleCorrectAnswer(i, j)" />
+          </div>
+          <button type="button" (click)="addAnswer(i)">Add Answer</button>
+        </div>
+      </div>
+      <button type="button" (click)="addQuestion()">Add Question</button>
+    </div>
+    <button type="submit" (click)="createQuiz()">Create Quiz</button>
   </form>
 </div>
