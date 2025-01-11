@@ -60,9 +60,9 @@ def get_box_contours(image: MatLike) -> MatLike:
         warped_image = cv2.warpPerspective(image, matrix, (width-2, height-2))
 
         # Display or save results
-        cv2.imshow("Warped Image", warped_image)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        # cv2.imshow("Warped Image", warped_image)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
 
         return warped_image
     else:
@@ -74,8 +74,9 @@ def read_id(image: MatLike) -> str:
     model = load_model(os.path.dirname(__file__) + "/text-recognizer.keras")
 
     image = get_box_contours(image)
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # Preprocess the image
-    _, thresh = cv2.threshold(image, 140, 255, cv2.THRESH_BINARY_INV)
+    _, thresh = cv2.threshold(gray, 160, 255, cv2.THRESH_BINARY_INV)
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
     thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
 
@@ -116,9 +117,6 @@ def read_id(image: MatLike) -> str:
         char_image = cv2.copyMakeBorder(char_image, 4, 4, 4, 4, cv2.BORDER_CONSTANT, value=0)
         char_image = cv2.resize(char_image, (28, 28))
 
-        cv2.imshow("Char", char_image)
-        cv2.waitKey(0)
-
         char_image = char_image.reshape(1, 28, 28, 1)
         char_image = char_image / 255.0
 
@@ -128,10 +126,3 @@ def read_id(image: MatLike) -> str:
     print(f"Predicted ID: {id_prediction}")
 
     return id_prediction
-
-
-if __name__ == "__main__":
-    img = cv2.imread("hello.png")
-    print(img.shape)
-    txt = read_id(img)
-    print(txt)

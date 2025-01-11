@@ -33,8 +33,7 @@ def get_quiz(quiz_id: str) -> jsonify:
     try:
         quiz = get_quiz_by_id(quiz_id)
         if not quiz:
-            return jsonify({"status": "error", "message":
-                f"No data found for id: {quiz_id}"}), HTTPStatus.NOT_FOUND
+            return jsonify({"status": "error", "message": f"No data found for id: {quiz_id}"}), HTTPStatus.NOT_FOUND
 
         return jsonify(quiz), HTTPStatus.OK
 
@@ -108,13 +107,11 @@ def export_pdf(quiz_id: str) -> jsonify:
         quiz = get_quiz_by_id(quiz_id)
 
         if not quiz:
-            return jsonify({"status": "error", "message":
-                f"No data found for id: {quiz_id}"}), HTTPStatus.NOT_FOUND
+            return jsonify({"status": "error", "message": f"No data found for id: {quiz_id}"}), HTTPStatus.NOT_FOUND
 
         teacher_id = get_teacher_id(quiz['id'])
         if not teacher_id:
-            return jsonify({"status": "error", "message":
-                f"No teacher found for quiz id: {quiz_id}"}), HTTPStatus.NOT_FOUND
+            return jsonify({"status": "error", "message": f"No teacher found for quiz id: {quiz_id}"}), HTTPStatus.NOT_FOUND
 
         teacher = get_teacher_by_id(teacher_id)
 
