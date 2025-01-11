@@ -3,6 +3,7 @@ from flask import Flask
 from src.routes.teacher_route import teacher_blueprint
 from src.routes.student_route import student_blueprint
 from src.routes.quiz_route import quiz_blueprint
+from flask_cors import CORS
 
 ####################
 #
@@ -14,6 +15,7 @@ import sys
 sys.path.append("src")
 
 app = Flask(__name__)
+CORS(app)
 
 ####################
 #

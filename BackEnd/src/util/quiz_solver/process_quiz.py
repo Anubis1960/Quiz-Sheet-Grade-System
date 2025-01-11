@@ -3,6 +3,7 @@ import numpy as np
 from src.util.pdf_gen import *
 from src.util.quiz_solver.bubble_solver import *
 from src.util.text_recognition.process_text import *
+from qreader import QReader
 
 
 def get_document_contours(image: MatLike) -> MatLike:
@@ -56,9 +57,13 @@ def parser(image:MatLike) -> tuple[MatLike, str, str]:
         quiz_id = scan_qr_code(image)
         tries += 1
 
-    print(quiz_id)
-
     image = rescale_image(image)
+    if quiz_id == "":
+        quiz_id = scan_qr_code(image)
+        tries = 0
+        while quiz_id == "" and tries < 10:
+            quiz_id = scan_qr_code(image)
+            tries += 1
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     blurred = cv2.GaussianBlur(gray, (5, 5), 0)
     edged = cv2.Canny(blurred, 75, 200)
@@ -94,7 +99,7 @@ def crop_bubble_sheet(paper: MatLike) -> MatLike:
     bubble_height = int(BUBBLE_SHEET_HEIGHT)
 
     # Crop the bubble sheet from the paper
-    bubble_sheet = paper[bubble_y-10:bubble_y + bubble_height+10, bubble_x:bubble_x + bubble_width+10]
+    bubble_sheet = paper[bubble_y-10:bubble_y + bubble_height-10, bubble_x:bubble_x + bubble_width+10]
 
     return bubble_sheet
 
@@ -111,18 +116,14 @@ def crop_id_box(paper: MatLike) -> MatLike:
 
 
 def scan_qr_code(image: MatLike) -> str:
-    # find the qrcode in the image
-    detector = cv2.QRCodeDetector()
-    data, bbox, _ = detector.detectAndDecode(image)
-
-    # if there is a qrcode present
-    if bbox is not None:
-        return data
-    return ""
+    qreader = QReader()
+    decoded_text = qreader.detect_and_decode(image=image)
+    print(f"Decoded text: {decoded_text[0]}")
+    return decoded_text[0]
 
 
 if __name__ == "__main__":
-    img = cv2.imread("tid.png")
+    img = cv2.imread("IMG_20250111_210805.jpg")
     parser(img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
