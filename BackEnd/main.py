@@ -18,7 +18,9 @@ import sys
 sys.path.append("src")
 
 app = Flask(__name__)
+
 app.secret_key = os.urandom(24)
+
 CORS(app)
 
 # OAuth Manager Setup
@@ -31,7 +33,7 @@ app.oauth_manager = oauth_manager
 #
 ####################
 logging.basicConfig(
-	level=logging.INFO,
+	level=logging.DEBUG,
 	format='%(levelname)s - %(message)s',
 	handlers=[logging.StreamHandler()]
 )
