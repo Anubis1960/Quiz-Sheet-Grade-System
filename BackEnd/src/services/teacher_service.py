@@ -1,5 +1,6 @@
 from src.database import db
 from src.models.teacher import Teacher
+from src.models.teacherDTO import TeacherDTO
 
 COLLECTION = 'teachers'
 
@@ -88,6 +89,12 @@ def delete_teacher_by_id(teacher_id: str) -> dict:
         raise Exception(f"Unexpected error: {str(e)}")
 
 
-def get_teacher_by_email(email: str) -> list[dict]:
-    teacher = db.collection(COLLECTION).where('email', '==', email).stream()
-    return [t.to_dict() for t in teacher]
+def get_teacher_by_email(email: str) -> dict:
+    teachers = list(db.collection(COLLECTION).where('email', '==', email).stream())
+
+    teacher_doc = teachers[0]
+    teacher_data = teacher_doc.to_dict()
+
+    teacherDTO = TeacherDTO(teacher_doc.id, teacher_data['name'], teacher_data['email'])
+
+    return teacherDTO.to_dict()

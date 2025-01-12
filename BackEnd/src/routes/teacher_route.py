@@ -120,3 +120,17 @@ def delete_teacher(teacher_id: str) -> jsonify:
 
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+@teacher_blueprint.route('/email/<email>', methods=['GET'])
+def get_by_email(email: str) -> jsonify:
+    try:
+        teacher = get_teacher_by_email(email)
+
+        if teacher is {}:
+            return jsonify({"status": "error", "message": f"No data found for email: {email}"}), HTTPStatus.NOT_FOUND
+
+        return jsonify(teacher), HTTPStatus.OK
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
