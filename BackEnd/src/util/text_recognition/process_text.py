@@ -117,6 +117,9 @@ def read_id(image: MatLike) -> str:
         char_image = cv2.copyMakeBorder(char_image, 4, 4, 4, 4, cv2.BORDER_CONSTANT, value=0)
         char_image = cv2.resize(char_image, (28, 28))
 
+        cv2.imshow("Char", char_image)
+        cv2.waitKey(0)
+
         char_image = char_image.reshape(1, 28, 28, 1)
         char_image = char_image / 255.0
 

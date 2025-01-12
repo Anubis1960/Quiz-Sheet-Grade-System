@@ -1,10 +1,12 @@
-﻿from qreader import QReader
+﻿from numpy import ndarray
+from qreader import QReader
+import pytesseract
 
 from src.util.pdf_gen import *
 from src.util.text_recognition.process_text import *
 
 
-def get_document_contours(image: MatLike) -> MatLike:
+def get_document_contours(image: MatLike) -> None | ndarray:
     if len(image.shape) == 3:
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -16,14 +18,12 @@ def get_document_contours(image: MatLike) -> MatLike:
 
     cnts = imutils.grab_contours(cnts)
     doc_cnt = None
-    min_area = 0.5 * image.shape[0] * image.shape[1]  # Example: at least 50% of the image
-    max_area = 0.95 * image.shape[0] * image.shape[1]  # Example: no more than 95% of the image
+    min_area = 0.5 * image.shape[0] * image.shape[1]
+    max_area = 0.95 * image.shape[0] * image.shape[1]
 
     if len(cnts) > 0:
-        # sorting the contours according to their size in descending order
         cnts = sorted(cnts, key=cv2.contourArea, reverse=True)
 
-        # looping over the sorted contours
         for c in cnts:
             area = cv2.contourArea(c)
             if min_area < area < max_area:
@@ -48,7 +48,7 @@ def rescale_image(image: MatLike, width: int = 595, height: int = 842) -> MatLik
     return scaled_image
 
 
-def parser(image: MatLike) -> tuple[MatLike, str, str]:
+def parser(image: MatLike) -> tuple[ndarray | None, str, str]:
     # Convert the image to grayscale, blur it, and find edges in the image
     quiz_id = scan_qr_code(image)
     tries = 0
@@ -65,21 +65,33 @@ def parser(image: MatLike) -> tuple[MatLike, str, str]:
             tries += 1
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-    edged = cv2.Canny(blurred, 75, 200)
+    edged = cv2.Canny(blurred, 50, 150)
+
+    cv2.imshow("Edged Image", edged)
+    cv2.waitKey(0)
 
     # Extract the document contours
     img_contoured = get_document_contours(edged)
+
+    cv2.drawContours(image, [img_contoured], -1, (0, 255, 0), 2)
+    cv2.imshow("Contoured Image", image)
 
     if img_contoured is not None:
         # Perform a perspective transformation to isolate the document
         paper = four_point_transform(image, img_contoured.reshape(4, 2))
 
     else:
+        pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+        boxes = pytesseract.image_to_boxes(image)
+        print(boxes)
         return None, "", ""
         # paper = image
     paper = rescale_image(paper)
 
     bubble_sheet = crop_bubble_sheet(paper)
+
+    cv2.imshow("Bubble Sheet", bubble_sheet)
+    cv2.waitKey(0)
 
     student_id_box = crop_id_box(paper)
 
@@ -98,7 +110,7 @@ def crop_bubble_sheet(paper: MatLike) -> MatLike:
     bubble_height = int(BUBBLE_SHEET_HEIGHT)
 
     # Crop the bubble sheet from the paper
-    bubble_sheet = paper[bubble_y - 10:bubble_y + bubble_height - 10, bubble_x:bubble_x + bubble_width + 10]
+    bubble_sheet = paper[bubble_y - 10:bubble_y + bubble_height + 10, bubble_x:bubble_x + bubble_width + 10]
 
     return bubble_sheet
 
@@ -122,7 +134,7 @@ def scan_qr_code(image: MatLike) -> str:
 
 
 if __name__ == "__main__":
-    img = cv2.imread("IMG_20250110_181809.jpg")
+    img = cv2.imread("IMG_20250112_130755.jpg")
     parser(img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
