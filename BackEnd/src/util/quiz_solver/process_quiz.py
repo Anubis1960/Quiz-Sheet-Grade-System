@@ -1,6 +1,5 @@
 ﻿from numpy import ndarray
 from qreader import QReader
-import pytesseract
 
 from src.util.pdf_gen import *
 from src.util.text_recognition.process_text import *
@@ -67,31 +66,18 @@ def parser(image: MatLike) -> tuple[ndarray | None, str, str]:
     blurred = cv2.GaussianBlur(gray, (5, 5), 0)
     edged = cv2.Canny(blurred, 50, 150)
 
-    cv2.imshow("Edged Image", edged)
-    cv2.waitKey(0)
-
-    # Extract the document contours
     img_contoured = get_document_contours(edged)
-
-    cv2.drawContours(image, [img_contoured], -1, (0, 255, 0), 2)
-    cv2.imshow("Contoured Image", image)
 
     if img_contoured is not None:
         # Perform a perspective transformation to isolate the document
         paper = four_point_transform(image, img_contoured.reshape(4, 2))
 
     else:
-        pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-        boxes = pytesseract.image_to_boxes(image)
-        print(boxes)
         return None, "", ""
         # paper = image
     paper = rescale_image(paper)
 
     bubble_sheet = crop_bubble_sheet(paper)
-
-    cv2.imshow("Bubble Sheet", bubble_sheet)
-    cv2.waitKey(0)
 
     student_id_box = crop_id_box(paper)
 
