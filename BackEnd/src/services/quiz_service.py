@@ -92,11 +92,16 @@ def update_quiz_data(updated_data: dict, quiz_id: str) -> dict:
 def delete_quiz_by_id(quiz_id: str) -> dict:
     try:
         quiz_ref = db.collection(COLLECTION_NAME).document(quiz_id)
-        quiz = quiz_ref.get()
-        if not quiz.exists:
+        quiz_snapshot = quiz_ref.get()
+
+        if not quiz_snapshot.exists:
             return {"error": f"No data found for id: {quiz_id}"}
+
+        quiz_data = quiz_snapshot.to_dict()
+
         quiz_ref.delete()
-        return QuizDTO(quiz_id, quiz['title'], quiz['description'], quiz['questions']).to_dict()
+
+        return QuizDTO(quiz_id, quiz_data['title'], quiz_data['description'], quiz_data['questions']).to_dict()
 
     except KeyError as e:
         return {"error": f"Key missing: {str(e)}"}
@@ -131,7 +136,8 @@ def grade_quiz(img: MatLike) -> dict:
             students = get_student_by_unique_id(student_id)
             if len(students) != 0:
                 email = students[0]['email']
-                send_email("Quiz Results", str(score), email)
+                message = f"Congratulations! You scored {score} on the {quiz['title']} quiz"
+                send_email("Quiz Results", message, email)
         else:
             resp["message"] = "Student ID not found"
         resp["score"] = score

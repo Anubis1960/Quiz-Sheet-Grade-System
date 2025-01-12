@@ -127,11 +127,11 @@ def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: List[List[
             if ans >= len(cnts):
                 continue
             if ans in [b[1] for b in bubbled]:
-                color = (0, 255, 0)
+                # color = (0, 255, 0)
                 current_correct += 1
-            else:
-                color = (0, 0, 255)
-            cv2.drawContours(image, [cnts[ans]], -1, color, 3)
+            # else:
+            #     color = (0, 0, 255)
+            # cv2.drawContours(image, [cnts[ans]], -1, color, 3)
 
         if current_correct == len(k) and current_correct == len(bubbled):
             num_correct += 1
