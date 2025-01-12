@@ -19,6 +19,7 @@ import { CardModule } from 'primeng/card';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
+import { LoginComponent } from './components/login/login.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { DialogModule } from 'primeng/dialog';
     SidebarComponent,
     CreatePaperworkComponent,
     UploadPaperworkComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,

@@ -5,6 +5,7 @@ import { MessageService } from 'primeng/api';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Question } from '../../models/question-model';
+import { User } from '../../models/user-model';
 
 
 @Component({
@@ -20,6 +21,7 @@ export class HomePageComponent implements OnInit{
   quizForm!: FormGroup;
   selectedQuiz!: Quiz;
   visible: boolean = false;
+  user: User | undefined;
 
   constructor(private quizService: QuizService,
     private messageService: MessageService,
@@ -32,6 +34,7 @@ export class HomePageComponent implements OnInit{
   showMessage(severity: string, summary: string, detail: string): void {
     this.messageService.add({ severity, summary, detail });
   }
+  
   getQuizzesByTeacher(teacher_id: string) {
     this.quizService.get_quizzes_by_teacher(teacher_id).subscribe(
       (data: Object) => { 
