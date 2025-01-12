@@ -2,9 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { QuizService } from '../../services/quiz.service';
 import { Quiz } from '../../models/quiz-model';
 import { MessageService } from 'primeng/api';
-import { FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Question } from '../../models/question-model';
 import { User } from '../../models/user-model';
 
 
@@ -20,11 +17,7 @@ export class HomePageComponent implements OnInit{
   quizzes: Quiz[] = [];
   current_idx: number = 0;
   errorMessage: string = '';
-  quizForm!: FormGroup;
-  selectedQuiz!: Quiz;
-  visible: boolean = false;
   user: User | undefined;
-
   visibleDialogs: boolean[] = [false];
   selectedQuiz: Quiz = new Quiz("","","",[]);
   constructor(private quizService: QuizService,
