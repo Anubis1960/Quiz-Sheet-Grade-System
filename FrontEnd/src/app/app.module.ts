@@ -19,6 +19,7 @@ import { CardModule } from 'primeng/card';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
+import { LoginComponent } from './components/login/login.component';
 import {InputTextModule} from "primeng/inputtext";
 import {InputTextareaModule} from "primeng/inputtextarea";
 import {CheckboxModule} from "primeng/checkbox";
@@ -33,7 +34,9 @@ import { PaperworkFormComponent } from './components/paperwork-form/paperwork-fo
     SidebarComponent,
     CreatePaperworkComponent,
     UploadPaperworkComponent,
+    LoginComponent,
     PaperworkFormComponent,
+
   ],
   imports: [
     BrowserModule,

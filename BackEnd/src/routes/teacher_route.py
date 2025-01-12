@@ -130,7 +130,7 @@ def get_by_email(email: str) -> jsonify:
         if teacher is {}:
             return jsonify({"status": "error", "message": f"No data found for email: {email}"}), HTTPStatus.NOT_FOUND
 
-        return jsonify(teacher), HTTPStatus.OK
+		return jsonify(teacher), HTTPStatus.OK
 
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
+	except Exception as e:
+		return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
