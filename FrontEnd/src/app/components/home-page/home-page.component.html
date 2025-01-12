@@ -1,24 +1,50 @@
 <router-outlet></router-outlet>
 <app-sidebar></app-sidebar>
-<p-splitter [style]="{ height: '300px' }" styleClass="mb-5">
-    <ng-template pTemplate>
+<div class="home">
         <div class="col flex align-items-center justify-content-center">
-            <h3>Quizzez created by you</h3>
-            <div *ngIf="quizzes.length > 0; else noQuizzes">
-                <ul>
-                    <li *ngFor="let quiz of quizzes">
-                        <h3>{{quiz.title}}</h3>
-                        <p>{{quiz.description}}</p>
-                        <button type="button" (click)="deleteQuiz(quiz.id || '')">Delete Quiz</button>
-                        <!-- Update Form -->
-                        
-                                             
-                    </li>
-                </ul>
-            </div>
-            <ng-template #noQuizzes>
-                <p>No quizzes found for this teacher.</p>
-            </ng-template>
+            <h3>Your Quizzes</h3>
+            @if(quizzes.length > 0) {
+              <p-table
+                [value]="quizzes"
+                [paginator]="true"
+                [rows]="5"
+                [rowsPerPageOptions]="[5, 10, 20]"
+                [tableStyle]="{
+                    'width': '100%'
+                }"
+              >
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-quiz let-rowIndex="rowIndex">
+                    <tr>
+                      <td>{{quiz.title}}</td>
+                      <td>{{quiz.description}}</td>
+                      <td>
+                        <p-button label="Delete" icon="pi pi-trash" (click)="deleteQuiz(quiz.id || '', rowIndex)"></p-button>
+                        <div class="card flex justify-center">
+                          <p-button label="Edit" icon="pi pi-pencil" (click)="showDialog(rowIndex)"></p-button>
+                          @if (visibleDialogs[rowIndex]) {
+                            <p-dialog header="Edit Quiz" [(visible)]="visibleDialogs[rowIndex]" [style]="{ width: '25rem' }">
+                              <app-paperwork-form [quiz]="quiz" (formSubmitted)="closeDialog($event)"></app-paperwork-form>
+                            </p-dialog>
+                          }
+                          <p-button label="export" icon="pi pi-eye" (click)="exportPDF(quiz.id)"></p-button>
+
+                        </div>
+                      </td>
+                    </tr>
+                </ng-template>
+
+              </p-table>
+
+            }
+            @else {
+              <p>No quizzes found for this teacher.</p>
+            }
         </div>
-    </ng-template>
-</p-splitter>
+</div>

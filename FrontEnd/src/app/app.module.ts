@@ -19,6 +19,12 @@ import { CardModule } from 'primeng/card';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
+import {InputTextModule} from "primeng/inputtext";
+import {InputTextareaModule} from "primeng/inputtextarea";
+import {CheckboxModule} from "primeng/checkbox";
+import {TableModule} from "primeng/table";
+import {Ripple} from "primeng/ripple";
+import { PaperworkFormComponent } from './components/paperwork-form/paperwork-form.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +33,7 @@ import { DialogModule } from 'primeng/dialog';
     SidebarComponent,
     CreatePaperworkComponent,
     UploadPaperworkComponent,
+    PaperworkFormComponent,
   ],
   imports: [
     BrowserModule,
@@ -42,7 +49,12 @@ import { DialogModule } from 'primeng/dialog';
     CardModule,
     FormsModule,
     ReactiveFormsModule,
-    DialogModule
+    DialogModule,
+    InputTextModule,
+    InputTextareaModule,
+    CheckboxModule,
+    TableModule,
+    Ripple,
   ],
   providers: [
     MessageService,
