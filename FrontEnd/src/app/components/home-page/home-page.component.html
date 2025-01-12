@@ -6,9 +6,12 @@
             <h3>Quizzez created by you</h3>
             <div *ngIf="quizzes.length > 0; else noQuizzes">
                 <ul>
-                    <li *ngFor="let quiz in quizzes">
+                    <li *ngFor="let quiz of quizzes">
                         <h3>{{quiz.title}}</h3>
                         <p>{{quiz.description}}</p>
+                        <button type="button" (click)="deleteQuiz(quiz.id || '')">Delete Quiz</button>
+                        <!-- Update Form -->
+                                             
                     </li>
                 </ul>
             </div>

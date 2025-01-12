@@ -29,4 +29,13 @@ export class QuizService {
   get_quizzes_by_teacher(teacher_id:string){
     return this.http.get(`${BASE_URL}/api/quizzes/all/${teacher_id}`)
   }
+
+  update_quiz(id:string,title:string, description:string, question: Question[]){
+    const body = {
+      title: title,
+      description: description,
+      questions: question,
+    };
+    return this.http.put(`${BASE_URL}/api/quizzes/${id}`,body,{responseType:'text'});
+  }
 }
