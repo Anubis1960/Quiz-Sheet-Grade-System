@@ -102,7 +102,7 @@ export class CreatePaperworkComponent implements OnInit {
   createQuiz() {
     let title = this.quizForm.value.title;
     let description = this.quizForm.value.description;
-    let teacher = 'teacher';
+    let teacher = 'asda';
     let questions = this.quizForm.value.questions.map((question: any) => {
       let text = question.text;
       let options: string[] = question.answers.map((answer: any) => answer.a_text); // Collect answer texts
@@ -139,21 +139,6 @@ export class CreatePaperworkComponent implements OnInit {
           this.showMessage('error', 'Add Quiz Error', this.errorMessage);
         }
       );
-  }
-
-  deleteQuiz(id:string){
-    console.log("Inside deleteQuiz...");
-    if(confirm("Are you sure that you want to delete this quiz?")){
-      this.quiz_service.delete_quiz(id).subscribe(()=>{
-        console.log("Quiz with id " + id + " deleted successfully!");
-        location.reload()
-      },(error: any) =>{
-        console.log("Error deleting the quiz!");
-        this.errorMessage = error.error;
-        this.showMessage('error', 'Delete Quiz Error', this.errorMessage);
-        location.reload()
-      });
-    }
   }
 
   savePaperwork() {
