@@ -9,3 +9,11 @@ pip install opencv-python
 pip install hashlib
 pip install uuid
 pip install imutils
+pip install qreader
+pip install reportlab
+pip install qrcode
+pip install tensorflow
+pip install flask_cors
+pip install flask-oauthlib
+pip install flask flask-login requests-oauthlib
+pip install python-dotenv
