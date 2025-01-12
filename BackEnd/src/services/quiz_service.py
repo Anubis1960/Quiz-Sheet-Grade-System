@@ -136,7 +136,8 @@ def grade_quiz(img: MatLike) -> dict:
             students = get_student_by_unique_id(student_id)
             if len(students) != 0:
                 email = students[0]['email']
-                send_email("Quiz Results", str(score), email)
+                message = f"Congratulations! You scored {score} on the {quiz['title']} quiz"
+                send_email("Quiz Results", message, email)
         else:
             resp["message"] = "Student ID not found"
         resp["score"] = score
