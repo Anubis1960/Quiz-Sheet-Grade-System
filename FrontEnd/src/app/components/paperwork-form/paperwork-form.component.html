@@ -1,0 +1,43 @@
+<form [formGroup]="quizForm">
+
+  <div class="p-field">
+    <label for="title">Title</label>
+    <input pInputText id="title" formControlName="title" />
+  </div>
+
+  <div class="p-field">
+    <label for="description">Description</label>
+    <textarea pInputTextarea id="description" formControlName="description"></textarea>
+  </div>
+
+  <div formArrayName="questions">
+    @for (question of questions.controls; let i = $index; track i) {
+      <div [formGroupName]="i">
+        <div class="p-field">
+          <label for="text">{{i+1}}</label>
+          <input pInputText id="text" formControlName="text" />
+        </div>
+        <div formArrayName="answers">
+          @for (answer of getAnswers(i).controls; let j = $index; track j) {
+            <div [formGroupName]="j">
+              <label>{{String.fromCharCode('A'.charCodeAt(0) + j)}}: </label>
+              <input type="text" pInputText formControlName="a_text" />
+              <p-checkbox formControlName="is_correct" (onChange)="toggleCorrectAnswer(i, j)" [binary]="true"></p-checkbox>
+              <p-button type="button" (onClick)="removeAnswer(i, j)">Remove Answer</p-button>
+            </div>
+          }
+          <p-button type="button" (onClick)="addAnswer(i)">Add Answer</p-button>
+        </div>
+      </div>
+      <p-button type="button" (onClick)="removeQuestion(i)">Remove Question</p-button>
+    }
+    <p-button type="button" (onClick)="addQuestion()">Add Question</p-button>
+  </div>
+  <p-button type="button" (onClick)="saveQuiz()">
+    @if (quiz) {
+      Update Quiz
+    } @else {
+      Submit Quiz
+    }
+  </p-button>
+</form>

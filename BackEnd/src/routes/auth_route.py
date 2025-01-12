@@ -41,6 +41,7 @@ def login() -> jsonify:
 		redirect_uri = url_for('auth.authorize', _external=True)
 		return google.authorize_redirect(redirect_uri)
 
+  
 @auth_blueprint.route('/authorize')
 def authorize() -> jsonify:
 	# Handle the OAuth callback from Google
@@ -66,7 +67,6 @@ def authorize() -> jsonify:
 	session.permanent = True
 
 	return jsonify({'access_token': access_token, 'loggedin_mail': user_email, 'user_name': user_name})
-
 
 
 @auth_blueprint.route('/logout')

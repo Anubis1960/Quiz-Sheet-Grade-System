@@ -20,6 +20,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
 import { LoginComponent } from './components/login/login.component';
+import {InputTextModule} from "primeng/inputtext";
+import {InputTextareaModule} from "primeng/inputtextarea";
+import {CheckboxModule} from "primeng/checkbox";
+import {TableModule} from "primeng/table";
+import {Ripple} from "primeng/ripple";
+import { PaperworkFormComponent } from './components/paperwork-form/paperwork-form.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +35,8 @@ import { LoginComponent } from './components/login/login.component';
     CreatePaperworkComponent,
     UploadPaperworkComponent,
     LoginComponent,
+    PaperworkFormComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -44,7 +52,12 @@ import { LoginComponent } from './components/login/login.component';
     CardModule,
     FormsModule,
     ReactiveFormsModule,
-    DialogModule
+    DialogModule,
+    InputTextModule,
+    InputTextareaModule,
+    CheckboxModule,
+    TableModule,
+    Ripple,
   ],
   providers: [
     MessageService,

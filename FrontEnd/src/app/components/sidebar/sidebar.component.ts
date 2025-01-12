@@ -36,7 +36,7 @@ export class SidebarComponent implements OnInit {
             routerLink: '/upload-paperwork'
           }
         ]
-      }, 
+      },
     ]
   }
 }

@@ -1,21 +1,21 @@
-   <router-outlet></router-outlet>
-   <p-sidebar [(visible)]="sidebarVisible" class="sidebar">
-        <ng-template pTemplate="header">
-            <span class="header-title">PawPatrol</span>
-        </ng-template>
-         <p-panelMenu [model]="items" styleClass="w-full md:w-20rem">
-            <ng-template pTemplate="item" let-item>
-                <div [routerLink]="item.routerLink" pRipple class="flex align-items-center px-3 py-2 cursor-pointer menu-item-link">
-                    <i [class]="item.icon + ' text-primary menu-item-icon'"></i>
-                    <span class="ml-2 menu-item-label">
+<router-outlet></router-outlet>
+<p-sidebar [(visible)]="sidebarVisible" class="sidebar">
+  <ng-template pTemplate="header">
+    <span class="header-title">PawPatrol</span>
+  </ng-template>
+  <p-panelMenu [model]="items" styleClass="w-full md:w-20rem">
+    <ng-template pTemplate="item" let-item>
+      <div [routerLink]="item.routerLink" pRipple class="flex align-items-center px-3 py-2 cursor-pointer menu-item-link">
+        <i [class]="item.icon + ' text-primary menu-item-icon'"></i>
+        <span class="ml-2 menu-item-label">
                         {{ item.label }}
                     </span>
-                    <p-badge *ngIf="item.badge" class="ml-auto menu-item-badge" [value]="item.badge"></p-badge>
-                </div>
-            </ng-template> 
-        </p-panelMenu>
-    </p-sidebar>
+        <p-badge *ngIf="item.badge" class="ml-auto menu-item-badge" [value]="item.badge"></p-badge>
+      </div>
+    </ng-template>
+  </p-panelMenu>
+</p-sidebar>
 
 <p-button class="custom-button"(onClick)="sidebarVisible = true">
-    <i class="pi pi-arrow-right"></i>
+  <i class="pi pi-arrow-right"></i>
 </p-button>

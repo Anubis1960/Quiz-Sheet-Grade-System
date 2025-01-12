@@ -38,4 +38,8 @@ export class QuizService {
     };
     return this.http.put(`${BASE_URL}/api/quizzes/${id}`,body,{responseType:'text'});
   }
+
+  export_pdf(id:string){
+    return this.http.get(`${BASE_URL}/api/quizzes/pdf/${id}`,{responseType:'blob'});
+  }
 }

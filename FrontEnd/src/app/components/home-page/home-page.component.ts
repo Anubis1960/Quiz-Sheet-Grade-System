@@ -8,6 +8,7 @@ import { Question } from '../../models/question-model';
 import { User } from '../../models/user-model';
 
 
+
 @Component({
   selector: 'app-home-page',
   templateUrl: './home-page.component.html',
@@ -17,78 +18,87 @@ export class HomePageComponent implements OnInit{
 
   teacher_id:string ='mdxM9K6c3H3wFvZLmEbE';
   quizzes: Quiz[] = [];
+  current_idx: number = 0;
   errorMessage: string = '';
   quizForm!: FormGroup;
   selectedQuiz!: Quiz;
   visible: boolean = false;
   user: User | undefined;
 
+  visibleDialogs: boolean[] = [false];
+  selectedQuiz: Quiz = new Quiz("","","",[]);
   constructor(private quizService: QuizService,
-    private messageService: MessageService,
-    private router: Router,
-    ){}
+    private messageService: MessageService
+  ){}
 
   ngOnInit(){
     this.getQuizzesByTeacher(this.teacher_id);
   }
+
   showMessage(severity: string, summary: string, detail: string): void {
     this.messageService.add({ severity, summary, detail });
   }
-  
+
   getQuizzesByTeacher(teacher_id: string) {
-    this.quizService.get_quizzes_by_teacher(teacher_id).subscribe(
-      (data: Object) => { 
+    this.quizService.get_quizzes_by_teacher(teacher_id).subscribe({
+      next: (data) => {
         this.quizzes = data as Quiz[];
-        console.log('Quizzes fetched:', this.quizzes);
+        this.visibleDialogs = new Array(this.quizzes.length).fill(false);
       },
-      (error) => {
+      error: (error) => {
         console.error('Error fetching quizzes:', error);
         this.errorMessage = 'Could not fetch quizzes. Please try again later.';
       }
-    );
+
+    });
   }
-  
-  deleteQuiz(id:string){
-    console.log("Inside deleteQuiz...");
+
+  deleteQuiz(id: string, idx: number){
     if(confirm("Are you sure that you want to delete this quiz?")){
-      this.quizService.delete_quiz(id).subscribe(()=>{
-        console.log("Quiz with id " + id + " deleted successfully!");
-        location.reload()
-      },(error: any) =>{
-        console.log("Error deleting the quiz!");
-        this.errorMessage = error.error;
-        this.showMessage('error', 'Delete Quiz Error', this.errorMessage);
-        location.reload()
+      this.quizService.delete_quiz(id).subscribe({
+        next: (data) => {
+          console.log('Quiz deleted:', data);
+          this.quizzes.splice(idx, 1);
+        },
+        error: (error) => {
+          console.error('Error deleting quiz:', error);
+          this.errorMessage = 'Could not delete quiz. Please try again later.';
+        }
       });
     }
   }
-  updateQuiz(id:string){
-    const updateQuiz = {
-      id:this.selectedQuiz.id,
-      title:this.selectedQuiz.title,
-      description:this.selectedQuiz.description,
-      questions: (this.selectedQuiz.questions || []).map((question: any) => {
-        const answers = question.options.map((option: string, index: number) => ({
-          a_text: option,
-          is_correct: question.correct_answers.includes(index)
-        }));
 
-        return {
-          text: question.text,
-          options: question.options,
-          correct_answers: question.correct_answers || [],
-          answers: answers
-        };
-      })
+  showDialog(idx: number){
+    this.selectedQuiz = this.quizzes[idx];
+    this.current_idx = idx;
+    this.visibleDialogs[idx] = true;
+  }
+
+  protected readonly String = String;
+
+  closeDialog(q: Quiz){
+    this.visibleDialogs = new Array(this.quizzes.length).fill(false);
+    if(q){
+      this.quizzes[this.current_idx] = q;
     }
-    this.quizService.update_quiz(updateQuiz.id!, updateQuiz.title ?? '', updateQuiz.description ?? '', updateQuiz.questions).subscribe((
-      res) =>{
-        console.log("Quiz updated:",res);
-        location.reload();
+
+    console.log('Quizzes:', this.quizzes);
+
+  }
+
+
+  exportPDF(id: string){
+    this.quizService.export_pdf(id).subscribe({
+      next: (data) => {
+        console.log('PDF:', data);
+        const blob = new Blob([data], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        window.open(url);
       },
-      (error) =>{
-        console.log("Update error:",error)
+      error: (error) => {
+        console.error('Error exporting PDF:', error);
+        this.errorMessage = 'Could not export PDF. Please try again later.';
       }
-    )
+    });
   }
 }

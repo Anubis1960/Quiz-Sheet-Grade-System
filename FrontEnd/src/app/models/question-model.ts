@@ -1,11 +1,15 @@
 export class Question{
     text:string | undefined;
-    answers: string[] | undefined;
+    options: string[] | undefined;
     correct_answers: number[] | undefined;
 
-    constructor(text:string,answers:string[], correct_answers:number[]){
+    constructor(text:string,options:string[], correct_answers:number[]){
         this.text = text;
-        this.answers = answers;
+        this.options = options;
         this.correct_answers = correct_answers;
+    }
+
+    static fromJSON(json: any): Question {
+        return new Question(json.text, json.options, json.correct_answers);
     }
 }
