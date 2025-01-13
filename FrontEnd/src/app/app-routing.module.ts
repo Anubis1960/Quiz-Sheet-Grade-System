@@ -5,10 +5,12 @@ import { CreatePaperworkComponent } from './components/create-paperwork/create-p
 import { UploadPaperworkComponent } from './components/upload-paperwork/upload-paperwork.component';
 import { LoginComponent } from './components/login/login.component';
 import {canActivate} from "./quard/auth-guard";
-import {RedirectComponent} from "./components/redirect/redirect.component";
+import { RegisterComponent } from './components/register/register.component';
+
 
 const routes: Routes = [
   {path: 'home', component : HomePageComponent, canActivate: [canActivate]},
+  {path: 'register', component: RegisterComponent},
   {path: 'create-paperwork', component : CreatePaperworkComponent, canActivate: [canActivate]},
   {path: 'upload-paperwork', component : UploadPaperworkComponent, canActivate: [canActivate]},
   {path: 'login', component : LoginComponent},
