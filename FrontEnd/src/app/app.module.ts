@@ -30,6 +30,7 @@ import {ToastModule} from "primeng/toast";
 import {MessageModule} from "primeng/message";
 import { RegisterComponent } from './components/register/register.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,

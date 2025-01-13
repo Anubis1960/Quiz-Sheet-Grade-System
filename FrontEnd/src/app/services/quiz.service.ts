@@ -10,7 +10,7 @@ const BASE_URL = 'http://localhost:5000'
 
 export class QuizService {
 
-  constructor(private http:HttpClient) { }
+  constructor(private http: HttpClient) { }
 
   post_quiz(title:string, description:string, teacher_id: string, question: Question[]){
     const body = {

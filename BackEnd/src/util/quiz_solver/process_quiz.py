@@ -5,12 +5,14 @@ from src.util.pdf_gen import *
 from src.util.text_recognition.process_text import *
 
 
-def get_document_contours(image: MatLike) -> None | ndarray:
-    if len(image.shape) == 3:
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+def retry_on_failure(image: MatLike) -> ndarray | None:
+    image = rescale_image(image)
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+    edged = cv2.Canny(blurred, 50, 150)
 
     cnts = cv2.findContours(
-        image.copy(),
+        edged.copy(),
         cv2.RETR_EXTERNAL,
         cv2.CHAIN_APPROX_SIMPLE
     )
@@ -39,7 +41,40 @@ def get_document_contours(image: MatLike) -> None | ndarray:
         print("No document found")
         return None
 
-    return doc_cnt
+    paper = four_point_transform(image, doc_cnt.reshape(4, 2))
+    return paper
+
+
+def get_document_contours(image: MatLike) -> None | ndarray:
+    ratio = image.shape[0] / 500.0
+    orig = image.copy()
+    copy = imutils.resize(image, height=500)
+    gray = cv2.cvtColor(copy, cv2.COLOR_BGR2GRAY)
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+    edged = cv2.Canny(blurred, 50, 150)
+
+    cnts = cv2.findContours(edged.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = imutils.grab_contours(cnts)
+    cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:5]
+
+    doc_cnt = None
+    # loop over the contours
+    for c in cnts:
+        # approximate the contour
+        peri = cv2.arcLength(c, True)
+        approx = cv2.approxPolyDP(c, 0.02 * peri, True)
+        # if our approximated contour has four points, then we
+        # can assume that we have found our screen
+        if len(approx) == 4:
+            doc_cnt = approx
+            break
+
+    if doc_cnt is None:
+        print("No document found")
+        return None
+
+    paper = four_point_transform(orig, doc_cnt.reshape(4, 2) * ratio)
+    return paper
 
 
 def rescale_image(image: MatLike, width: int = 595, height: int = 842) -> MatLike:
@@ -48,7 +83,8 @@ def rescale_image(image: MatLike, width: int = 595, height: int = 842) -> MatLik
 
 
 def parser(image: MatLike) -> tuple[ndarray | None, str, str]:
-    # Convert the image to grayscale, blur it, and find edges in the image
+    copy = image.copy()
+
     quiz_id = scan_qr_code(image)
     tries = 0
     while quiz_id == "" and tries < 10:
@@ -62,20 +98,17 @@ def parser(image: MatLike) -> tuple[ndarray | None, str, str]:
         while quiz_id == "" and tries < 10:
             quiz_id = scan_qr_code(image)
             tries += 1
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-    edged = cv2.Canny(blurred, 50, 150)
 
-    img_contoured = get_document_contours(edged)
+    paper = get_document_contours(image)
 
-    if img_contoured is not None:
-        # Perform a perspective transformation to isolate the document
-        paper = four_point_transform(image, img_contoured.reshape(4, 2))
-
-    else:
-        return None, "", ""
-        # paper = image
+    if paper is None:
+        paper = retry_on_failure(copy)
+        if paper is None:
+            return None, "", ""
     paper = rescale_image(paper)
+
+    # cv2.imshow("Paper", paper)
+    # cv2.waitKey(0)
 
     bubble_sheet = crop_bubble_sheet(paper)
 
@@ -120,7 +153,7 @@ def scan_qr_code(image: MatLike) -> str:
 
 
 if __name__ == "__main__":
-    img = cv2.imread("IMG_20250112_130755.jpg")
+    img = cv2.imread("tid.png")
     parser(img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
