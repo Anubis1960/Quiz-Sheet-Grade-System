@@ -112,11 +112,19 @@ export class PaperworkFormComponent implements OnInit {
   }
 
   removeQuestion(questionIndex: number) {
-    this.questions.removeAt(questionIndex);
+    const updatedQuestions = this.questions.controls.filter((_, index) => index !== questionIndex);
+
+    this.quizForm.setControl('questions', this.fb.array(updatedQuestions));
   }
 
+
   removeAnswer(questionIndex: number, answerIndex: number) {
-    this.getAnswers(questionIndex).removeAt(answerIndex);
+    console.log('Removing answer:', questionIndex, answerIndex);
+    const answers = this.getAnswers(questionIndex);
+    for (let i = answerIndex; i < answers.length - 1; i++) {
+      answers.at(i).setValue(answers.at(i + 1).value || null);
+    }
+    answers.removeAt(answers.length - 1);
   }
 
 

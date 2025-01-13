@@ -10,6 +10,7 @@ import {QuizService} from "../../services/quiz.service";
 export class UploadPaperworkComponent {
   uploadedFiles: any[] = [];
   msg: string = '';
+  severity: string = 'info';
 
   constructor(private quizService: QuizService) { }
 
@@ -26,10 +27,16 @@ export class UploadPaperworkComponent {
         next: (data: Object) => {
           console.log('Paper graded:', data);
           this.msg = "Score: " + JSON.parse(data as string).score;
+          if (JSON.parse(data as string).message !== undefined) {
+            this.msg += " - " + JSON.parse(data as string).message;
+          }
+          console.log('Message:', this.msg);
+          this.severity = 'success';
         },
         error: (error: any) => {
           console.error('Error grading paper:', error);
           this.msg = error?.error || 'An unknown error occurred.';
+          this.severity = 'error';
         }
       });
     }
@@ -40,10 +47,5 @@ export class UploadPaperworkComponent {
   clear() {
     this.uploadedFiles = [];
   }
-
-  nullifyMessage() {
-    this.msg = '';
-  }
-
 
 }

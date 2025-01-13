@@ -99,4 +99,8 @@ export class HomePageComponent implements OnInit{
       }
     });
   }
+
+  truncateDescription(description: string, limit: number): string {
+    return description.length > limit ? description.substring(0, limit) : description;
+  }
 }

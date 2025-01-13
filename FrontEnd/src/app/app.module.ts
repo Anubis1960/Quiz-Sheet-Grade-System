@@ -28,6 +28,8 @@ import {Ripple} from "primeng/ripple";
 import { PaperworkFormComponent } from './components/paperwork-form/paperwork-form.component';
 import {ToastModule} from "primeng/toast";
 import {MessageModule} from "primeng/message";
+import { RedirectComponent } from './components/redirect/redirect.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -37,6 +39,7 @@ import {MessageModule} from "primeng/message";
     UploadPaperworkComponent,
     LoginComponent,
     PaperworkFormComponent,
+    RedirectComponent,
 
   ],
   imports: [

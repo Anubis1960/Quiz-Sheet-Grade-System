@@ -18,7 +18,7 @@
   </p-card>
 
   @if (msg) {
-    <p-messages severity="info" styleClass="p-mt-2" [closable]="true" [value]="[{severity: 'info', summary: '', detail: msg}]" (onClose)="nullifyMessage"></p-messages>
+    <p-messages severity="info" styleClass="p-mt-2" [closable]="true" [value]="[{ severity: severity, summary: '', detail: msg, life: 3000}]"></p-messages>
   }
 
 </div>
