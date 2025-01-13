@@ -23,12 +23,9 @@ def login() -> jsonify:
     if request.method == 'POST':
         # Fetch user credentials
         email = request.json.get('email')
-        
         password = request.json.get('password')
-        logging.debug(f"Password: {password}")
-
-        encrypted_password = sha256(password)
-        logging.debug(f"Encrypted password: {encrypted_password}")
+        # Encrypt password for credentials verification
+        encrypted_password = encrypt(password)
 
         # Credentials validation
         if email and password:
@@ -41,9 +38,9 @@ def login() -> jsonify:
                 return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST
 
             return jsonify({
-                'message': 'Login Successfully',
-                'user_data': teacher_data
-            }), HTTPStatus.OK
+                            'message': 'Login Successfully',
+                            'user_data': teacher_data
+                            }), HTTPStatus.OK
         else:
             return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST
 
@@ -69,8 +66,14 @@ def authorize() -> jsonify:
     user_email = user_info['email']
     user_name = user_info['name']
 
+    # Generate random password
+    user_password = generate_random_password()
+    # Encrypt the generated password
+    user_password_encrypted = encrypt(user_password)
+
     # Insert the new user into db
-    create_teacher(Teacher(user_name, user_email, "-"))
+    teacher_data = Teacher(user_name, user_email, user_password_encrypted)
+    create_teacher(teacher_data)
 
     # Store email in session
     session['email'] = user_email
@@ -78,7 +81,10 @@ def authorize() -> jsonify:
     # Make the session permanent
     session.permanent = True
 
-    return jsonify({'access_token': access_token, 'loggedin_mail': user_email, 'user_name': user_name})
+    return jsonify({'message': 'Login Successfully via Google Auth',
+                    'access_token': access_token, 
+                    'user_data': teacher_data
+                    }), HTTPStatus.OK
 
 
 @auth_blueprint.route('/logout')
