@@ -92,6 +92,9 @@ def delete_teacher_by_id(teacher_id: str) -> dict:
 def get_teacher_by_email(email: str) -> dict:
     teachers = list(db.collection(COLLECTION).where('email', '==', email).stream())
 
+    if len(teachers) == 0:
+        return {}
+
     teacher_doc = teachers[0]
     teacher_data = teacher_doc.to_dict()
 

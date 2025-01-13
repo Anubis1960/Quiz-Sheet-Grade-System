@@ -14,7 +14,6 @@ export class HomePageComponent implements OnInit{
   currentIdx: number = 0;
   errorMessage: string = '';
   user: User | undefined;
-  status: string = '';
   visibleDialogs: boolean[] = [false];
   selectedQuiz: Quiz = new Quiz("","","",[]);
   constructor(
@@ -25,7 +24,8 @@ export class HomePageComponent implements OnInit{
 
   ngOnInit(){
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}').user_data as User;
-    this.status = localStorage.getItem('status') || '';
+
+    console.log("User:", this.user)
 
     if (this.user.id !== undefined) {
       console.log("Searching quizzes called.")
@@ -39,6 +39,7 @@ export class HomePageComponent implements OnInit{
     this.quizService.get_quizzes_by_teacher(teacher_id).subscribe({
 
       next: (data) => {
+        console.log('Quizzes:', data);
         this.quizzes = data as Quiz[];
         this.visibleDialogs = new Array(this.quizzes.length).fill(false);
       },

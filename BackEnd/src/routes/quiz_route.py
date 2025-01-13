@@ -163,6 +163,7 @@ def grade():
 @quiz_blueprint.route("/all/<teacher_id>", methods=['GET'])
 def get_by_teacher_id(teacher_id: str) -> jsonify:
 	try:
+		print(teacher_id)
 		quizzes = get_quizzes_by_teacher_id(teacher_id)
 		return jsonify(quizzes), HTTPStatus.OK
 	except Exception as e:
