@@ -30,7 +30,7 @@ export const canActivateToken: CanActivateFn = (route: ActivatedRouteSnapshot, s
 }
 
 export const canActivateUrlToken: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
-  inject(TokenService).validateUrlToken().subscribe({
+  inject(TokenService).validateUrlToken(route).subscribe({
     next: () => {
       return true;
     },
@@ -38,5 +38,5 @@ export const canActivateUrlToken: CanActivateFn = (route: ActivatedRouteSnapshot
         return inject(Router).createUrlTree(['/login']);
     }
   });
-  return false;
+  return inject(Router).createUrlTree(['/login']);
 }
