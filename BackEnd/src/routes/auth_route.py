@@ -1,7 +1,8 @@
 import logging
 from http import HTTPStatus
+from src.util.encrypt import *
 from src.models.teacher import Teacher
-from src.services.teacher_service import create_teacher, get_teacher_by_email
+from src.services.teacher_service import create_teacher, get_teacher_by_email_and_password
 from flask import redirect, url_for, session, Blueprint, request, jsonify, current_app
 
 #
@@ -22,14 +23,19 @@ def login() -> jsonify:
     if request.method == 'POST':
         # Fetch user credentials
         email = request.json.get('email')
+        
         password = request.json.get('password')
+        logging.debug(f"Password: {password}")
+
+        encrypted_password = sha256(password)
+        logging.debug(f"Encrypted password: {encrypted_password}")
 
         # Credentials validation
         if email and password:
             session['email'] = email
 
             # Retrieve teacher based on email
-            teacher_data = get_teacher_by_email(email)
+            teacher_data = get_teacher_by_email_and_password(email, encrypted_password)
 
             if not teacher_data:
                 return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST

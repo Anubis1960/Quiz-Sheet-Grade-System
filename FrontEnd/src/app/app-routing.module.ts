@@ -6,7 +6,7 @@ import { UploadPaperworkComponent } from './components/upload-paperwork/upload-p
 import { LoginComponent } from './components/login/login.component';
 import {canActivate} from "./quard/auth-guard";
 import { RegisterComponent } from './components/register/register.component';
-
+import { RedirectComponent } from './components/redirect/redirect.component';
 
 const routes: Routes = [
   {path: 'home', component : HomePageComponent, canActivate: [canActivate]},
