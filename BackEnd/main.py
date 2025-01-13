@@ -15,6 +15,8 @@ from flask_cors import CORS
 ####################
 import sys
 
+from src.routes.token_route import token_blueprint
+
 sys.path.append("src")
 
 app = Flask(__name__)
@@ -47,6 +49,8 @@ app.register_blueprint(teacher_blueprint)
 app.register_blueprint(student_blueprint)
 app.register_blueprint(quiz_blueprint)
 app.register_blueprint(auth_blueprint)
+
+app.register_blueprint(token_blueprint)
 
 if __name__ == '__main__':
 	app.run(debug=True)

@@ -5,19 +5,12 @@
   </ng-template>
   <p-panelMenu [model]="items" styleClass="w-full md:w-20rem">
     <ng-template pTemplate="item" let-item>
-      <div
-        [routerLink]="item.routerLink"
-        pRipple
-        class="flex align-items-center px-3 py-2 cursor-pointer menu-item-link"
-        (click)="item.command ? item.command() : null"
-      >
+      <div [routerLink]="item.routerLink" pRipple class="flex align-items-center px-3 py-2 cursor-pointer menu-item-link" (click)="item.command ? item.command() : null">
         <i [class]="item.icon + ' text-primary menu-item-icon'"></i>
-        <span class="ml-2 menu-item-label">{{ item.label }}</span>
-        <p-badge
-          *ngIf="item.badge"
-          class="ml-auto menu-item-badge"
-          [value]="item.badge">
-        </p-badge>
+        <span class="ml-2 menu-item-label">
+                        {{ item.label }}
+                    </span>
+        <p-badge *ngIf="item.badge" class="ml-auto menu-item-badge" [value]="item.badge"></p-badge>
       </div>
     </ng-template>
   </p-panelMenu>
