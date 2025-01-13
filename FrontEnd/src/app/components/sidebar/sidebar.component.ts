@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
+import {TokenService} from "../../services/token.service";
 
 @Component({
   selector: 'app-sidebar',
@@ -10,7 +11,9 @@ export class SidebarComponent implements OnInit {
   sidebarVisible: boolean = false;
   items: MenuItem[] = [];
 
-  ngOnInit(){
+  constructor(private tokenService: TokenService) { }
+
+  ngOnInit() {
     this.initializeMenuItems();
   }
 
@@ -48,13 +51,25 @@ export class SidebarComponent implements OnInit {
         }
       ];
     }
-
-    console.log("Menu items:", this.items);
   }
 
   toggleLogOut(){
-    console.log("Logging out.")
     sessionStorage.clear();
     localStorage.clear();
+  }
+
+  generateUrl(){
+    let token = '';
+    const user = JSON.parse(sessionStorage.getItem('user') || '{}').user_data
+    this.tokenService.generateToken({id: user.id, email: user.email}).subscribe({
+      next: (data) => {
+        token = data.token
+
+      },
+      error: (error) => {
+        console.error('Error generating token:', error);
+      }
+    });
+    const url = `http://localhost:5000/student?token=${token}`;
   }
 }

@@ -34,7 +34,6 @@ export class PaperworkFormComponent implements OnInit {
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}').user_data as User;
 
     if (this.quiz) {
-      console.log('Quiz:', this.quiz);
       this.quizForm = this.fb.group({
         title: [this.quiz.title, Validators.required],
         description: [this.quiz.description, Validators.required],
@@ -119,7 +118,6 @@ export class PaperworkFormComponent implements OnInit {
 
 
   removeAnswer(questionIndex: number, answerIndex: number) {
-    console.log('Removing answer:', questionIndex, answerIndex);
     const answers = this.getAnswers(questionIndex);
     for (let i = answerIndex; i < answers.length - 1; i++) {
       answers.at(i).setValue(answers.at(i + 1).value || null);
@@ -144,7 +142,6 @@ export class PaperworkFormComponent implements OnInit {
     let title: string= this.quizForm.value.title;
     let description: string = this.quizForm.value.description;
     let teacher_id: string = this.user?.id!;
-    console.log('Teacher ID:', teacher_id);
     let questions: Question[] = this.quizForm.value.questions.map((question: any) => {
 
       let text: string = question.text;
@@ -186,7 +183,6 @@ export class PaperworkFormComponent implements OnInit {
         )
         .subscribe({
           next: (data) => {
-            console.log('Quiz created:', data);
             this.refreshForm();
             // this.router.navigateByUrl('/home')
           },

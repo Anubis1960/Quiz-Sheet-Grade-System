@@ -1,8 +1,10 @@
 from src.database import db
 from src.models.teacher import Teacher
 from src.models.teacherDTO import TeacherDTO
+import re
 
 COLLECTION = 'teachers'
+REGEX = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
 
 
 #
@@ -29,12 +31,16 @@ def get_teacher_by_id(teacher_id: str) -> dict:
 #
 def create_teacher(teacher: Teacher) -> dict:
     try:
+        if not re.match(REGEX, teacher.email):
+            return {"error": "Invalid email format."}
         if get_teacher_by_email(teacher.email):
             return {"error": f"An account with email {teacher.email} already exists."}
-        
-        db.collection(COLLECTION).add(teacher.to_dict())
 
-        return teacher.to_dict()
+        _, teacher_ref = db.collection(COLLECTION).add(teacher.to_dict())
+
+        teacherDTO = TeacherDTO(teacher_ref.id, teacher.name, teacher.email)
+
+        return teacherDTO.to_dict()
 
     except KeyError as e:
         return {"error": f"Key Error: {str(e)}"}
@@ -53,6 +59,9 @@ def update_teacher_by_id(teacher_id: str, teacher: Teacher) -> dict:
         teacher_snapshot = teacher_ref.get()
         if not teacher_snapshot.exists:
             return {"error": f"No data found for id: {teacher_id}"}
+
+        if not re.match(REGEX, teacher.email):
+            return {"error": "Invalid email format."}
 
         if teacher_ref.get().to_dict()['email'] != teacher.email:
             if get_teacher_by_email(teacher.email):
