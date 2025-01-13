@@ -1,144 +1,116 @@
-
-p-splitter {
-    width: 20%;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-}
-.title{
-    font-size: 40px;
-    font-family: Arial, sans-serif;
-
-}
-.col {
-    padding: 16px;
-    text-align: center;
-    font-size: 16px;
-    color: #333;
+.home {
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+  background-color: #f9f9f9;
+  min-height: 90vh; /* Asigură că întreaga pagină ocupă cel puțin 100% din înălțimea vizibilă */
+  display: flex;
+  flex-direction: column;
 }
 
-ul {
-    list-style: none;
-    padding: 0;
-    margin: 16px 0 0;
+.content-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  flex-grow: 1;
 }
 
-li {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 4px;
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
 }
-:host ::ng-deep .p-button {
-    margin: 10px;
-}
-:host ::ng-deep .p-paginator {
-    width: 55%;
-    margin: 0 auto;
-    border: 1px solid #e0e0e0;
 
+.table-wrapper {
+  width: 90%;
+  max-width: 1200px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
 }
+
+.header-cell {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #555;
+  padding: 10px;
+  text-align: center; /* Centering the header text */
+}
+
 .cell {
-    max-width: 200px;
-    max-height: 100px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    white-space: normal;
-    word-wrap: break-word;
-    padding: 0.5rem;
-    border: 1px solid #e0e0e0;
-    overflow-wrap: break-word;
-}
-.cell-description{
-    max-width: 150px;
-    border: 1px solid #e0e0e0;
-    overflow-wrap: break-word;
-}
-.cell-actions{
-    width: 400px;
-    border: 1px solid #e0e0e0;
-
-}
-.cell::-webkit-scrollbar {
-    width: 5px;
+  padding: 15px;
+  font-size: 1rem;
+  color: #333;
+  text-align: center; /* Centering the cell content */
 }
 
-.cell::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 5px;
+.description-cell {
+  font-size: 1rem;
+  color: #666;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 15px;
+  text-align: center; /* Centering the description content */
 }
 
-.cell::-webkit-scrollbar-thumb:hover {
-    background: #555;
+.actions-cell {
+  padding: 15px;
+  text-align: center; /* Centering the actions buttons */
 }
 
-/* Media Query for Smaller Screens */
-@media (max-width: 768px) {
-    p-splitter {
-      width: 40%;
-    }
+.button-group .p-button {
+  margin: 0 8px; /* Adding space between buttons */
+  border-radius: 20px; /* Making the corners more rounded */
+  padding: 8px 15px; /* Smaller padding for smaller buttons */
+  font-size: 0.8rem; /* Slightly smaller font for a compact look */
+}
 
-    .title {
-      font-size: 30px;
-    }
+.action-button {
+  background-color: rgb(255, 255, 255); /* Exemplu de culoare de fundal */
+  color: white; /* Culoarea textului */
+  border-radius: 4px; /* Colțuri rotunjite */
+  padding: 10px 10px; /* Margine interioară */
+}
 
-    .col {
-      font-size: 14px;
-      padding: 12px;
-    }
+.edit-dialog {
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
 
-    ul {
-      margin-top: 10px;
-    }
+.no-quizzes-message {
+  margin-top: 20px;
+  color: #888;
+  font-size: 1rem;
+}
 
-    .cell {
-      max-width: 400px;
-      max-height: 120px;
-      padding: 0.8rem;
-      overflow-wrap: break-word;
-    }
-    .cell-actions{
-        width: 200px;
-    }
-    .p-paginator {
-      width: 70%;
-    }
-  }
+.app-footer {
+  background-color: #f1f1f1;
+  padding: 20px;
+  text-align: center;
+  border-radius: 5px;
+  width: 100%; /* Face footer-ul să ocupe întreaga lățime */
+  position: fixed;
+  bottom: 0; /* Plasează footer-ul la baza paginii */
+  left: 0;
+  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1); /* Adaugă o umbră subtilă la partea de sus a footer-ului */
+}
 
- /* Additional Media Query for Small Mobile Screens */
-@media (max-width: 480px) {
-    p-splitter {
-      width: 100%;
-    }
+.app-footer p {
+  margin: 0;
+  color: #333;
+}
 
-    .title {
-      font-size: 24px;
-    }
+.app-footer a {
+  color: #007BFF;
+  text-decoration: none;
+  font-weight: bold;
+}
 
-    .col {
-      font-size: 12px;
-      padding: 10px;
-    }
-
-    .cell {
-      max-width: 100%;
-      max-height: 150px;
-      padding: 1rem;
-      overflow-wrap: break-word;
-    }
-
-    .p-paginator {
-      width: 100%;
-      margin: 15px auto;
-    }
-
-    table {
-      width: 100px;
-      table-layout: fixed;
-    }
-
-    th, td {
-      padding: 8px;
-      font-size: 12px;
-      text-align: center;
-    }
-  }
+.app-footer a:hover {
+  text-decoration: underline;
+}
