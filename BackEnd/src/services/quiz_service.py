@@ -69,8 +69,8 @@ def update_quiz_data(updated_data: dict, quiz_id: str) -> dict:
     try:
         if len(updated_data['title']) == 0:
             return {"error": "Title cannot be empty"}
-        if len(updated_data['questions']) == 0: \
-                return {"error": "Questions cannot be empty"}
+        if len(updated_data['questions']) == 0:
+            return {"error": "Questions cannot be empty"}
         if len(updated_data['questions']) > 10:
             return {"error": f"Questions cannot exceed 10"}
         if len(updated_data['title']) > MAX_TITLE_LENGTH:
@@ -162,8 +162,16 @@ def get_teacher_id(quiz_id: str) -> str:
 
 
 def get_quizzes_by_teacher_id(teacher_id: str) -> list[dict]:
-    quizDTOs = [QuizDTO(quiz.id, quiz.to_dict()['title'], quiz.to_dict()['description'],
-                        quiz.to_dict()['questions']).to_dict()
-                for quiz in db.collection(COLLECTION_NAME).where('teacher', '==', teacher_id).stream()]
+    quizDTOs = [
+        QuizDTO(
+            quiz.id,
+            quiz.to_dict()['title'],
+            quiz.to_dict()['description'],
+            quiz.to_dict()['questions']
+        ).to_dict()
+        for quiz in db.collection(COLLECTION_NAME)
+        .where('teacher', '==', teacher_id)
+        .stream()
+    ]
     print(quizDTOs)
     return quizDTOs

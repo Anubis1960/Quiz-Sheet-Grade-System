@@ -29,7 +29,6 @@ import { PaperworkFormComponent } from './components/paperwork-form/paperwork-fo
 import {ToastModule} from "primeng/toast";
 import {MessageModule} from "primeng/message";
 import { RegisterComponent } from './components/register/register.component';
-import {RedirectComponent} from "./components/redirect/redirect.component";
 import { StudentFormComponent } from './components/student-form/student-form.component';
 import { ButtonModule } from 'primeng/button';
 import { ButtonGroupModule } from 'primeng/buttongroup';
@@ -44,7 +43,6 @@ import { ButtonGroupModule } from 'primeng/buttongroup';
     LoginComponent,
     PaperworkFormComponent,
     RegisterComponent,
-    RedirectComponent,
     StudentFormComponent
   ],
   imports: [

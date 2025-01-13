@@ -16,5 +16,8 @@
       </div>
     </ng-template>
   </p-card>
-  <p-messages></p-messages>
+  
+  @if (msg !== ''){
+    <p-messages [value]="[{severity: 'info', summary: 'Success', detail: msg, life: 3000}]"></p-messages>
+  }
 </div>

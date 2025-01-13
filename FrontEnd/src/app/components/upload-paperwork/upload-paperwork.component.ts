@@ -12,10 +12,10 @@ export class UploadPaperworkComponent {
   uploadedFiles: any[] = [];
   msg: string = '';
 
-  constructor(private quizService: QuizService, private messageService: MessageService) { }
+  constructor(private quizService: QuizService) { }
 
   onUpload($event: FileUploadEvent) {
-    this.messageService.clear('msg');
+    this.msg = '';
     for (let file of $event.files) {
       this.uploadedFiles.push(file);
     }
@@ -27,13 +27,9 @@ export class UploadPaperworkComponent {
           if (JSON.parse(data as string).message !== undefined) {
             this.msg += " - " + JSON.parse(data as string).message;
           }
-          console.log('Message:', this.msg);
-          this.messageService.add({severity:'success', summary:'Success', detail:this.msg, life: 5000, closable: true, id: 'msg'});
         },
         error: (error: any) => {
-          console.error('Error grading paper:', error);
           this.msg = error?.error || 'An unknown error occurred.';
-          this.messageService.add({severity:'error', summary:'Error', detail:this.msg, life: 5000, closable: true, id: 'msg'});
         }
       });
     }
