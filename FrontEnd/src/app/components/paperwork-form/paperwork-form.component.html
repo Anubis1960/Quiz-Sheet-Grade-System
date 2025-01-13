@@ -22,16 +22,20 @@
             <div [formGroupName]="j">
               <label>{{String.fromCharCode('A'.charCodeAt(0) + j)}}: </label>
               <input type="text" pInputText formControlName="a_text" />
-              <p-checkbox formControlName="is_correct" (onChange)="toggleCorrectAnswer(i, j)" [binary]="true"></p-checkbox>
+              <p-checkbox formControlName="is_correct" (onChange)="toggleCorrectAnswer(i, j)"></p-checkbox>
               <p-button type="button" (onClick)="removeAnswer(i, j)">Remove Answer</p-button>
             </div>
           }
-          <p-button type="button" (onClick)="addAnswer(i)">Add Answer</p-button>
+          @if (getAnswers(i).length < maxAnswers) {
+            <p-button type="button" (onClick)="addAnswer(i)">Add Answer</p-button>
+          }
         </div>
       </div>
       <p-button type="button" (onClick)="removeQuestion(i)">Remove Question</p-button>
     }
-    <p-button type="button" (onClick)="addQuestion()">Add Question</p-button>
+    @if (questions.length < maxQuestions) {
+      <p-button type="button" (onClick)="addQuestion()">Add Question</p-button>
+    }
   </div>
   <p-button type="button" (onClick)="saveQuiz()">
     @if (quiz) {

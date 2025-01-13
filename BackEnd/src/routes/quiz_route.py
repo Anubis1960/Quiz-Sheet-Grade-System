@@ -150,6 +150,10 @@ def grade():
 
 		# Your image processing function
 		gr = grade_quiz(img)
+
+		if "error" in gr:
+			return jsonify({"status": "error", "message": gr["error"]}), HTTPStatus.BAD_REQUEST
+
 		return jsonify(gr), HTTPStatus.OK
 
 	except Exception as e:

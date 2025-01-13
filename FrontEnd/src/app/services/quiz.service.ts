@@ -42,4 +42,12 @@ export class QuizService {
   export_pdf(id:string){
     return this.http.get(`${BASE_URL}/api/quizzes/pdf/${id}`,{responseType:'blob'});
   }
+
+  grade_paper(file: File) {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    return this.http.post(`${BASE_URL}/api/quizzes/grade`, formData, { responseType: 'text' });
+  }
+
 }
