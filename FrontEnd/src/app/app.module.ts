@@ -29,7 +29,9 @@ import { PaperworkFormComponent } from './components/paperwork-form/paperwork-fo
 import {ToastModule} from "primeng/toast";
 import {MessageModule} from "primeng/message";
 import { RegisterComponent } from './components/register/register.component';
-
+import { CallbackComponent } from './components/callback/callback.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptorService } from './services/auth.interceptor.service';
 
 @NgModule({
   declarations: [
@@ -41,6 +43,7 @@ import { RegisterComponent } from './components/register/register.component';
     LoginComponent,
     PaperworkFormComponent,
     RegisterComponent,
+    CallbackComponent,
 
   ],
   imports: [
@@ -69,7 +72,8 @@ import { RegisterComponent } from './components/register/register.component';
   providers: [
     MessageService,
     provideClientHydration(),
-    provideHttpClient(withFetch())
+    provideHttpClient(withFetch()),
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }
   ],
   bootstrap: [AppComponent]
 })

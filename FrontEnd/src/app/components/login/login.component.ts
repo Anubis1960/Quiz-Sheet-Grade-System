@@ -36,8 +36,7 @@ export class LoginComponent {
 
   loginWithGoogle() {
     console.log("Google Auth selected...")
-    // window.location.href = 'http://localhost:5000/login';
-    this.router.navigateByUrl('/home')
+    window.location.href = 'http://localhost:5000/login';
   }
 
   goToRegister() {
