@@ -22,13 +22,10 @@ export class LoginComponent {
   }
 
   onLogin(){
-    console.log(this.email + " " + this.password)
     this.authService.login(this.email, this.password).subscribe({
       next: (data: User) => {
         this.user = data;
-        console.log(this.user.id)
         sessionStorage.setItem('user', JSON.stringify(this.user));
-        console.log(sessionStorage.getItem('user'))   
         
         // Redirect home
         this.router.navigateByUrl('/home');

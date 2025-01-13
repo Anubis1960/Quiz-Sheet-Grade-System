@@ -4,6 +4,8 @@ import {QuizService} from "../../services/quiz.service";
 import {MessageService} from "primeng/api";
 import {Question} from "../../models/question-model";
 import {Quiz} from "../../models/quiz-model";
+import { User } from '../../models/user-model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-paperwork-form',
@@ -19,14 +21,18 @@ export class PaperworkFormComponent implements OnInit {
   errorMessage: string = '';
   maxAnswers: number = 5;
   maxQuestions: number = 10;
+  user: User | undefined;
+
   constructor(
     private quiz_service: QuizService,
+    private router: Router,
     private fb: FormBuilder,
     private messageService: MessageService,
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
+    this.user = JSON.parse(sessionStorage.getItem('user') || '{}').user_data as User;
+
     if (this.quiz) {
       console.log('Quiz:', this.quiz);
       this.quizForm = this.fb.group({
@@ -49,6 +55,7 @@ export class PaperworkFormComponent implements OnInit {
         )
       });
     }
+
     else {
       this.refreshForm();
     }
@@ -128,17 +135,18 @@ export class PaperworkFormComponent implements OnInit {
   saveQuiz() {
     let title: string= this.quizForm.value.title;
     let description: string = this.quizForm.value.description;
-    let teacher: string = 'mdxM9K6c3H3wFvZLmEbE';
+    let teacher_id: string = this.user?.id!;
     let questions: Question[] = this.quizForm.value.questions.map((question: any) => {
+
       let text: string = question.text;
       let options: string[] = question.answers.map((answer: any) => answer.a_text); // Collect answer texts
       let correct_answers: number[] = question.answers
+
         .map((answer: any, index: number) => {
-          if (answer.is_correct) {
-            return index;
-          }
+          if (answer.is_correct) return index;
           return null;
         })
+
         .filter((index: number | null) => index !== null) as number[];
       return {
         text,
@@ -164,13 +172,14 @@ export class PaperworkFormComponent implements OnInit {
         .post_quiz(
           title,
           description,
-          teacher,
+          teacher_id,
           questions
         )
         .subscribe({
           next: (data) => {
             console.log('Quiz created:', data);
-            this.refreshForm();
+            // this.refreshForm();
+            this.router.navigateByUrl('/home')
           },
           error : (error) => {
             this.errorMessage = error.error;

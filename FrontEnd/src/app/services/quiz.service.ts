@@ -12,11 +12,11 @@ export class QuizService {
 
   constructor(private http:HttpClient) { }
 
-  post_quiz(title:string, description:string, teacher: string, question: Question[]){
+  post_quiz(title:string, description:string, teacher_id: string, question: Question[]){
     const body = {
       title: title,
       description: description,
-      teacher: teacher,
+      teacher_id: teacher_id,
       questions: question,
     };
     return this.http.post(`${BASE_URL}/api/quizzes/`,body,{responseType:'text'});

@@ -6,6 +6,5 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./create-paperwork.component.css']
 })
 export class CreatePaperworkComponent implements OnInit {
-  ngOnInit() {
-  }
+  ngOnInit() {}
 }
