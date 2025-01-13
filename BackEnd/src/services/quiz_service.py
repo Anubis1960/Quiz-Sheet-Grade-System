@@ -9,8 +9,8 @@ from src.util.quiz_solver.bubble_solver import solve_quiz
 from src.util.quiz_solver.process_quiz import parser
 
 COLLECTION_NAME = 'quizzes'
-MAX_QUESTION_LENGTH = 250
-MAX_ANSWER_LENGTH = 100
+MAX_TITLE_LENGTH = 100
+MAX_DESCRIPTION_LENGTH = 200
 
 
 #
@@ -47,6 +47,10 @@ def create_quiz(quiz: Quiz) -> dict:
             return {"error": "Questions cannot be empty"}
         if len(quiz.questions) > 10:
             return {"error": f"Questions cannot exceed 10"}
+        if len(quiz.title) > MAX_TITLE_LENGTH:
+            return {"error": f"Title cannot exceed {MAX_TITLE_LENGTH}"}
+        if len(quiz.description) > MAX_DESCRIPTION_LENGTH:
+            return {"error": f"Description cannot exceed {MAX_DESCRIPTION_LENGTH}"}
         _, quiz_ref = db.collection(COLLECTION_NAME).add(quiz.to_dict())
         return QuizDTO(quiz_ref.id, quiz.title, quiz.description,
                        [question.to_dict() for question in quiz.questions]).to_dict()
@@ -69,6 +73,10 @@ def update_quiz_data(updated_data: dict, quiz_id: str) -> dict:
                 return {"error": "Questions cannot be empty"}
         if len(updated_data['questions']) > 10:
             return {"error": f"Questions cannot exceed 10"}
+        if len(updated_data['title']) > MAX_TITLE_LENGTH:
+            return {"error": f"Title cannot exceed {MAX_TITLE_LENGTH}"}
+        if len(updated_data['description']) > MAX_DESCRIPTION_LENGTH:
+            return {"error": f"Description cannot exceed {MAX_DESCRIPTION_LENGTH}"}
         quiz_ref = db.collection(COLLECTION_NAME).document(quiz_id)
 
         quiz_snapshot = quiz_ref.get()
@@ -137,6 +145,8 @@ def grade_quiz(img: MatLike) -> dict:
                 email = students[0]['email']
                 message = f"Congratulations! You scored {score} on the {quiz['title']} quiz"
                 send_email("Quiz Results", message, email)
+            else:
+                resp["message"] = "Student ID not found"
         else:
             resp["message"] = "Student ID not found"
         resp["score"] = score

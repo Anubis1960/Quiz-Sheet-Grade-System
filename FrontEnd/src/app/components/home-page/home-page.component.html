@@ -23,7 +23,15 @@
                 <ng-template pTemplate="body" let-quiz let-rowIndex="rowIndex">
                     <tr>
                       <td>{{quiz.title}}</td>
-                      <td>{{quiz.description}}</td>
+                      <td>
+                        {{ truncateDescription(quiz.description, 50) }} <!-- Truncate description -->
+                        @if (quiz.description.length > 50) {
+                          <span pTooltip="{{ quiz.description }}">
+                            <i class="pi pi-info-circle"></i>
+                          </span>
+
+                        }
+                      </td>
                       <td>
                         <p-button label="Delete" icon="pi pi-trash" (click)="deleteQuiz(quiz.id || '', rowIndex)"></p-button>
                         <div class="card flex justify-center">

@@ -107,8 +107,8 @@ def parser(image: MatLike) -> tuple[ndarray | None, str, str]:
             return None, "", ""
     paper = rescale_image(paper)
 
-    cv2.imshow("Paper", paper)
-    cv2.waitKey(0)
+    # cv2.imshow("Paper", paper)
+    # cv2.waitKey(0)
 
     bubble_sheet = crop_bubble_sheet(paper)
 
