@@ -9,7 +9,6 @@ import { RegisterComponent } from './components/register/register.component';
 import {RedirectComponent} from "./components/redirect/redirect.component";
 import {StudentFormComponent} from "./components/student-form/student-form.component";
 
-
 const routes: Routes = [
   {path: 'home', component : HomePageComponent, canActivate: [canActivate]},
   {path: 'register', component: RegisterComponent},

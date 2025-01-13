@@ -4,8 +4,8 @@ from email.mime.text import MIMEText
 
 PORT = 587
 SMTP_SERVER = 'smtp.gmail.com'
-SENDER_EMAIL = ''
-SENDER_PASSWORD = ''
+SENDER_EMAIL = 'faculty.electiv.courses@gmail.com'
+SENDER_PASSWORD = 'vfsizenwkhheavyw'
 
 
 def send_email(subject: str, body: str, to: str) -> None:

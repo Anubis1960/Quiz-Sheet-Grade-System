@@ -1,7 +1,8 @@
 import logging
 from http import HTTPStatus
+from src.util.encrypt import *
 from src.models.teacher import Teacher
-from src.services.teacher_service import create_teacher, get_teacher_by_email
+from src.services.teacher_service import create_teacher, get_teacher_by_email_and_password
 from flask import redirect, url_for, session, Blueprint, request, jsonify, current_app
 
 #
@@ -23,21 +24,23 @@ def login() -> jsonify:
         # Fetch user credentials
         email = request.json.get('email')
         password = request.json.get('password')
+        # Encrypt password for credentials verification
+        encrypted_password = encrypt(password)
 
         # Credentials validation
         if email and password:
             session['email'] = email
 
             # Retrieve teacher based on email
-            teacher_data = get_teacher_by_email(email)
+            teacher_data = get_teacher_by_email_and_password(email, encrypted_password)
 
             if not teacher_data:
                 return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST
 
             return jsonify({
-                'message': 'Login Successfully',
-                'user_data': teacher_data
-            }), HTTPStatus.OK
+                            'message': 'Login Successfully',
+                            'user_data': teacher_data
+                            }), HTTPStatus.OK
         else:
             return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST
 
@@ -63,8 +66,14 @@ def authorize() -> jsonify:
     user_email = user_info['email']
     user_name = user_info['name']
 
+    # Generate random password
+    user_password = generate_random_password()
+    # Encrypt the generated password
+    user_password_encrypted = encrypt(user_password)
+
     # Insert the new user into db
-    create_teacher(Teacher(user_name, user_email, "-"))
+    teacher_data = Teacher(user_name, user_email, user_password_encrypted)
+    create_teacher(teacher_data)
 
     # Store email in session
     session['email'] = user_email
@@ -72,7 +81,10 @@ def authorize() -> jsonify:
     # Make the session permanent
     session.permanent = True
 
-    return jsonify({'access_token': access_token, 'loggedin_mail': user_email, 'user_name': user_name})
+    return jsonify({'message': 'Login Successfully via Google Auth',
+                    'access_token': access_token, 
+                    'user_data': teacher_data
+                    }), HTTPStatus.OK
 
 
 @auth_blueprint.route('/logout')

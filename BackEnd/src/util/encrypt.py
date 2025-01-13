@@ -1,4 +1,6 @@
 import hashlib
+import random
+import string
 
 
 def encrypt(password: str) -> str:
@@ -10,3 +12,9 @@ def encrypt(password: str) -> str:
 def to_hex_string(hash_bytes: bytes) -> str:
     hex_string = hash_bytes.hex()
     return hex_string.zfill(64)
+
+
+def generate_random_password(length=10):
+    all_characters = string.ascii_letters + string.digits + string.punctuation
+    password = ''.join(random.choice(all_characters) for _ in range(length))
+    return password
