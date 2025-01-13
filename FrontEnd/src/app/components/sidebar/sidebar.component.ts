@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
+import {TokenService} from "../../services/token.service";
 
 @Component({
   selector: 'app-sidebar',
@@ -11,9 +12,10 @@ export class SidebarComponent implements OnInit {
   sidebarVisible: boolean = false;
   items: MenuItem[] = [];
 
-  constructor(private router: Router) {}
 
-  ngOnInit(){
+  constructor(private router: Router, private tokenService: TokenService) { }
+
+  ngOnInit() {
     this.initializeMenuItems();
   }
 
@@ -48,6 +50,7 @@ export class SidebarComponent implements OnInit {
     ];
     
     console.log("Menu items:", this.items);
+
   }
 
   toggleHomePage() {
@@ -58,5 +61,20 @@ export class SidebarComponent implements OnInit {
     sessionStorage.clear();
     localStorage.clear();
     this.router.navigateByUrl('/login')
+  }
+
+  generateUrl(){
+    let token = '';
+    const user = JSON.parse(sessionStorage.getItem('user') || '{}').user_data
+    this.tokenService.generateToken({id: user.id, email: user.email}).subscribe({
+      next: (data) => {
+        token = data.token
+
+      },
+      error: (error) => {
+        console.error('Error generating token:', error);
+      }
+    });
+    const url = `http://localhost:5000/student?token=${token}`;
   }
 }

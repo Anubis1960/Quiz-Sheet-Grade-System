@@ -20,26 +20,16 @@ export class HomePageComponent implements OnInit{
     private quizService: QuizService,
   ){}
 
-  // TODO: DISPLAY QUIZZES BY LOGGED IN USER TO RESOLVE !!!!!!!!!!!!
-
   ngOnInit(){
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}').user_data as User;
-
-    console.log("User:", this.user)
-
     if (this.user.id !== undefined) {
-      console.log("Searching quizzes called.")
       this.getQuizzesByTeacher(this.user.id)
     }
-    console.log("Finished.")
   }
 
   getQuizzesByTeacher(teacher_id: string) {
-    console.log("Searching quizzes for teacher_id: " + teacher_id)
     this.quizService.get_quizzes_by_teacher(teacher_id).subscribe({
-
       next: (data) => {
-        console.log('Quizzes:', data);
         this.quizzes = data as Quiz[];
         this.visibleDialogs = new Array(this.quizzes.length).fill(false);
       },
@@ -55,7 +45,6 @@ export class HomePageComponent implements OnInit{
     if(confirm("Are you sure that you want to delete this quiz?")){
       this.quizService.delete_quiz(id).subscribe({
         next: (data) => {
-          console.log('Quiz deleted:', data);
           this.quizzes.splice(idx, 1);
         },
         error: (error) => {
@@ -79,16 +68,12 @@ export class HomePageComponent implements OnInit{
     if(q){
       this.quizzes[this.currentIdx] = q;
     }
-
-    console.log('Quizzes:', this.quizzes);
-
   }
 
 
   exportPDF(id: string){
     this.quizService.export_pdf(id).subscribe({
       next: (data) => {
-        console.log('PDF:', data);
         const blob = new Blob([data], { type: 'application/pdf' });
         const url = window.URL.createObjectURL(blob);
         window.open(url);

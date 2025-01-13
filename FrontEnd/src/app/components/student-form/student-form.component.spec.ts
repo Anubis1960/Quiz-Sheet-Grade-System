@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RedirectComponent } from './redirect.component';
+import { StudentFormComponent } from './student-form.component';
 
-describe('RedirectComponent', () => {
-  let component: RedirectComponent;
-  let fixture: ComponentFixture<RedirectComponent>;
+describe('StudentFormComponent', () => {
+  let component: StudentFormComponent;
+  let fixture: ComponentFixture<StudentFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [RedirectComponent]
+      declarations: [StudentFormComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(RedirectComponent);
+    fixture = TestBed.createComponent(StudentFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

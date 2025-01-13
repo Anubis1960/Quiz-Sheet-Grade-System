@@ -1,0 +1,21 @@
+<p-card header="User Information Form">
+  <form (ngSubmit)="onSubmit()">
+    <div class="p-fluid">
+      <!-- Email Input -->
+      <div class="p-field">
+        <label for="email">Email</label>
+        <input pInputText id="email" [(ngModel)]="email" name="email" type="email" required />
+      </div>
+
+      <!-- ID Input -->
+      <div class="p-field">
+        <label for="id">ID</label>
+        <input pInputText id="id" [(ngModel)]="unique_id" name="id" type="text" required />
+      </div>
+
+      <!-- Submit Button -->
+      <button pButton type="submit" label="Submit"></button>
+    </div>
+  </form>
+</p-card>
+

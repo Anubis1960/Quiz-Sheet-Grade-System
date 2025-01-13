@@ -1,97 +1,153 @@
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-  }
-  
-  .login-container {
-    max-width: 400px;
-    margin: 0 auto;
-    padding-top:100px;
-    padding-bottom:100px;
-    padding-left: 30px;
-    padding-right: 30px;
-    margin-top: 200px;
-    border: 2px solid black;
-    border-radius: 2rem;
-  }
-  
+
+
+.login-container {
+  width: 400px;
+  margin: 50px auto;
+  padding: 30px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: grid;
+  place-items: center;
+  background-color: #B7CFDC;
+}
+.center-container {
+  display: flex; /* Use Flexbox for centering */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  width: 100%; /* Ensure full width */
+  height: 100%; /* Ensure full height */
+}
+h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 21px;
+  font-weight: bold;
+  color: black;
+}
+
+form {
+  width: 100%;
+}
+
+.input-box {
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.input-box label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.input-box input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #385E72;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 21px;
+  font-size: 18px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.google-login-container {
+  width: 100%;
+  margin-top: 15px;
+}
+
+.google-login-btn {
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 16px;
+  width: 100%;
+}
+
+.google-login-btn img {
+  margin-right: 10px;
+  width: 20px;
+  height: 20px;
+}
+
+.google-login-btn:hover {
+  background-color: #f8f8f8;
+}
+
+.google-login-btn img {
+  margin:auto;
+  width: 100px; 
+  height: 30px; 
+
+}
+
+/* Media Query for Smaller Screens */
+@media (max-width: 768px) {
   h3 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 30px;
-    font-family: serif;
-    font-weight:bold;
-  }
-  
-  form {
-    margin-top: 20px;
-  }
-  
-  .input-box {
-    margin-bottom: 15px;
-    margin-top: 30px;
-  }
-  
-  .input-box label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    font-size:13px;
-  }
-  
-  .input-box input {
-    width: calc(100% - 20px); /* Ajustare pentru padding */
-    padding: 10px;
-    border: 2px solid black;
-    border-radius: 1rem;
-    margin: 0 auto; /* Centrează input-ul */
-    display: block; /* Asigură că input-ul ia lățimea completă */
-  }
-  
-  button {
-    width: 50%; /* Setează lățimea butonului la 50% */
-    padding: 10px;
-    border: none;
-    margin: 50px auto 0 auto; /* Centrează butonul și adaugă spațiu sus */
-    border-radius: 10px;
-    background-color: #000000;
-    color: #ffffff;
-    font-size: 16px;
-    cursor: pointer;
-    text-align: center; /* Centrează textul */
-    transition: all 0.3s; /* Tranziție netedă pentru efectul hover */
-    display: block; /* Asigură că butonul ia lățimea completă */
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-    transform: scale(1.05); /* Mărește dimensiunea la hover */
+    font-size: 18px;
   }
 
-  .google-login-container {
-    margin-top: 20px;
+  button {
+    font-size: 14px; 
+    padding: 8px;
   }
-  
+
   .google-login-btn {
-    background-color: white;
-    border: 1px solid #ccc;
-    padding: 10px 20px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-size: 12px;
   }
-  
+
   .google-login-btn img {
-    margin-right: 10px;
-    width: 20px;
+    width: 60px;
     height: 20px;
   }
-  
-  .google-login-btn:hover {
-    background-color: #f8f8f8;
+
+  .login-container {
+    padding: 15px; 
+    border-radius: 15px; 
+    width: 300px;
   }
-  
+}
+
+@media (max-width: 480px) {
+  h3 {
+    font-size: 16px; 
+  }
+
+  .login-container {
+    width: 250px; 
+    padding: 10px; 
+  }
+
+  button {
+    font-size: 14px; 
+    padding: 6px;
+  }
+
+  .google-login-btn {
+    font-size: 10px; 
+  }
+
+  .google-login-btn img {
+    width: 60px;
+    height: 20px;
+  }
+}

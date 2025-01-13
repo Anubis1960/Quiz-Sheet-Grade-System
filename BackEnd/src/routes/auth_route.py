@@ -5,6 +5,7 @@ from src.util.encrypt import *
 from src.models.teacher import Teacher
 from src.services.teacher_service import create_teacher, get_teacher_by_email_and_password, get_teacher_by_email
 from flask import redirect, url_for, session, Blueprint, request, jsonify, current_app
+from src.services.token_service import generate_token
 
 #
 #   Authentification Blueprint
@@ -20,36 +21,40 @@ def hello_world():
 
 @auth_blueprint.route('/login', methods=['GET', 'POST'])
 def login() -> jsonify:
-	# Handle login from the form
-	if request.method == 'POST':
-		# Fetch user credentials
-		email = request.json.get('email')
-		password = request.json.get('password')
-		# Encrypt password for credentials verification
-		encrypted_password = encrypt(password)
 
-		# Credentials validation
-		if email and password:
-			session['email'] = email
+    # Handle login from the form
+    if request.method == 'POST':
+        # Fetch user credentials
+        email = request.json.get('email')
+        password = request.json.get('password')
+        # Encrypt password for credentials verification
+        encrypted_password = encrypt(password)
 
-			# Retrieve teacher based on email
-			teacher_data = get_teacher_by_email_and_password(email, encrypted_password)
+        # Credentials validation
+        if email and password:
+            session['email'] = email
 
-			if not teacher_data:
-				return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST
+            # Retrieve teacher based on email
+            teacher_data = get_teacher_by_email_and_password(email, encrypted_password)
 
-			return jsonify({
-							'message': 'Login Successfully',
-							'user_data': teacher_data
-							}), HTTPStatus.OK
-		else:
-			return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST
+            if not teacher_data:
+                return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST
 
-	else:
-		# Handle case when the user logs in via OAuth2.0
-		google = current_app.oauth_manager.get_provider('google')
-		redirect_uri = url_for('auth.authorize', _external=True)
-		return google.authorize_redirect(redirect_uri)
+            # Generate token
+            token = generate_token({'id': teacher_data['id']})
+
+            return jsonify({
+                            'user_data': teacher_data,
+                            'token': token
+                            }), HTTPStatus.OK
+        else:
+            return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST
+
+    else:
+        # Handle case when the user logs in via OAuth2.0
+        google = current_app.oauth_manager.get_provider('google')
+        redirect_uri = url_for('auth.authorize', _external=True)
+        return google.authorize_redirect(redirect_uri)
 
 
 @auth_blueprint.route('/authorize')
@@ -76,10 +81,10 @@ def authorize() -> jsonify:
 
 		# Encrypt the generated password
 		user_password_encrypted = encrypt(user_password)
-
-		# Insert the new user into db
-		teacher_data = Teacher(user_name, user_email, user_password_encrypted)
-		create_teacher(teacher_data)
+    
+    # Insert the new user into db
+    teacher_data = Teacher(user_name, user_email, user_password_encrypted)
+    teacher = create_teacher(teacher_data)
 
 		# Store email in session
 		session['email'] = user_email
@@ -87,10 +92,16 @@ def authorize() -> jsonify:
 		# Make the session permanent
 		session.permanent = True
 		
+   else:
+    teacher = exist_teacher
+    
+  token = generate_token({'id': teacher['id']})
+    
 	# Serialize user data
 	query_params = urlencode({
 		'access_token': access_token,
-		'user_data': get_teacher_by_email(user_email),
+		'user_data': teacher,
+    'token': token,
 	})
 
 	callback_url = f"http://localhost:4200/auth/callback?{query_params}"

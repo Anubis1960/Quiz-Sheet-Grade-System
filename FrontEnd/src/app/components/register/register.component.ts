@@ -24,12 +24,10 @@ export class RegisterComponent {
   onRegister() {
     this.authSerrvice.register(this.name, this.email, this.password).subscribe({
       next: (res) => {
-        console.log("User successfully registered.", res);
 
         this.router.navigateByUrl('')
       },
       error: (error) => {
-        console.log('Error registering user', error)
       }
     })
   }

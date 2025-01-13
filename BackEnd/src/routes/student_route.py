@@ -1,13 +1,13 @@
 from http import HTTPStatus
-
 from flask import Blueprint, request, jsonify
-
 from src.services.student_service import *
+import re
 
 #
 #	Define URL for students
 #
 STUDENT_URL = '/api/students'
+REGEX = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
 #
 #	Students Blueprint
 #
@@ -49,6 +49,9 @@ def add_student() -> jsonify:
         unique_id = data['unique_id']
         email = data['email']
 
+        if not re.match(REGEX, email):
+            return jsonify({"status": "error", "message": "Invalid email format."}), HTTPStatus.BAD_REQUEST
+
         student = create_student(Student(unique_id, email))
 
         # Check if student has an error key
@@ -73,6 +76,9 @@ def update_student(student_id: str) -> jsonify:
         # Extract data
         unique_id = data['unique_id']
         email = data['email']
+
+        if not re.match(REGEX, email):
+            return jsonify({"status": "error", "message": "Invalid email format."}), HTTPStatus.BAD_REQUEST
 
         student = update_student_data(student_id, Student(unique_id, email))
 

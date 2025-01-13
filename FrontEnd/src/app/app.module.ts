@@ -32,6 +32,9 @@ import { RegisterComponent } from './components/register/register.component';
 import { CallbackComponent } from './components/callback/callback.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptorService } from './services/auth.interceptor.service';
+import { StudentFormComponent } from './components/student-form/student-form.component';
+import { ButtonModule } from 'primeng/button';
+import { ButtonGroupModule } from 'primeng/buttongroup';
 
 @NgModule({
   declarations: [
@@ -44,7 +47,7 @@ import { AuthInterceptorService } from './services/auth.interceptor.service';
     PaperworkFormComponent,
     RegisterComponent,
     CallbackComponent,
-
+    StudentFormComponent
   ],
   imports: [
     BrowserModule,
@@ -68,6 +71,8 @@ import { AuthInterceptorService } from './services/auth.interceptor.service';
     Ripple,
     ToastModule,
     MessageModule,
+    ButtonModule,
+    ButtonGroupModule
   ],
   providers: [
     MessageService,
