@@ -5,12 +5,14 @@ import { CreatePaperworkComponent } from './components/create-paperwork/create-p
 import { UploadPaperworkComponent } from './components/upload-paperwork/upload-paperwork.component';
 import { LoginComponent } from './components/login/login.component';
 import {canActivate} from "./quard/auth-guard";
+import {RedirectComponent} from "./components/redirect/redirect.component";
 
 const routes: Routes = [
   {path: 'home', component : HomePageComponent, canActivate: [canActivate]},
   {path: 'create-paperwork', component : CreatePaperworkComponent, canActivate: [canActivate]},
   {path: 'upload-paperwork', component : UploadPaperworkComponent, canActivate: [canActivate]},
-  {path: '', component : LoginComponent}
+  {path: 'login', component : LoginComponent},
+  {path: 'redirect', component : RedirectComponent, pathMatch: 'full'}
 ];
 
 @NgModule({
