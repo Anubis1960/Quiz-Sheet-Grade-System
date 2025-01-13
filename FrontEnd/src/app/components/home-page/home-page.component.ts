@@ -14,7 +14,7 @@ export class HomePageComponent implements OnInit{
   currentIdx: number = 0;
   errorMessage: string = '';
   user: User | undefined;
-  status: string = localStorage.getItem('status') ?? '';
+  status: string = '';
   visibleDialogs: boolean[] = [false];
   selectedQuiz: Quiz = new Quiz("","","",[]);
   constructor(
@@ -25,6 +25,7 @@ export class HomePageComponent implements OnInit{
 
   ngOnInit(){
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}').user_data as User;
+    this.status = localStorage.getItem('status') || '';
     console.log(this.user.id)
 
     if (this.user.id !== undefined) {

@@ -17,8 +17,6 @@ export class SidebarComponent implements OnInit {
   initializeMenuItems(){
     this.items = [
       {
-        // TODO: MAKE HOME ICON REDIRECT TO HOME, NOT TO LOGIN PAGE
-        // ROUTES CHANGED !!!
         label: 'Home',
         icon: 'pi pi-fw pi-home',
         routerLink: ''
@@ -36,9 +34,23 @@ export class SidebarComponent implements OnInit {
             label: 'Upload paperwork',
             icon: 'pi pi-file-import',
             routerLink: '/upload-paperwork'
-          }
+          },
         ]
       },
+      {
+        label: 'Logout',
+        icon: 'pi pi-sign-out',
+        routerLink: '',
+        command: () => {
+          this.toggleLogOut();
+        }
+      }
     ]
+  }
+
+  toggleLogOut(){
+    console.log("Logging out.")
+    sessionStorage.clear();
+    localStorage.clear();
   }
 }
