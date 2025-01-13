@@ -20,8 +20,6 @@ export class HomePageComponent implements OnInit{
     private quizService: QuizService,
   ){}
 
-  // TODO: DISPLAY QUIZZES BY LOGGED IN USER TO RESOLVE !!!!!!!!!!!!
-
   ngOnInit(){
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}').user_data as User;
 
@@ -37,7 +35,6 @@ export class HomePageComponent implements OnInit{
   getQuizzesByTeacher(teacher_id: string) {
     console.log("Searching quizzes for teacher_id: " + teacher_id)
     this.quizService.get_quizzes_by_teacher(teacher_id).subscribe({
-
       next: (data) => {
         console.log('Quizzes:', data);
         this.quizzes = data as Quiz[];

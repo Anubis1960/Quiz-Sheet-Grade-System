@@ -30,7 +30,7 @@ export class TokenService {
   }
 
   getToken() {
-    return localStorage.getItem('token');
+    return JSON.parse(sessionStorage.getItem('user') || '{}').token;
   }
 
 }

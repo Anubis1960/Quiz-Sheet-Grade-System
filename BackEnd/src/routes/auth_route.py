@@ -4,6 +4,7 @@ from src.util.encrypt import *
 from src.models.teacher import Teacher
 from src.services.teacher_service import create_teacher, get_teacher_by_email_and_password
 from flask import redirect, url_for, session, Blueprint, request, jsonify, current_app
+from src.services.token_service import generate_token
 
 #
 #   Authentification Blueprint
@@ -37,9 +38,12 @@ def login() -> jsonify:
             if not teacher_data:
                 return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST
 
+            # Generate token
+            token = generate_token({'id': teacher_data['id']})
+
             return jsonify({
-                            'message': 'Login Successfully',
-                            'user_data': teacher_data
+                            'user_data': teacher_data,
+                            'token': token
                             }), HTTPStatus.OK
         else:
             return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST
@@ -73,7 +77,7 @@ def authorize() -> jsonify:
 
     # Insert the new user into db
     teacher_data = Teacher(user_name, user_email, user_password_encrypted)
-    create_teacher(teacher_data)
+    teacher = create_teacher(teacher_data)
 
     # Store email in session
     session['email'] = user_email
@@ -81,9 +85,12 @@ def authorize() -> jsonify:
     # Make the session permanent
     session.permanent = True
 
+    token = generate_token({'id': teacher['id']})
+
     return jsonify({'message': 'Login Successfully via Google Auth',
                     'access_token': access_token, 
-                    'user_data': teacher_data
+                    'user_data': teacher_data,
+                    'token': token
                     }), HTTPStatus.OK
 
 
