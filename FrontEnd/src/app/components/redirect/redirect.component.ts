@@ -15,7 +15,7 @@ export class RedirectComponent implements OnInit{
   ngOnInit() {
     const token = this.tokenService.getToken();
     if (token) {
-      this.tokenService.validateToken(token).subscribe({
+      this.tokenService.validateTeacherToken(token).subscribe({
         next: () => {
           this.router.navigate(['/home']);
         },

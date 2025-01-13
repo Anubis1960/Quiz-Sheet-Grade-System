@@ -10,11 +10,13 @@ export class TokenService {
   constructor(private http: HttpClient) {
   }
 
-  validateToken(token: string): Observable<any> {
-    const body = {
-      token: token
-    }
-    return this.http.get(`${BASE_URL}/api/token/validate`, {params: body});
+  validateUrlToken(): Observable<any> {
+    const token = this.getTokenFromUrl();
+    return this.http.get(`${BASE_URL}/api/token/validate_url/${token}`);
+  }
+
+  validateTeacherToken(token: string): Observable<any> {
+    return this.http.get(`${BASE_URL}/api/token/validate/${token}`);
   }
 
   generateToken(params: any, exp_time = 3600): Observable<any> {

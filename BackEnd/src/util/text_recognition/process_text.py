@@ -66,7 +66,7 @@ def get_box_contours(image: MatLike) -> MatLike:
 
         return warped_image
     else:
-        print("Contour cannot be approximated to a quadrilateral.")
+        # print("Contour cannot be approximated to a quadrilateral.")
         return image
 
 
@@ -109,7 +109,7 @@ def read_id(image: MatLike) -> str:
     for cnt in contours:
         x, y, w, h = cv2.boundingRect(cnt)
         ar = w / h
-        print(f"Width {w}; Height {h}; Aspect Ratio {ar} X {x} Y {y}")
+        # print(f"Width {w}; Height {h}; Aspect Ratio {ar} X {x} Y {y}")
         if min_width <= w <= max_width and min_height <= h <= max_height and 0.5 <= ar <= 2.0:
             x = max(0, x - margin)
             y = max(0, y - margin)
@@ -136,6 +136,6 @@ def read_id(image: MatLike) -> str:
         prediction = model.predict(char_image)
         id_prediction += chr(prediction.argmax() + 55) if prediction.argmax() >= 10 else str(prediction.argmax())
 
-    print(f"Predicted ID: {id_prediction}")
+    # print(f"Predicted ID: {id_prediction}")
 
     return id_prediction

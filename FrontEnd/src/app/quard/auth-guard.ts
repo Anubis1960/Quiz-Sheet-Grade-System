@@ -12,6 +12,31 @@ export const canActivate: CanActivateFn = (route: ActivatedRouteSnapshot, state:
   return false;
 }
 
+export const canActivateToken: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+  const token = inject(TokenService).getToken();
+  if (token) {
+    inject(TokenService).validateTeacherToken(token).subscribe({
+      next: () => {
+        return true;
+      },
+      error: () => {
+        return inject(Router).createUrlTree(['/login']);
+      }
+    });
+  } else {
+    return inject(Router).createUrlTree(['/login']);
+  }
+  return false;
+}
+
 export const canActivateUrlToken: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
-  return inject(TokenService).getToken() !== null ? true: inject(Router).createUrlTree(['/login']);
+  inject(TokenService).validateUrlToken().subscribe({
+    next: () => {
+      return true;
+    },
+    error: () => {
+        return inject(Router).createUrlTree(['/login']);
+    }
+  });
+  return false;
 }

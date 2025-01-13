@@ -15,10 +15,10 @@ def send_email(subject: str, body: str, to: str) -> None:
     msg['To'] = to
     msg.attach(MIMEText(body, 'plain'))
 
-    print("Sending email")
-    print(f"Subject: {subject}")
-    print(f"Body: {body}")
-    print(f"To: {to}")
+    # print("Sending email")
+    # print(f"Subject: {subject}")
+    # print(f"Body: {body}")
+    # print(f"To: {to}")
 
     try:
         srv = smtplib.SMTP(SMTP_SERVER, PORT)
@@ -28,4 +28,5 @@ def send_email(subject: str, body: str, to: str) -> None:
         srv.quit()
 
     except Exception as e:
-        print(f"Error sending email: {str(e)}")
+        # print(f"Error sending email: {str(e)}")
+        pass

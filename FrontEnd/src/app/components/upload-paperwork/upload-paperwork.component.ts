@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {FileUploadEvent} from 'primeng/fileupload';
 import {QuizService} from "../../services/quiz.service";
+import {MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-upload-paperwork',
@@ -10,42 +11,31 @@ import {QuizService} from "../../services/quiz.service";
 export class UploadPaperworkComponent {
   uploadedFiles: any[] = [];
   msg: string = '';
-  severity: string = 'info';
 
-  constructor(private quizService: QuizService) { }
+  constructor(private quizService: QuizService, private messageService: MessageService) { }
 
   onUpload($event: FileUploadEvent) {
+    this.messageService.clear('msg');
     for (let file of $event.files) {
       this.uploadedFiles.push(file);
     }
 
-    console.log('Uploaded files:', this.uploadedFiles);
-
     for (let file of this.uploadedFiles) {
-      console.log('Processing file:', file);
       this.quizService.grade_paper(file).subscribe({
         next: (data: Object) => {
-          console.log('Paper graded:', data);
           this.msg = "Score: " + JSON.parse(data as string).score;
           if (JSON.parse(data as string).message !== undefined) {
             this.msg += " - " + JSON.parse(data as string).message;
           }
           console.log('Message:', this.msg);
-          this.severity = 'success';
+          this.messageService.add({severity:'success', summary:'Success', detail:this.msg, life: 5000, closable: true, id: 'msg'});
         },
         error: (error: any) => {
           console.error('Error grading paper:', error);
           this.msg = error?.error || 'An unknown error occurred.';
-          this.severity = 'error';
+          this.messageService.add({severity:'error', summary:'Error', detail:this.msg, life: 5000, closable: true, id: 'msg'});
         }
       });
     }
-
-    this.clear();
   }
-
-  clear() {
-    this.uploadedFiles = [];
-  }
-
 }
