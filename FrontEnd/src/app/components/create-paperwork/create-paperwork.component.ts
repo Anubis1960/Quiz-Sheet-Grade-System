@@ -10,6 +10,5 @@ import {Question} from "../../models/question-model";
   styleUrls: ['./create-paperwork.component.css']
 })
 export class CreatePaperworkComponent implements OnInit {
-  ngOnInit() {
-  }
+  ngOnInit() {}
 }

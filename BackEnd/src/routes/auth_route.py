@@ -1,7 +1,7 @@
 import logging
 from http import HTTPStatus
 from src.models.teacher import Teacher
-from src.services.teacher_service import create_teacher
+from src.services.teacher_service import create_teacher, get_teacher_by_email
 from flask import redirect, url_for, session, Blueprint, request, jsonify, current_app
 
 
@@ -28,9 +28,12 @@ def login() -> jsonify:
 		# Credentials validation
 		if email and password:
 			session['email'] = email
+
+			# Retrieve teacher based on email
+			teacher_data = get_teacher_by_email(email)
 			return jsonify({
 				'message': 'Login Successfully',
-				'email': email
+				'user_data': teacher_data
 			}), HTTPStatus.OK
 		else:
 			return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST

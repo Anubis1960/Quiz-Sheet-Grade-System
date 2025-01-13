@@ -3,6 +3,7 @@ import { QuizService } from '../../services/quiz.service';
 import { Quiz } from '../../models/quiz-model';
 import { MessageService } from 'primeng/api';
 import { User } from '../../models/user-model';
+import { HttpClient } from '@angular/common/http';
 
 
 
@@ -12,20 +13,29 @@ import { User } from '../../models/user-model';
   styleUrls: ['./home-page.component.css']
 })
 export class HomePageComponent implements OnInit{
-
-  teacher_id:string ='mdxM9K6c3H3wFvZLmEbE';
   quizzes: Quiz[] = [];
   current_idx: number = 0;
   errorMessage: string = '';
   user: User | undefined;
+
   visibleDialogs: boolean[] = [false];
-  selectedQuiz: Quiz = new Quiz("","","",[]);
-  constructor(private quizService: QuizService,
+  constructor(
+    private httpClient: HttpClient,
+    private quizService: QuizService,
     private messageService: MessageService
   ){}
 
+  // TODO: DISPLAY QUIZZES BY LOGGEDIN USER TO RESOLVE !!!!!!!!!!!!
+
   ngOnInit(){
-    this.getQuizzesByTeacher(this.teacher_id);
+    this.user = JSON.parse(sessionStorage.getItem('user') || '{}').user_data as User;
+    console.log(this.user.id)
+
+    if (this.user.id !== undefined) {
+      console.log("Searching quizzes called.")
+      this.getQuizzesByTeacher(this.user.id)
+    }
+    console.log("Finished.")
   }
 
   showMessage(severity: string, summary: string, detail: string): void {
@@ -33,16 +43,18 @@ export class HomePageComponent implements OnInit{
   }
 
   getQuizzesByTeacher(teacher_id: string) {
+    console.log("Searching quizzes for teacher_id: " + teacher_id)
     this.quizService.get_quizzes_by_teacher(teacher_id).subscribe({
+
       next: (data) => {
         this.quizzes = data as Quiz[];
         this.visibleDialogs = new Array(this.quizzes.length).fill(false);
       },
+
       error: (error) => {
         console.error('Error fetching quizzes:', error);
         this.errorMessage = 'Could not fetch quizzes. Please try again later.';
       }
-
     });
   }
 
