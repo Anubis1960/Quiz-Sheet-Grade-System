@@ -1,8 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import { QuizService } from '../../services/quiz.service';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
-import { MessageService } from 'primeng/api';
-import {Question} from "../../models/question-model";
 
 @Component({
   selector: 'app-create-paperwork',

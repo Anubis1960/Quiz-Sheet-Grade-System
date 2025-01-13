@@ -26,6 +26,8 @@ import {CheckboxModule} from "primeng/checkbox";
 import {TableModule} from "primeng/table";
 import {Ripple} from "primeng/ripple";
 import { PaperworkFormComponent } from './components/paperwork-form/paperwork-form.component';
+import {ToastModule} from "primeng/toast";
+import {MessageModule} from "primeng/message";
 
 @NgModule({
   declarations: [
@@ -58,6 +60,8 @@ import { PaperworkFormComponent } from './components/paperwork-form/paperwork-fo
     CheckboxModule,
     TableModule,
     Ripple,
+    ToastModule,
+    MessageModule,
   ],
   providers: [
     MessageService,

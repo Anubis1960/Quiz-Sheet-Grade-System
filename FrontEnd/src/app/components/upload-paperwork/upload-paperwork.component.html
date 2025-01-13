@@ -1,25 +1,24 @@
 <app-sidebar></app-sidebar>
 <div>
-    <p-card header="Upload your paperwork here!">
-        <ng-template pTemplate>
-            <div class="col flex align-items-center justify-content-center">
-                <p-fileUpload 
-                    name="demo[]" 
-                    url="https://www.primefaces.org/cdn/api/upload.php" 
-                    (onUpload)="onUpload($event)" 
-                    [multiple]="true" 
-                    [auto]="false"
-                    mode="advanced"
-                    accept="image/*" 
-                    maxFileSize="1000000">
-                </p-fileUpload>
-                
-                <!-- <ul *ngIf="uploadedFiles.length">
-                    <li *ngFor="let file of uploadedFiles">
-                        {{ file.name }} - {{ file.size }} bytes
-                    </li>
-                </ul>           -->
-            </div>
-        </ng-template>
-    </p-card>
+  <p-card header="Upload your paperwork here!">
+    <ng-template pTemplate>
+      <div class="col flex align-items-center justify-content-center">
+        <p-fileUpload
+          name="demo[]"
+          url="https://www.primefaces.org/cdn/api/upload.php"
+          (onUpload)="onUpload($event)"
+          [multiple]="true"
+          [auto]="false"
+          mode="advanced"
+          accept="image/*"
+          maxFileSize="10000000">
+        </p-fileUpload>
+      </div>
+    </ng-template>
+  </p-card>
+
+  @if (msg) {
+    <p-messages severity="info" styleClass="p-mt-2" [closable]="true" [value]="[{severity: 'info', summary: '', detail: msg}]" (onClose)="nullifyMessage"></p-messages>
+  }
+
 </div>

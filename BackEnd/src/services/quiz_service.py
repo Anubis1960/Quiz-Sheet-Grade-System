@@ -1,5 +1,4 @@
 from cv2.typing import MatLike
-from tensorflow.python.util.numpy_compat import np_array
 
 from src.database import db
 from src.models.quiz import Quiz
@@ -66,8 +65,8 @@ def update_quiz_data(updated_data: dict, quiz_id: str) -> dict:
     try:
         if len(updated_data['title']) == 0:
             return {"error": "Title cannot be empty"}
-        if len(updated_data['questions']) == 0:\
-            return {"error": "Questions cannot be empty"}
+        if len(updated_data['questions']) == 0: \
+                return {"error": "Questions cannot be empty"}
         if len(updated_data['questions']) > 10:
             return {"error": f"Questions cannot exceed 10"}
         quiz_ref = db.collection(COLLECTION_NAME).document(quiz_id)
@@ -144,6 +143,13 @@ def grade_quiz(img: MatLike) -> dict:
         return resp
     except Exception as e:
         return {"error": f"Unexpected error: {str(e)}"}
+
+
+def get_teacher_id(quiz_id: str) -> str:
+    quiz_snapshot = db.collection(COLLECTION_NAME).document(quiz_id).get()
+    print(quiz_snapshot.to_dict())
+    return quiz_snapshot.get('teacher')
+
 
 def get_quizzes_by_teacher_id(teacher_id: str) -> list[dict]:
     quizDTOs = [QuizDTO(quiz.id, quiz.to_dict()['title'], quiz.to_dict()['description'],

@@ -17,6 +17,8 @@ export class PaperworkFormComponent implements OnInit {
 
   quizForm!: FormGroup;
   errorMessage: string = '';
+  maxAnswers: number = 5;
+  maxQuestions: number = 10;
   constructor(
     private quiz_service: QuizService,
     private fb: FormBuilder,

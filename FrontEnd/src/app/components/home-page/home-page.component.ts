@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { QuizService } from '../../services/quiz.service';
 import { Quiz } from '../../models/quiz-model';
-import { MessageService } from 'primeng/api';
 import { User } from '../../models/user-model';
 
 
@@ -15,21 +14,16 @@ export class HomePageComponent implements OnInit{
 
   teacher_id:string ='mdxM9K6c3H3wFvZLmEbE';
   quizzes: Quiz[] = [];
-  current_idx: number = 0;
+  currentIdx: number = 0;
   errorMessage: string = '';
   user: User | undefined;
   visibleDialogs: boolean[] = [false];
   selectedQuiz: Quiz = new Quiz("","","",[]);
   constructor(private quizService: QuizService,
-    private messageService: MessageService
   ){}
 
   ngOnInit(){
     this.getQuizzesByTeacher(this.teacher_id);
-  }
-
-  showMessage(severity: string, summary: string, detail: string): void {
-    this.messageService.add({ severity, summary, detail });
   }
 
   getQuizzesByTeacher(teacher_id: string) {
@@ -63,7 +57,7 @@ export class HomePageComponent implements OnInit{
 
   showDialog(idx: number){
     this.selectedQuiz = this.quizzes[idx];
-    this.current_idx = idx;
+    this.currentIdx = idx;
     this.visibleDialogs[idx] = true;
   }
 
@@ -72,7 +66,7 @@ export class HomePageComponent implements OnInit{
   closeDialog(q: Quiz){
     this.visibleDialogs = new Array(this.quizzes.length).fill(false);
     if(q){
-      this.quizzes[this.current_idx] = q;
+      this.quizzes[this.currentIdx] = q;
     }
 
     console.log('Quizzes:', this.quizzes);
