@@ -24,7 +24,7 @@
                 <ng-template pTemplate="body" let-quiz let-rowIndex="rowIndex">
                     <tr>
 
-                      <td class="cell" [scrollLeft]="">{{quiz.title}}</td>
+                      <td class="cell">{{quiz.title}}</td>
                       <td class="cell">{{quiz.description}}</td>
                       <td class="cell">
                         <p-button label="Delete" icon="pi pi-trash" (click)="deleteQuiz(quiz.id || '', rowIndex)" ></p-button>

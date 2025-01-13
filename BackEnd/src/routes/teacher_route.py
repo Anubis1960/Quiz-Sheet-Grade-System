@@ -54,7 +54,7 @@ def add_teacher() -> jsonify:
         password = data['password']
 
         # Encrypt password
-        encrypted_password = sha256(password)
+        encrypted_password = encrypt(password)
 
         teacher = create_teacher(Teacher(name, email, encrypted_password))
 
@@ -86,7 +86,7 @@ def update_teacher(teacher_id: str) -> jsonify:
         password = data['password']
 
         # Encrypt password
-        encrypted_password = sha256(password)
+        encrypted_password = encrypt(password)
 
         teacher = update_teacher_by_id(teacher_id, Teacher(name, email, encrypted_password))
 
