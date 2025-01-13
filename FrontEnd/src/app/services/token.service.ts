@@ -1,20 +1,24 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
+import {ActivatedRoute, ActivatedRouteSnapshot} from "@angular/router";
 
 const BASE_URL = 'http://localhost:5000/';
 @Injectable({
   providedIn: 'root'
 })
 export class TokenService {
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private route: ActivatedRoute) {
   }
 
-  validateToken(token: string): Observable<any> {
-    const body = {
-      token: token
-    }
-    return this.http.get(`${BASE_URL}/api/token/validate`, {params: body});
+  validateUrlToken(route: ActivatedRouteSnapshot): Observable<any> {
+    const token = route.queryParams['token'];
+    console.log(token);
+    return this.http.get(`${BASE_URL}/api/token/validate_url/${token}`);
+  }
+
+  validateTeacherToken(token: string): Observable<any> {
+    return this.http.get(`${BASE_URL}/api/token/validate/${token}`);
   }
 
   generateToken(params: any, exp_time = 3600): Observable<any> {
@@ -29,8 +33,4 @@ export class TokenService {
     return localStorage.getItem('token');
   }
 
-  getTokenFromUrl() {
-    const url = window.location.href;
-    return url.split('token=')[1];
-  }
 }

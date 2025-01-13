@@ -53,10 +53,10 @@ def stabilize_threshold_level(bubble_contours: List[MatLike], thresh: MatLike) -
     # sort the bubble regions by the total number of non-zero pixels in the bubble area
     bubble_regions = sorted(bubble_regions, key=lambda ics: ics[0], reverse=True)
 
-    for region in bubble_regions:
-        print(f"Total: {region[0]}")
+    # for region in bubble_regions:
+    # print(f"Total: {region[0]}")
 
-    return int(bubble_regions[0][0]*0.5) if int(bubble_regions[0][0]*0.5) > 700 else 700
+    return int(bubble_regions[0][0] * 0.5) if int(bubble_regions[0][0] * 0.5) > 700 else 700
 
 
 def solve_quiz(image: MatLike, ans: List[List[int]]):
@@ -70,13 +70,13 @@ def solve_quiz(image: MatLike, ans: List[List[int]]):
 
     thresh_level = stabilize_threshold_level(bubble_contours, thresh)
 
-    print(f"Threshold Level: {thresh_level}")
+    # print(f"Threshold Level: {thresh_level}")
 
-    return solve(thresh, bubble_contours, ans, image, nz_threshold=thresh_level)
+    return solve(thresh, bubble_contours, ans, nz_threshold=thresh_level)
 
 
-def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: List[List[int]], image: MatLike = None,
-          nz_threshold: int = 1000) -> tuple[Dict[int, List[int]], float]:
+def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: List[List[int]], nz_threshold: int = 1000) -> (
+        tuple)[Dict[int, List[int]], float]:
     num_correct = 0
     a = {}
 
@@ -114,7 +114,7 @@ def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: List[List[
                 else:
                     bubbled.append((total, j))
 
-        print(f"Bubbled: {bubbled}")
+        # print(f"Bubbled: {bubbled}")
 
         if bubbled is None:
             continue
@@ -150,8 +150,8 @@ def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: List[List[
     # cv2.imshow("Exam", image)
     # cv2.waitKey(0)
 
-    print(f"Score: {sc}")
-    print(f"Answers: {a}")
+    # print(f"Score: {sc}")
+    # print(f"Answers: {a}")
 
     return a, sc
 

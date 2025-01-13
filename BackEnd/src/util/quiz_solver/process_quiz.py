@@ -34,11 +34,11 @@ def retry_on_failure(image: MatLike) -> ndarray | None:
                     doc_cnt = approx
                     break
     else:
-        print("No contours found")
+        # print("No contours found")
         return None
 
     if doc_cnt is None:
-        print("No document found")
+        # print("No document found")
         return None
 
     paper = four_point_transform(image, doc_cnt.reshape(4, 2))
@@ -70,7 +70,7 @@ def get_document_contours(image: MatLike) -> None | ndarray:
             break
 
     if doc_cnt is None:
-        print("No document found")
+        # print("No document found")
         return None
 
     paper = four_point_transform(orig, doc_cnt.reshape(4, 2) * ratio)
@@ -140,7 +140,7 @@ def crop_id_box(paper: MatLike) -> MatLike:
     student_id_box_x = STUDENT_ID_BOX_MARGIN
 
     student_id_box = paper[student_id_box_y - 10:student_id_box_y + STUDENT_ID_BOX_HEIGHT + 10,
-                     student_id_box_x - 10:student_id_box_x + STUDENT_ID_BOX_WIDTH + 10]
+                            student_id_box_x - 10:student_id_box_x + STUDENT_ID_BOX_WIDTH + 10]
 
     return student_id_box
 
@@ -148,7 +148,7 @@ def crop_id_box(paper: MatLike) -> MatLike:
 def scan_qr_code(image: MatLike) -> str:
     qreader = QReader()
     decoded_text = qreader.detect_and_decode(image=image)
-    print(f"Decoded text: {decoded_text[0]}")
+    # print(f"Decoded text: {decoded_text[0]}")
     return decoded_text[0]
 
 

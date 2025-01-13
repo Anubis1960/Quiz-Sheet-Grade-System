@@ -1,6 +1,6 @@
 from http import HTTPStatus
 from flask import Blueprint, request, jsonify
-from src.services.token_service import validate_token
+from src.services.token_service import validate_teacher_token, generate_token, validate_url_token
 
 TOKEN_URL = '/api/token'
 
@@ -8,7 +8,7 @@ token_blueprint = Blueprint('token', __name__, url_prefix=TOKEN_URL)
 
 
 @token_blueprint.route('/generate', methods=['POST'])
-def generate_token() -> jsonify:
+def generate() -> jsonify:
     try:
         data = request.get_json()
         params = data.get('params')
@@ -27,7 +27,16 @@ def generate_token() -> jsonify:
 @token_blueprint.route('/validate/<token>', methods=['GET'])
 def validate_token_route(token: str) -> jsonify:
     try:
-        validation = validate_token(token)
+        validation = validate_teacher_token(token)
+        return jsonify(validation), HTTPStatus.OK
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+@token_blueprint.route('/validate_url/<token>', methods=['GET'])
+def validate_url_token_route(token: str) -> jsonify:
+    try:
+        validation = validate_url_token(token)
         return jsonify(validation), HTTPStatus.OK
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR

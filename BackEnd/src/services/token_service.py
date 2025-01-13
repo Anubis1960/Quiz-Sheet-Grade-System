@@ -17,7 +17,7 @@ def generate_token(p: dict, exp_time=3600) -> str:
     return token
 
 
-def validate_token(tk: str) -> dict:
+def validate_teacher_token(tk: str) -> dict:
     try:
         payload = jwt.decode(tk, EKEY, algorithms='HS256')
 
@@ -31,6 +31,19 @@ def validate_token(tk: str) -> dict:
         if teacher == {}:
             return {"error": "Teacher not found."}
 
+        return {"token": tk, "message": "Token is valid."}
+
+    except jwt.ExpiredSignatureError:
+        return {"error": "Token has expired."}
+    except jwt.InvalidTokenError:
+        return {"error": "Invalid token."}
+
+
+def validate_url_token(tk: str) -> dict:
+    try:
+        payload = jwt.decode(tk, EKEY, algorithms='HS256')
+        if time.time() > payload['exp']:
+            return {"error": "Token has expired."}
         return {"token": tk, "message": "Token is valid."}
 
     except jwt.ExpiredSignatureError:
