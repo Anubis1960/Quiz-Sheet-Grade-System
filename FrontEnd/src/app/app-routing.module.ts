@@ -8,7 +8,6 @@ import {canActivate} from "./quard/auth-guard";
 import { RegisterComponent } from './components/register/register.component';
 import { RedirectComponent } from './components/redirect/redirect.component';
 
-
 const routes: Routes = [
   {path: 'home', component : HomePageComponent, canActivate: [canActivate]},
   {path: 'register', component: RegisterComponent},

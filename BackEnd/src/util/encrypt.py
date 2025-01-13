@@ -1,11 +1,12 @@
 import hashlib
-import uuid
 
 
-def sha256(password: str) -> str:
-    salt = uuid.uuid4().hex
-    enc = hashlib.sha256()
-    enc.update(salt.encode())
-    enc.update(password.encode())
-    enc.digest()
-    return enc.hexdigest()
+def encrypt(password: str) -> str:
+    sha256 = hashlib.sha256()
+    sha256.update(password.encode('utf-8'))
+    return to_hex_string(sha256.digest())
+
+
+def to_hex_string(hash_bytes: bytes) -> str:
+    hex_string = hash_bytes.hex()
+    return hex_string.zfill(64)

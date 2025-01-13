@@ -10,14 +10,22 @@ import {TokenService} from "../../services/token.service";
 export class RedirectComponent implements OnInit{
 
   constructor(private router: Router, private tokenService: TokenService) {
-    if (this.tokenService.getToken()) {
-      this.router.navigateByUrl('/create-paperwork');
-    } else {
-      this.router.navigateByUrl('/login');
-    }
   }
 
   ngOnInit() {
+    const token = this.tokenService.getToken();
+    if (token) {
+      this.tokenService.validateToken(token).subscribe({
+        next: () => {
+          this.router.navigate(['/home']);
+        },
+        error: () => {
+          this.router.navigate(['/login']);
+        }
+      });
+    } else {
+      this.router.navigate(['/login']);
+    }
   }
 
 }

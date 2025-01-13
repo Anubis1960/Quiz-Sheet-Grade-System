@@ -88,9 +88,32 @@ def delete_teacher_by_id(teacher_id: str) -> dict:
     except Exception as e:
         raise Exception(f"Unexpected error: {str(e)}")
 
-    
+
+#
+#   Retrieve teacher by email
+#     
 def get_teacher_by_email(email: str) -> dict:
     teachers = list(db.collection(COLLECTION).where('email', '==', email).stream())
+
+    if len(teachers) == 0:
+        return {}
+
+    teacher_doc = teachers[0]
+    teacher_data = teacher_doc.to_dict()
+
+    teacherDTO = TeacherDTO(teacher_doc.id, teacher_data['name'], teacher_data['email'])
+
+    return teacherDTO.to_dict()
+
+
+#
+#   Retrieve teacher by email and password
+#
+def get_teacher_by_email_and_password(email: str, password: str) -> dict:
+    teachers = list(db.collection(COLLECTION)
+                    .where('email', '==', email)
+                    .where('password', '==', password)
+                    .stream())
 
     if len(teachers) == 0:
         return {}
