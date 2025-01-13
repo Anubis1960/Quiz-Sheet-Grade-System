@@ -26,7 +26,6 @@ export class HomePageComponent implements OnInit{
   ngOnInit(){
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}').user_data as User;
     this.status = localStorage.getItem('status') || '';
-    console.log(this.user.id)
 
     if (this.user.id !== undefined) {
       console.log("Searching quizzes called.")

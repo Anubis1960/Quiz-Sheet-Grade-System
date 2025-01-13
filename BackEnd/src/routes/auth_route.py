@@ -27,9 +27,12 @@ def login() -> jsonify:
         # Credentials validation
         if email and password:
             session['email'] = email
+
+            # Retrieve teacher based on email
+            teacher_data = get_teacher_by_email(email)
             return jsonify({
                 'message': 'Login Successfully',
-                'email': email
+                'user_data': teacher_data
             }), HTTPStatus.OK
         else:
             return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST
@@ -39,31 +42,6 @@ def login() -> jsonify:
         google = current_app.oauth_manager.get_provider('google')
         redirect_uri = url_for('auth.authorize', _external=True)
         return google.authorize_redirect(redirect_uri)
-
-        # Handle login from the form
-        if request.method == 'POST':
-            # Fetch user credentials
-            email = request.json.get('email')
-            password = request.json.get('password')
-
-            # Credentials validation
-            if email and password:
-                session['email'] = email
-
-                # Retrieve teacher based on email
-                teacher_data = get_teacher_by_email(email)
-                return jsonify({
-                    'message': 'Login Successfully',
-                    'user_data': teacher_data
-                }), HTTPStatus.OK
-            else:
-                return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST
-
-        else:
-            # Handle case when the user logs in via OAuth2.0
-            google = current_app.oauth_manager.get_provider('google')
-            redirect_uri = url_for('auth.authorize', _external=True)
-            return google.authorize_redirect(redirect_uri)
 
 
 @auth_blueprint.route('/authorize')
