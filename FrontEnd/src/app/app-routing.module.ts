@@ -15,7 +15,7 @@ const routes: Routes = [
   {path: 'create-paperwork', component : CreatePaperworkComponent, canActivate: [canActivate, canActivateToken]},
   {path: 'upload-paperwork', component : UploadPaperworkComponent, canActivate: [canActivate, canActivateToken]},
   {path: 'login', component : LoginComponent},
-  {path: 'auth/callback', component: CallbackComponent}
+  {path: 'auth/callback', component: CallbackComponent},
   {path: 'student', component : StudentFormComponent, pathMatch: 'full', canActivate: [canActivateUrlToken]},
   {path: '', redirectTo: '/login', pathMatch: 'full'}
 ];

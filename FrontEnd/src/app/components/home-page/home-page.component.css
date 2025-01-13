@@ -1,6 +1,6 @@
 
 p-splitter {
-    width: 20%; 
+    width: 20%;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     overflow: hidden;
@@ -28,22 +28,22 @@ li {
     color: #555;
     margin-bottom: 4px;
 }
-:host ::ng-deep .p-button {  
+:host ::ng-deep .p-button {
     margin: 10px;
 }
 :host ::ng-deep .p-paginator {
-    width: 55%; 
-    margin: 0 auto; 
+    width: 55%;
+    margin: 0 auto;
     border: 1px solid #e0e0e0;
 
 }
 .cell {
-    max-width: 200px; 
-    max-height: 100px; 
-    overflow-y: auto; 
-    overflow-x: hidden; 
-    white-space: normal; 
-    word-wrap: break-word; 
+    max-width: 200px;
+    max-height: 100px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    white-space: normal;
+    word-wrap: break-word;
     padding: 0.5rem;
     border: 1px solid #e0e0e0;
     overflow-wrap: break-word;
@@ -59,7 +59,7 @@ li {
 
 }
 .cell::-webkit-scrollbar {
-    width: 5px; 
+    width: 5px;
 }
 
 .cell::-webkit-scrollbar-thumb {
@@ -74,71 +74,71 @@ li {
 /* Media Query for Smaller Screens */
 @media (max-width: 768px) {
     p-splitter {
-      width: 40%;   
+      width: 40%;
     }
-  
+
     .title {
-      font-size: 30px; 
+      font-size: 30px;
     }
-  
+
     .col {
-      font-size: 14px; 
+      font-size: 14px;
       padding: 12px;
     }
-  
+
     ul {
-      margin-top: 10px; 
+      margin-top: 10px;
     }
-  
+
     .cell {
-      max-width: 400px; 
-      max-height: 120px; 
-      padding: 0.8rem; 
+      max-width: 400px;
+      max-height: 120px;
+      padding: 0.8rem;
       overflow-wrap: break-word;
     }
     .cell-actions{
         width: 200px;
     }
     .p-paginator {
-      width: 70%; 
+      width: 70%;
     }
   }
-  
+
  /* Additional Media Query for Small Mobile Screens */
 @media (max-width: 480px) {
     p-splitter {
-      width: 100%; 
+      width: 100%;
     }
-  
+
     .title {
-      font-size: 24px; 
+      font-size: 24px;
     }
-  
+
     .col {
-      font-size: 12px; 
-      padding: 10px; 
+      font-size: 12px;
+      padding: 10px;
     }
-  
+
     .cell {
-      max-width: 100%; 
-      max-height: 150px; 
-      padding: 1rem; 
+      max-width: 100%;
+      max-height: 150px;
+      padding: 1rem;
       overflow-wrap: break-word;
     }
-  
+
     .p-paginator {
-      width: 100%; 
-      margin: 15px auto; 
+      width: 100%;
+      margin: 15px auto;
     }
-  
+
     table {
-      width: 100px; 
-      table-layout: fixed; 
+      width: 100px;
+      table-layout: fixed;
     }
-  
+
     th, td {
-      padding: 8px; 
+      padding: 8px;
       font-size: 12px;
-      text-align: center; 
+      text-align: center;
     }
   }

@@ -10,6 +10,8 @@ import {TokenService} from "../../services/token.service";
 })
 export class SidebarComponent implements OnInit {
   sidebarVisible: boolean = false;
+  dialogVisible: boolean = false;
+  generatedUrl: string = 'http://localhost:5000/student?token=';
   items: MenuItem[] = [];
 
 
@@ -46,9 +48,14 @@ export class SidebarComponent implements OnInit {
         label: 'Logout',
         icon: 'pi pi-sign-out',
         command: () => this.toggleLogOut()
+      },
+      {
+        label: 'Generate URL',
+        icon: 'pi pi-link',
+        command: () => this.generateUrl()
       }
     ];
-    
+
     console.log("Menu items:", this.items);
 
   }
@@ -64,17 +71,28 @@ export class SidebarComponent implements OnInit {
   }
 
   generateUrl(){
-    let token = '';
+    this.dialogVisible = true;
     const user = JSON.parse(sessionStorage.getItem('user') || '{}').user_data
     this.tokenService.generateToken({id: user.id, email: user.email}).subscribe({
       next: (data) => {
-        token = data.token
-
+        console.log("Data:", data);
+        this.generatedUrl += data.token
+        console.log("URL:", this.generatedUrl);
       },
       error: (error) => {
         console.error('Error generating token:', error);
       }
     });
-    const url = `http://localhost:5000/student?token=${token}`;
+  }
+
+  copyToClipboard(text: string) {
+    navigator.clipboard.writeText(text).then(
+      () => {
+        console.log('Text copied to clipboard');
+      },
+      (err) => {
+        console.error('Error copying text: ', err);
+      }
+    );
   }
 }

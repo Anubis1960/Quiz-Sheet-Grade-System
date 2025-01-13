@@ -22,7 +22,9 @@ export class HomePageComponent implements OnInit{
 
   ngOnInit(){
     this.user = JSON.parse(sessionStorage.getItem('user') || '{}').user_data as User;
+    console.log(this.user);
     if (this.user.id !== undefined) {
+      console.log("Fetching quizzes by teacher id: " + this.user.id);
       this.getQuizzesByTeacher(this.user.id)
     }
   }
@@ -31,6 +33,7 @@ export class HomePageComponent implements OnInit{
     this.quizService.get_quizzes_by_teacher(teacher_id).subscribe({
       next: (data) => {
         this.quizzes = data as Quiz[];
+        console.log(this.quizzes);
         this.visibleDialogs = new Array(this.quizzes.length).fill(false);
       },
 
