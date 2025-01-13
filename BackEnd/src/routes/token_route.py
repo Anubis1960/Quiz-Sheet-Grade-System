@@ -1,6 +1,6 @@
 from http import HTTPStatus
 from flask import Blueprint, request, jsonify
-from src.services.token_service import get_tokenized_url, validate_token
+from src.services.token_service import validate_token
 
 TOKEN_URL = '/api/token'
 
@@ -14,7 +14,7 @@ def generate_token() -> jsonify:
         params = data.get('params')
         exp_time = data.get('exp_time', 3600)
 
-        token = get_tokenized_url(params, exp_time)
+        token = generate_token(params, exp_time)
 
         return jsonify({
             'token': token
