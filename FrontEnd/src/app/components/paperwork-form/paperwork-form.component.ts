@@ -43,9 +43,12 @@ export class PaperworkFormComponent implements OnInit {
               text: [question.text, Validators.required],
               answers: this.fb.array(
                 question.options!.map((option: string, index: number) => {
+                  const isCorrect = question.correct_answers && question.correct_answers.includes(index);
+                  console.log('Index:', index, 'isCorrect:', isCorrect);
+                  console.log('Option:', option);
                   return this.fb.group({
                     a_text: [option, Validators.required],
-                    is_correct: [question.correct_answers!.includes(index)]
+                    is_correct: [isCorrect]
                   });
                 })
               )
@@ -124,7 +127,7 @@ export class PaperworkFormComponent implements OnInit {
     }
     answers.removeAt(answers.length - 1);
   }
-
+  
 
   toggleCorrectAnswer(questionIndex: number, answerIndex: number) {
     let is_correct = this.getAnswers(questionIndex).at(answerIndex).get('is_correct')?.get('value');
