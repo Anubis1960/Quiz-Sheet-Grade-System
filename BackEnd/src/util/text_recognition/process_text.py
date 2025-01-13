@@ -74,16 +74,26 @@ def read_id(image: MatLike) -> str:
     model = load_model(os.path.dirname(__file__) + "/text-recognizer.keras")
 
     image = get_box_contours(image)
+    image = image[2: -2, 2: -2]
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
     # Preprocess the image
-    _, thresh = cv2.threshold(gray, 160, 255, cv2.THRESH_BINARY_INV)
+    _, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY_INV)
+
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
+
     thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
+
+    cv2.imshow("Thresh", thresh)
+    cv2.waitKey(0)
 
     assert thresh.dtype == "uint8", "Input to findContours must be of type uint8"
 
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
     dilated = cv2.dilate(thresh, kernel, iterations=1)
+
+    cv2.imshow("Dilated", dilated)
+    cv2.waitKey(0)
 
     if len(dilated.shape) > 2:
         dilated = cv2.cvtColor(dilated, cv2.COLOR_BGR2GRAY)
@@ -117,8 +127,8 @@ def read_id(image: MatLike) -> str:
         char_image = cv2.copyMakeBorder(char_image, 4, 4, 4, 4, cv2.BORDER_CONSTANT, value=0)
         char_image = cv2.resize(char_image, (28, 28))
 
-        # cv2.imshow("Char", char_image)
-        # cv2.waitKey(0)
+        cv2.imshow("Char", char_image)
+        cv2.waitKey(0)
 
         char_image = char_image.reshape(1, 28, 28, 1)
         char_image = char_image / 255.0
