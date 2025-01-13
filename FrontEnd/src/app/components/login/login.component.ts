@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { User } from '../../models/user-model';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { delay } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +25,6 @@ export class LoginComponent {
       next: (data: User) => {
         this.user = data;
         sessionStorage.setItem('user', JSON.stringify(this.user));
-
         // Redirect home
         this.router.navigateByUrl('/home');
       },

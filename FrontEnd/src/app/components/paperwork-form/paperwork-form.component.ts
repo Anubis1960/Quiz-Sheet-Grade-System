@@ -136,6 +136,7 @@ export class PaperworkFormComponent implements OnInit {
     let title: string= this.quizForm.value.title;
     let description: string = this.quizForm.value.description;
     let teacher_id: string = this.user?.id!;
+    console.log('Teacher ID:', teacher_id);
     let questions: Question[] = this.quizForm.value.questions.map((question: any) => {
 
       let text: string = question.text;
@@ -179,7 +180,7 @@ export class PaperworkFormComponent implements OnInit {
           next: (data) => {
             console.log('Quiz created:', data);
             // this.refreshForm();
-            this.router.navigateByUrl('/home')
+            // this.router.navigateByUrl('/home')
           },
           error : (error) => {
             this.errorMessage = error.error;
