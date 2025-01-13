@@ -15,7 +15,7 @@ export class LoginComponent {
   password: string;
   user: User | undefined;
 
-  constructor(private http: HttpClient, private authService: AuthService, 
+  constructor(private http: HttpClient, private authService: AuthService,
     private router: Router) {
       this.email = '';
       this.password = '';
@@ -26,7 +26,7 @@ export class LoginComponent {
       next: (data: User) => {
         this.user = data;
         sessionStorage.setItem('user', JSON.stringify(this.user));
-        
+
         // Redirect home
         this.router.navigateByUrl('/home');
       },
@@ -38,7 +38,7 @@ export class LoginComponent {
 
   loginWithGoogle() {
     console.log("Google Auth selected...")
-    window.location.href = 'http://localhost:5000/login';
+    // window.location.href = 'http://localhost:5000/login';
     this.router.navigateByUrl('/home')
   }
 }
