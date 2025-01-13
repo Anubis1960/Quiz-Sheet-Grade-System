@@ -1,7 +1,7 @@
 .upload-container {
     display: flex;
     justify-content: center; /* Centers horizontally */
-    align-items: flex-start; /* Aligns to the top (no extra space above) */
+    align-items: center; /* Aligns to the top (no extra space above) */
     height: auto; /* Adjust height based on content */
     padding: 0 20px; /* Optional padding to avoid content touching the edges */
     margin-top: 20px; /* Add a small margin at the top to avoid touching the top of the viewport */

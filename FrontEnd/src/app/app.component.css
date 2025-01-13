@@ -1,0 +1,11 @@
+body {
+    margin: 0;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #D9E4EC, #385E72) no-repeat, /* Base gradient */
+                radial-gradient(circle at 50% 20%, rgba(223, 203, 203, 0.664), transparent 50%) no-repeat, /* Top wave */
+                radial-gradient(circle at 50% 80%, rgba(255, 255, 255, 0.5), transparent 50%) no-repeat; /* Bottom wave */
+    background-size: 100% 100%, 200% 200%, 200% 200%;
+    position: relative;
+    overflow: hidden;
+  }
