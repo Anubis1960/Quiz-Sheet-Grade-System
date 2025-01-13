@@ -30,6 +30,10 @@ def login() -> jsonify:
 
             # Retrieve teacher based on email
             teacher_data = get_teacher_by_email(email)
+
+            if not teacher_data:
+                return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST
+
             return jsonify({
                 'message': 'Login Successfully',
                 'user_data': teacher_data

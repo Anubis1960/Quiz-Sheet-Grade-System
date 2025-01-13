@@ -16,7 +16,7 @@ export class QuizService {
     const body = {
       title: title,
       description: description,
-      teacher_id: teacher_id,
+      teacher: teacher_id,
       questions: question,
     };
     return this.http.post(`${BASE_URL}/api/quizzes/`,body,{responseType:'text'});

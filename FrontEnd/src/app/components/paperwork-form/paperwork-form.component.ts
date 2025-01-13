@@ -179,7 +179,7 @@ export class PaperworkFormComponent implements OnInit {
         .subscribe({
           next: (data) => {
             console.log('Quiz created:', data);
-            // this.refreshForm();
+            this.refreshForm();
             // this.router.navigateByUrl('/home')
           },
           error : (error) => {
