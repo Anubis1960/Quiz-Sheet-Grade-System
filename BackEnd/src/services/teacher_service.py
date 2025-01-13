@@ -29,10 +29,10 @@ def get_teacher_by_id(teacher_id: str) -> dict:
 #
 def create_teacher(teacher: Teacher) -> dict:
     try:
-        db.collection(COLLECTION).add(teacher.to_dict())
-
         if get_teacher_by_email(teacher.email):
             return {"error": f"An account with email {teacher.email} already exists."}
+        
+        db.collection(COLLECTION).add(teacher.to_dict())
 
         return teacher.to_dict()
 

@@ -39,4 +39,8 @@ export class LoginComponent {
     // window.location.href = 'http://localhost:5000/login';
     this.router.navigateByUrl('/home')
   }
+
+  goToRegister() {
+    this.router.navigate(['/register']);
+  }
 }
