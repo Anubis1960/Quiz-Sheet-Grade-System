@@ -19,3 +19,10 @@
 <p-button class="custom-button"(onClick)="sidebarVisible = true">
   <i class="pi pi-arrow-right"></i>
 </p-button>
+
+<p-dialog [(visible)]="dialogVisible" [header]="'Generated URL'" [modal]="true" [closable]="true" [style]="{width: '30vw'}">
+  <div class="flex flex-column align-items-start">
+    <span class="url-text">{{ generatedUrl }}</span>
+    <p-button label="Copy URL" (onClick)="copyToClipboard(generatedUrl)" class="mt-3"></p-button>
+  </div>
+</p-dialog>

@@ -25,7 +25,7 @@ export class TokenService {
       params: params,
       exp_time: exp_time
     }
-    return this.http.post('$BASE_URL/api/token/generate', {params: body});
+    return this.http.post(`${BASE_URL}/api/token/generate`, {params: body});
   }
 
   getToken() {

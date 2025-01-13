@@ -23,7 +23,10 @@ app = Flask(__name__)
 
 app.secret_key = os.urandom(24)
 
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}},
+     supports_credentials=True,
+     expose_headers=["Authorization", "Content-Type"],
+     allow_headers=["Authorization", "Content-Type"])
 
 # OAuth Manager Setup
 oauth_manager = OAuthManager(app)
@@ -35,9 +38,9 @@ app.oauth_manager = oauth_manager
 #
 ####################
 logging.basicConfig(
-	level=logging.DEBUG,
-	format='%(levelname)s - %(message)s',
-	handlers=[logging.StreamHandler()]
+    level=logging.DEBUG,
+    format='%(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler()]
 )
 
 ####################
@@ -53,4 +56,4 @@ app.register_blueprint(auth_blueprint)
 app.register_blueprint(token_blueprint)
 
 if __name__ == '__main__':
-	app.run(debug=True)
+    app.run(debug=True)

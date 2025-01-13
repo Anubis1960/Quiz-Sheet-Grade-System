@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
+import {User} from "../../models/user-model";
 
 @Component({
   selector: 'app-callback',
@@ -7,33 +8,38 @@ import { Router } from '@angular/router';
   styleUrl: './callback.component.css'
 })
 export class CallbackComponent implements OnInit{
-  constructor(private router: Router) {}
+  constructor(private routeSnapshot: ActivatedRoute, private router: Router) {}
 
   ngOnInit(): void {
     console.log("CallBack component");
 
-    if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search);
-      const token = urlParams.get('access_token');
-      console.log("Token: " + token)
-      const userData = urlParams.get('user_data');
-      console.log("User data: " + userData)
+    const access_token = this.routeSnapshot.snapshot.queryParamMap.get('access_token');
+    const user_data = this.routeSnapshot.snapshot.queryParamMap.get('user_data');
+    const token = this.routeSnapshot.snapshot.queryParamMap.get('token');
+    if (access_token && user_data && token) {
+      if (typeof sessionStorage !== 'undefined') {
+        // sessionStorage.setItem('access_token', access_token);
+        const sanitizedUserData = user_data.replace(/'/g, '"');
+        const parsedUserData = JSON.parse(sanitizedUserData);
 
-      console.log(userData);
+          // Construct the user object
+        const user = {
+          user_data: parsedUserData as User,
+          token: token
+        };
 
-      if (token && userData) {
-        console.log("Successfully retrieved token and userdata");
-        sessionStorage.setItem('access_token', token);
-
-        // Parse the user data from the query string
-        const user = JSON.parse(userData);
+        console.log("User object:", user);
         sessionStorage.setItem('user', JSON.stringify(user));
-
         this.router.navigateByUrl('/home');
-        
-      } else {
-        console.error('Failed to retrieve access token or user data');
       }
+      else{
+        console.log("Session storage is not supported");
+        this.router.navigateByUrl('/login');
+      }
+
+    } else {
+      console.log("Failed to retrieve access token and user data");
+      this.router.navigateByUrl('/login');
     }
   }
 
