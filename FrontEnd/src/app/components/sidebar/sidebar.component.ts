@@ -51,12 +51,9 @@ export class SidebarComponent implements OnInit {
         }
       ];
     }
-
-    console.log("Menu items:", this.items);
   }
 
   toggleLogOut(){
-    console.log("Logging out.")
     sessionStorage.clear();
     localStorage.clear();
   }
@@ -73,6 +70,6 @@ export class SidebarComponent implements OnInit {
         console.error('Error generating token:', error);
       }
     });
-    const url = `http://localhost:5000/login?token=${token}`;
+    const url = `http://localhost:5000/student?token=${token}`;
   }
 }

@@ -11,8 +11,7 @@ export class TokenService {
   constructor(private http: HttpClient, private route: ActivatedRoute) {
   }
 
-  validateUrlToken(route: ActivatedRouteSnapshot): Observable<any> {
-    const token = route.queryParams['token'];
+  validateUrlToken(token: string): Observable<any> {
     console.log(token);
     return this.http.get(`${BASE_URL}/api/token/validate_url/${token}`);
   }

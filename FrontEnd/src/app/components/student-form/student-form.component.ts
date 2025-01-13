@@ -14,10 +14,8 @@ export class StudentFormComponent {
   onSubmit() {
     this.studentService.add_student(this.unique_id, this.email).subscribe({
       next: (data) => {
-        console.log("Student added successfully.");
       },
       error: (error) => {
-        console.log("Failed to add student.")
       }
     });
   }
