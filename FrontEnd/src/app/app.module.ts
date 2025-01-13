@@ -31,7 +31,8 @@ import {MessageModule} from "primeng/message";
 import { RegisterComponent } from './components/register/register.component';
 import {RedirectComponent} from "./components/redirect/redirect.component";
 import { StudentFormComponent } from './components/student-form/student-form.component';
-
+import { ButtonModule } from 'primeng/button';
+import { ButtonGroupModule } from 'primeng/buttongroup';
 
 @NgModule({
   declarations: [
@@ -68,6 +69,8 @@ import { StudentFormComponent } from './components/student-form/student-form.com
     Ripple,
     ToastModule,
     MessageModule,
+    ButtonModule,
+    ButtonGroupModule
   ],
   providers: [
     MessageService,

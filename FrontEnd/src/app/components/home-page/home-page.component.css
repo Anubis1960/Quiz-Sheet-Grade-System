@@ -38,19 +38,28 @@ li {
 
 }
 .cell {
-    max-width: 500px; /* Ensure the cell doesn't stretch too far horizontally */
-    max-height: 100px; /* Set a height limit for the description area */
-    overflow-y: auto; /* Only allow vertical scrolling */
-    overflow-x: hidden; /* Prevent horizontal scrolling */
-    white-space: normal; /* Allow text wrapping */
-    word-wrap: break-word; /* Break words that are too long */
+    max-width: 200px; 
+    max-height: 100px; 
+    overflow-y: auto; 
+    overflow-x: hidden; 
+    white-space: normal; 
+    word-wrap: break-word; 
     padding: 0.5rem;
     border: 1px solid #e0e0e0;
+    overflow-wrap: break-word;
 }
+.cell-description{
+    max-width: 150px;
+    border: 1px solid #e0e0e0;
+    overflow-wrap: break-word;
+}
+.cell-actions{
+    width: 400px;
+    border: 1px solid #e0e0e0;
 
-
+}
 .cell::-webkit-scrollbar {
-    width: 5px; /* Set width for vertical scrollbar */
+    width: 5px; 
 }
 
 .cell::-webkit-scrollbar-thumb {
@@ -62,3 +71,74 @@ li {
     background: #555;
 }
 
+/* Media Query for Smaller Screens */
+@media (max-width: 768px) {
+    p-splitter {
+      width: 40%;   
+    }
+  
+    .title {
+      font-size: 30px; 
+    }
+  
+    .col {
+      font-size: 14px; 
+      padding: 12px;
+    }
+  
+    ul {
+      margin-top: 10px; 
+    }
+  
+    .cell {
+      max-width: 400px; 
+      max-height: 120px; 
+      padding: 0.8rem; 
+      overflow-wrap: break-word;
+    }
+    .cell-actions{
+        width: 200px;
+    }
+    .p-paginator {
+      width: 70%; 
+    }
+  }
+  
+ /* Additional Media Query for Small Mobile Screens */
+@media (max-width: 480px) {
+    p-splitter {
+      width: 100%; 
+    }
+  
+    .title {
+      font-size: 24px; 
+    }
+  
+    .col {
+      font-size: 12px; 
+      padding: 10px; 
+    }
+  
+    .cell {
+      max-width: 100%; 
+      max-height: 150px; 
+      padding: 1rem; 
+      overflow-wrap: break-word;
+    }
+  
+    .p-paginator {
+      width: 100%; 
+      margin: 15px auto; 
+    }
+  
+    table {
+      width: 100px; 
+      table-layout: fixed; 
+    }
+  
+    th, td {
+      padding: 8px; 
+      font-size: 12px;
+      text-align: center; 
+    }
+  }
