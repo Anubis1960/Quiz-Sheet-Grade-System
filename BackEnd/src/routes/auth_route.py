@@ -22,39 +22,39 @@ def hello_world():
 @auth_blueprint.route('/login', methods=['GET', 'POST'])
 def login() -> jsonify:
 
-    # Handle login from the form
-    if request.method == 'POST':
-        # Fetch user credentials
-        email = request.json.get('email')
-        password = request.json.get('password')
-        # Encrypt password for credentials verification
-        encrypted_password = encrypt(password)
+	# Handle login from the form
+	if request.method == 'POST':
+		# Fetch user credentials
+		email = request.json.get('email')
+		password = request.json.get('password')
+		# Encrypt password for credentials verification
+		encrypted_password = encrypt(password)
 
-        # Credentials validation
-        if email and password:
-            session['email'] = email
+		# Credentials validation
+		if email and password:
+			session['email'] = email
 
-            # Retrieve teacher based on email
-            teacher_data = get_teacher_by_email_and_password(email, encrypted_password)
+			# Retrieve teacher based on email
+			teacher_data = get_teacher_by_email_and_password(email, encrypted_password)
 
-            if not teacher_data:
-                return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST
+			if not teacher_data:
+				return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST
 
-            # Generate token
-            token = generate_token({'id': teacher_data['id']})
+			# Generate token
+			token = generate_token({'id': teacher_data['id']})
 
-            return jsonify({
-                            'user_data': teacher_data,
-                            'token': token
-                            }), HTTPStatus.OK
-        else:
-            return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST
+			return jsonify({
+							'user_data': teacher_data,
+							'token': token
+							}), HTTPStatus.OK
+		else:
+			return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST
 
-    else:
-        # Handle case when the user logs in via OAuth2.0
-        google = current_app.oauth_manager.get_provider('google')
-        redirect_uri = url_for('auth.authorize', _external=True)
-        return google.authorize_redirect(redirect_uri)
+	else:
+		# Handle case when the user logs in via OAuth2.0
+		google = current_app.oauth_manager.get_provider('google')
+		redirect_uri = url_for('auth.authorize', _external=True)
+		return google.authorize_redirect(redirect_uri)
 
 
 @auth_blueprint.route('/authorize')
@@ -81,10 +81,10 @@ def authorize() -> jsonify:
 
 		# Encrypt the generated password
 		user_password_encrypted = encrypt(user_password)
-    
-    # Insert the new user into db
-    teacher_data = Teacher(user_name, user_email, user_password_encrypted)
-    teacher = create_teacher(teacher_data)
+	
+		# Insert the new user into db
+		teacher_data = Teacher(user_name, user_email, user_password_encrypted)
+		teacher = create_teacher(teacher_data)
 
 		# Store email in session
 		session['email'] = user_email
@@ -92,16 +92,17 @@ def authorize() -> jsonify:
 		# Make the session permanent
 		session.permanent = True
 		
-   else:
-    teacher = exist_teacher
-    
-  token = generate_token({'id': teacher['id']})
-    
+	else:
+		teacher = exist_teacher
+	
+
+	token = generate_token({'id': teacher['id']})
+	
 	# Serialize user data
 	query_params = urlencode({
 		'access_token': access_token,
 		'user_data': teacher,
-    'token': token,
+		'token': token,
 	})
 
 	callback_url = f"http://localhost:4200/auth/callback?{query_params}"
