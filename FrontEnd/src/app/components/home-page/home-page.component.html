@@ -2,34 +2,35 @@
 <app-sidebar></app-sidebar>
 <div class="home">
         <div class="col flex align-items-center justify-content-center">
-            <h3>Your Quizzes</h3>
+            <h3 class="title">Your Quizzes</h3>
             @if(quizzes.length > 0) {
               <p-table
                 [value]="quizzes"
                 [paginator]="true"
-                [rows]="5"
+                [rows]="2"
                 [rowsPerPageOptions]="[5, 10, 20]"
                 [tableStyle]="{
-                    'width': '100%'
+                    'width': '55%',
+                    'margin': 'auto'
                 }"
               >
                 <ng-template pTemplate="header">
                     <tr>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Actions</th>
+                        <th class="cell">Title</th>
+                        <th class="cell">Description</th>
+                        <th class="cell">Actions</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-quiz let-rowIndex="rowIndex">
                     <tr>
-                      <td>{{quiz.title}}</td>
-                      <td>{{quiz.description}}</td>
-                      <td>
-                        <p-button label="Delete" icon="pi pi-trash" (click)="deleteQuiz(quiz.id || '', rowIndex)"></p-button>
+                      <td class="cell" [scrollLeft]="">{{quiz.title}}</td>
+                      <td class="cell">{{quiz.description}}</td>
+                      <td class="cell">
+                        <p-button label="Delete" icon="pi pi-trash" (click)="deleteQuiz(quiz.id || '', rowIndex)" ></p-button>
                         <div class="card flex justify-center">
-                          <p-button label="Edit" icon="pi pi-pencil" (click)="showDialog(rowIndex)"></p-button>
+                          <p-button label="Edit" icon="pi pi-pencil" (click)="showDialog(rowIndex)" ></p-button>
                           @if (visibleDialogs[rowIndex]) {
-                            <p-dialog header="Edit Quiz" [(visible)]="visibleDialogs[rowIndex]" [style]="{ width: '25rem' }">
+                            <p-dialog header="Edit Quiz" [(visible)]="visibleDialogs[rowIndex]" >
                               <app-paperwork-form [quiz]="quiz" (formSubmitted)="closeDialog($event)"></app-paperwork-form>
                             </p-dialog>
                           }
