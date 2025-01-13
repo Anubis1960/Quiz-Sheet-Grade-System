@@ -1,6 +1,5 @@
 import jwt
 import time
-from urllib.parse import urlencode
 from src.services.teacher_service import get_teacher_by_id
 
 EKEY = 'f98d5d2f2f0142e2a8b2d9db07d5a92f302b'
