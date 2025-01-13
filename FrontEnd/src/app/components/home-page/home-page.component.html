@@ -7,7 +7,7 @@
               <p-table
                 [value]="quizzes"
                 [paginator]="true"
-                [rows]="2"
+                [rows]="5"
                 [rowsPerPageOptions]="[5, 10, 20]"
                 [tableStyle]="{
                     'width': '55%',
@@ -22,38 +22,31 @@
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-quiz let-rowIndex="rowIndex">
-                    <tr>
-
-                      <td class="cell">{{quiz.title}}</td>
-                      <td class="cell">{{quiz.description}}</td>
-                      <td class="cell">
-                        <p-button label="Delete" icon="pi pi-trash" (click)="deleteQuiz(quiz.id || '', rowIndex)" ></p-button>
-
-                      <td>{{quiz.title}}</td>
-                      <td>
-                        {{ truncateDescription(quiz.description, 50) }} <!-- Truncate description -->
-                        @if (quiz.description.length > 50) {
-                          <span pTooltip="{{ quiz.description }}">
-                            <i class="pi pi-info-circle"></i>
-                          </span>
-
+                  <tr>
+                    <td class="cell">{{quiz.title}}</td>
+                    <td class="cell">
+                      {{ truncateDescription(quiz.description, 50) }} <!-- Truncate description -->
+                      @if (quiz.description.length > 50) {
+                        <span pTooltip="{{ quiz.description }}">
+                          <i class="pi pi-info-circle"></i>
+                        </span>
+                      }
+                    </td>
+                    <td class="cell">
+                      <p-button label="Delete" icon="pi pi-trash" (click)="deleteQuiz(quiz.id || '', rowIndex)"></p-button>
+                      <div class="card flex justify-center">
+                        <p-button label="Edit" icon="pi pi-pencil" (click)="showDialog(rowIndex)"></p-button>
+                        @if (visibleDialogs[rowIndex]) {
+                          <p-dialog header="Edit Quiz" [(visible)]="visibleDialogs[rowIndex]">
+                            <app-paperwork-form [quiz]="quiz" (formSubmitted)="closeDialog($event)"></app-paperwork-form>
+                          </p-dialog>
                         }
-                      </td>
-                      <td>
-                        <p-button label="Delete" icon="pi pi-trash" (click)="deleteQuiz(quiz.id || '', rowIndex)"></p-button>
-                        <div class="card flex justify-center">
-                          <p-button label="Edit" icon="pi pi-pencil" (click)="showDialog(rowIndex)" ></p-button>
-                          @if (visibleDialogs[rowIndex]) {
-                            <p-dialog header="Edit Quiz" [(visible)]="visibleDialogs[rowIndex]" >
-                              <app-paperwork-form [quiz]="quiz" (formSubmitted)="closeDialog($event)"></app-paperwork-form>
-                            </p-dialog>
-                          }
-                          <p-button label="export" icon="pi pi-eye" (click)="exportPDF(quiz.id)"></p-button>
-
-                        </div>
-                      </td>
-                    </tr>
+                        <p-button label="Export" icon="pi pi-eye" (click)="exportPDF(quiz.id)"></p-button>
+                      </div>
+                    </td>
+                  </tr>
                 </ng-template>
+                
 
               </p-table>
 
