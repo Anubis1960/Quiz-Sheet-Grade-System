@@ -1,21 +1,38 @@
-<form [formGroup]="quizForm">
+<div class="quiz-form-window">
+  <form [formGroup]="quizForm">
 
-  <div class="p-field">
-    <label for="title">Title</label>
-    <input pInputText id="title" formControlName="title" />
-  </div>
+    <div class="p-field">
+      <label for="title">Title</label>
+      <input pInputText id="title" formControlName="title" />
+    </div>
 
-  <div class="p-field">
-    <label for="description">Description</label>
-    <textarea pInputTextarea id="description" formControlName="description"></textarea>
-  </div>
+    <div class="p-field">
+      <label for="description">Description</label>
+      <textarea pInputTextarea id="description" formControlName="description"></textarea>
+    </div>
 
-  <div formArrayName="questions">
-    @for (question of questions.controls; let i = $index; track i) {
-      <div [formGroupName]="i">
-        <div class="p-field">
-          <label for="text">Question {{i+1}}</label>
-          <input pInputText id="text" formControlName="text" />
+    <div formArrayName="questions">
+      @for (question of questions.controls; let i = $index; track i) {
+        <div [formGroupName]="i">
+          <div class="p-field">
+            <label for="text">Question {{i+1}}</label>
+            <input pInputText id="text" formControlName="text" />
+          </div>
+          <div formArrayName="answers">
+            @for (answer of getAnswers(i).controls; let j = $index; track j) {
+              <div class="answer" [formGroupName]="j">
+                <label>{{String.fromCharCode('A'.charCodeAt(0) + j)}}: </label>
+                <input type="text" pInputText formControlName="a_text" />
+                <p-checkbox label="Correct?" formControlName="is_correct" (onChange)="toggleCorrectAnswer(i, j)"></p-checkbox>
+                <p-button label="Delete" icon="pi pi-trash" size="small" [raised]="true" type="button" (onClick)="removeAnswer(i, j)"></p-button>
+              </div>
+            }
+            @if (getAnswers(i).length < maxAnswers) {
+              <div class="button-container">
+                <p-button label="Add Answer" icon="pi pi-plus" type="button" (onClick)="addAnswer(i)"></p-button>
+              </div>
+            }
+          </div>
         </div>
         <div formArrayName="answers">
           @for (answer of getAnswers(i).controls; let j = $index; track j) {
@@ -31,27 +48,26 @@
               <p-button label="Add Answer" icon="pi pi-plus" type="button" (onClick)="addAnswer(i)"></p-button>
             </div>
           }
+        <div class="button-container">
+          <p-button label="Remove Question" icon="pi pi-trash" type="button" (onClick)="removeQuestion(i)"></p-button>
         </div>
-      </div>
-      <div class="button-container">
-        <p-button label="Remove Question" icon="pi pi-trash" type="button" (onClick)="removeQuestion(i)"></p-button>
-      </div>
-    }
-    @if (questions.length < maxQuestions) {
-      <div class="button-container">
-        <p-button label="Add Question" icon="pi pi-plus" type="button" (onClick)="addQuestion()"></p-button>
-      </div>
-    }
-  </div>
-
-  <div class="button-container">
-    <p-button type="button" (onClick)="saveQuiz()">
-      @if (quiz) {
-        Update Quiz
-      } @else {
-        Submit Quiz
       }
-    </p-button>
-  </div>
+      @if (questions.length < maxQuestions) {
+        <div class="button-container">
+          <p-button label="Add Question" icon="pi pi-plus" type="button" (onClick)="addQuestion()"></p-button>
+        </div>
+      }
+    </div>
 
-</form>
+    <div class="button-container">
+      <p-button type="button" (onClick)="saveQuiz()">
+        @if (quiz) {
+          Update Quiz
+        } @else {
+          Submit Quiz
+        }
+      </p-button>
+    </div>
+
+  </form>
+</div>
