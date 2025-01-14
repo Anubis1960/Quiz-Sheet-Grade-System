@@ -11,7 +11,7 @@ import {TokenService} from "../../services/token.service";
 export class SidebarComponent implements OnInit {
   sidebarVisible: boolean = false;
   dialogVisible: boolean = false;
-  generatedUrl: string = 'http://localhost:5000/student?token=';
+  generatedUrl: string = 'http://localhost:4200/student?token=';
   items: MenuItem[] = [];
 
 
