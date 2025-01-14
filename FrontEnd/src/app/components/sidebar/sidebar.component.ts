@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import {TokenService} from "../../services/token.service";
+import {generate} from "rxjs";
 
 @Component({
   selector: 'app-sidebar',
@@ -72,17 +73,20 @@ export class SidebarComponent implements OnInit {
 
   generateUrl(){
     this.dialogVisible = true;
+    let token = '';
     const user = JSON.parse(sessionStorage.getItem('user') || '{}').user_data
     this.tokenService.generateToken({id: user.id, email: user.email}).subscribe({
       next: (data) => {
         console.log("Data:", data);
-        this.generatedUrl += data.token
+        token = data['token'];
+        this.generatedUrl = 'http://localhost:4200/student?token=' + data['token'];
         console.log("URL:", this.generatedUrl);
       },
       error: (error) => {
         console.error('Error generating token:', error);
       }
     });
+
   }
 
   copyToClipboard(text: string) {
