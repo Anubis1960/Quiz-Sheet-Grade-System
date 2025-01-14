@@ -1,58 +1,62 @@
 <router-outlet></router-outlet>
 <app-sidebar></app-sidebar>
 <div class="home">
-        <div class="col flex align-items-center justify-content-center">
-            <h3 class="title">Your Quizzes</h3>
-            @if(quizzes.length > 0) {
-              <p-table
+    <div class="content-container">
+        <h3 class="title">Your Quizzes</h3>
+        <div *ngIf="quizzes.length > 0" class="table-wrapper">
+            <p-table
                 [value]="quizzes"
                 [paginator]="true"
                 [rows]="5"
                 [rowsPerPageOptions]="[5, 10, 20]"
                 [tableStyle]="{
-                    'width': '55%',
-                    'margin': 'auto'
+                    'width': '80%',
+                    'margin': '20px auto',
+                    'border-radius': '10px',
+                    'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.1)'
                 }"
-              >
+            >
                 <ng-template pTemplate="header">
                     <tr>
-                        <th class="cell">Title</th>
-                        <th class="cell">Description</th>
-                        <th class="cell">Actions</th>
+                        <th class="header-cell">Title</th>
+                        <th class="header-cell">Description</th>
+                        <th class="header-cell">Actions</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-quiz let-rowIndex="rowIndex">
-                  <tr>
-                    <td class="cell">{{quiz.title}}</td>
-                    <td class="cell-description">
-                      {{ truncateDescription(quiz.description, 50) }} <!-- Truncate description -->
-                      @if (quiz.description.length > 50) {
-                        <span pTooltip="{{ quiz.description }}">
-                          <i class="pi pi-info-circle"></i>
-                        </span>
-                      }
-                    </td>
-                    <td class="cell-actions">
-                      <p-buttonGroup>
-                        <p-button label="Delete" icon="pi pi-trash" (click)="deleteQuiz(quiz.id || '', rowIndex)"></p-button>
-                        <p-button label="Edit" icon="pi pi-pencil" (click)="showDialog(rowIndex)"></p-button>
-                        <p-button label="Export" icon="pi pi-eye" (click)="exportPDF(quiz.id)"></p-button>
-                      </p-buttonGroup>
-                      
-                      <!-- Dialog for Edit (if visible) -->
-                      <p-dialog header="Edit Quiz" [(visible)]="visibleDialogs[rowIndex]">
-                        <app-paperwork-form [quiz]="quiz" (formSubmitted)="closeDialog($event)"></app-paperwork-form>
-                      </p-dialog>
-                    </td>
-                  </tr>
+                    <tr class="table-row">
+                        <td class="cell">{{ quiz.title }}</td>
+                        <td class="description-cell">
+                            {{ truncateDescription(quiz.description, 50) }}
+                            <span *ngIf="quiz.description.length > 50" pTooltip="{{ quiz.description }}">
+                                <i class="pi pi-info-circle"></i>
+                            </span>
+                        </td>
+                        <td class="actions-cell">
+                            <p-buttonGroup class="button-group">
+                                <p-button label="Delete" icon="pi pi-trash" (click)="deleteQuiz(quiz.id || '', rowIndex)" class="action-button"></p-button>
+                                <p-button label="Edit" icon="pi pi-pencil" (click)="showDialog(rowIndex)" class="action-button"></p-button>
+                                <p-button label="Export" icon="pi pi-eye" (click)="exportPDF(quiz.id)" class="action-button"></p-button>
+                            </p-buttonGroup>
+                            
+                            <p-dialog header="Edit Quiz" [(visible)]="visibleDialogs[rowIndex]" class="edit-dialog">
+                                <app-paperwork-form [quiz]="quiz" (formSubmitted)="closeDialog($event)"></app-paperwork-form>
+                            </p-dialog>
+                        </td>
+                    </tr>
                 </ng-template>
-                
-
-              </p-table>
-
-            }
-            @else {
-              <p>No quizzes found for this teacher.</p>
-            }
+            </p-table>
         </div>
+        <div *ngIf="quizzes.length === 0" class="no-quizzes-message">
+            <p>No quizzes found for this teacher.</p>
+        </div>
+
+        <footer class="app-footer">
+          <p>&copy; 2025 Quiz-Grader. All Rights Reserved.</p>
+          <div>
+              <a href="https://www.pawpatrol.com/">Privacy Policy</a> | <a href="https://www.pawpatrol.com/">Terms of Service</a>
+          </div>
+      </footer>
+    </div>
+
 </div>

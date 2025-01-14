@@ -30,18 +30,18 @@ def login() -> jsonify:
         # Encrypt password for credentials verification
         encrypted_password = encrypt(password)
 
-        # Credentials validation
-        if email and password:
-            session['email'] = email
+		# Credentials validation
+		if email and password:
+			session['email'] = email
 
-            # Retrieve teacher based on email
-            teacher_data = get_teacher_by_email_and_password(email, encrypted_password)
+			# Retrieve teacher based on email
+			teacher_data = get_teacher_by_email_and_password(email, encrypted_password)
 
-            if not teacher_data:
-                return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST
+			if not teacher_data:
+				return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST
 
-            # Generate token
-            token = generate_token({'id': teacher_data['id']})
+			# Generate token
+			token = generate_token({'id': teacher_data['id']})
 
             return jsonify({
                 'user_data': teacher_data,
@@ -50,11 +50,11 @@ def login() -> jsonify:
         else:
             return jsonify({'message': 'Invalid credentials'}), HTTPStatus.BAD_REQUEST
 
-    else:
-        # Handle case when the user logs in via OAuth2.0
-        google = current_app.oauth_manager.get_provider('google')
-        redirect_uri = url_for('auth.authorize', _external=True)
-        return google.authorize_redirect(redirect_uri)
+	else:
+		# Handle case when the user logs in via OAuth2.0
+		google = current_app.oauth_manager.get_provider('google')
+		redirect_uri = url_for('auth.authorize', _external=True)
+		return google.authorize_redirect(redirect_uri)
 
 
 @auth_blueprint.route('/authorize')
