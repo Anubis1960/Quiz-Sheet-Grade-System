@@ -34,20 +34,6 @@
             }
           </div>
         </div>
-        <div formArrayName="answers">
-          @for (answer of getAnswers(i).controls; let j = $index; track j) {
-            <div class="answer" [formGroupName]="j">
-              <label>{{String.fromCharCode('A'.charCodeAt(0) + j)}}: </label>
-              <input type="text" pInputText formControlName="a_text" />
-              <p-checkbox label="Correct?" formControlName="is_correct" (onChange)="toggleCorrectAnswer(i, j)" [binary]="true"></p-checkbox>
-              <p-button label="Delete" icon="pi pi-trash" size="small" [raised]="true" type="button" (onClick)="removeAnswer(i, j)"></p-button>
-            </div>
-          }
-          @if (getAnswers(i).length < maxAnswers) {
-            <div class="button-container">
-              <p-button label="Add Answer" icon="pi pi-plus" type="button" (onClick)="addAnswer(i)"></p-button>
-            </div>
-          }
         <div class="button-container">
           <p-button label="Remove Question" icon="pi pi-trash" type="button" (onClick)="removeQuestion(i)"></p-button>
         </div>
