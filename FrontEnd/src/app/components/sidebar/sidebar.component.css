@@ -38,3 +38,74 @@
 .sidebar .conent{
   margin-bottom: 20px;
 }
+
+/* Style for the dialog container */
+p-dialog {
+  --dialog-border-radius: 8px;
+  --dialog-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  --dialog-padding: 1rem;
+  --dialog-header-bg: #007ad9;
+  --dialog-header-color: #fff;
+  --dialog-width: 30vw;
+}
+
+/* Customizing dialog appearance */
+.ui-dialog {
+  border-radius: var(--dialog-border-radius);
+  box-shadow: var(--dialog-shadow);
+  width: var(--dialog-width);
+}
+
+.ui-dialog .ui-dialog-titlebar {
+  background-color: var(--dialog-header-bg);
+  color: var(--dialog-header-color);
+  font-size: 1.25rem;
+  font-weight: bold;
+  padding: var(--dialog-padding);
+  border-radius: var(--dialog-border-radius) var(--dialog-border-radius) 0 0;
+}
+
+/* Content styling */
+.url-text {
+  font-size: 1rem;
+  color: #333;
+  word-break: break-all; /* Ensures long URLs wrap properly */
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.align-items-start {
+  align-items: flex-start;
+}
+
+/* Button styling */
+p-button {
+  --button-bg: #007ad9;
+  --button-hover-bg: #005f9e;
+  --button-text-color: #fff;
+}
+
+p-button .ui-button {
+  background-color: var(--button-bg);
+  color: var(--button-text-color);
+  font-size: 0.875rem;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+p-button .ui-button:hover {
+  background-color: var(--button-hover-bg);
+}
+
+.mt-3 {
+  margin-top: 1rem;
+}

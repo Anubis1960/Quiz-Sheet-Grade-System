@@ -15,13 +15,6 @@ def generate_token(p: dict, exp_time=3600) -> str:
 
     token = jwt.encode(payload, EKEY, algorithm='HS256')
 
-    teacher_id = p.get('id')
-    if teacher_id:
-        teacher = get_teacher_by_id(teacher_id)
-        if teacher:
-            send_email("Token Generated",
-                       f"Your Token: \n {token} \n expires in {exp_time // 3600} hours", teacher['email'])
-
     return token
 
 

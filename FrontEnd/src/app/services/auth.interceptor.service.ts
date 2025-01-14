@@ -7,7 +7,12 @@ import { Observable } from 'rxjs';
 })
 export class AuthInterceptorService implements HttpInterceptor{
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token = sessionStorage.getItem('access_token');
+    let token = '';
+    if (typeof sessionStorage !== 'undefined') {
+      token = sessionStorage.getItem('access_token') || '';
+    }
+    else {
+    }
     if (token) {
       request = request.clone({
         setHeaders: {

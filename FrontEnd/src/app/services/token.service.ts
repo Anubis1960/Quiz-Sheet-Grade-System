@@ -13,6 +13,7 @@ export class TokenService {
 
   validateUrlToken(token: string): Observable<any> {
     console.log(token);
+    console.log(`${BASE_URL}/api/token/validate_url/${token}`);
     return this.http.get(`${BASE_URL}/api/token/validate_url/${token}`);
   }
 
