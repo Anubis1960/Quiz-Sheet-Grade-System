@@ -46,15 +46,15 @@ export class SidebarComponent implements OnInit {
         ]
       },
       {
+        label: 'Generate URL',
+        icon: 'pi pi-link',
+        command: () => this.generateUrl()
+      },
+      {
         label: 'Logout',
         icon: 'pi pi-sign-out',
         command: () => this.toggleLogOut()
       },
-      {
-        label: 'Generate URL',
-        icon: 'pi pi-link',
-        command: () => this.generateUrl()
-      }
     ];
 
     console.log("Menu items:", this.items);

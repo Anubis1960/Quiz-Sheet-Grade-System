@@ -27,10 +27,12 @@
                     <tr class="table-row">
                         <td class="cell">{{ quiz.title }}</td>
                         <td class="description-cell">
-                            {{ truncateDescription(quiz.description, 50) }}
-                            <span *ngIf="quiz.description.length > 50" pTooltip="{{ quiz.description }}">
+                          {{ truncateDescription(quiz.description, 50) }} <!-- Truncate description -->
+                            @if (quiz.description.length > 50) {
+                              <span pTooltip="{{ quiz.description }}">
                                 <i class="pi pi-info-circle"></i>
-                            </span>
+                              </span>
+                            }
                         </td>
                         <td class="actions-cell">
                             <p-buttonGroup class="button-group">
@@ -38,7 +40,7 @@
                                 <p-button label="Edit" icon="pi pi-pencil" (click)="showDialog(rowIndex)" class="action-button"></p-button>
                                 <p-button label="Export" icon="pi pi-eye" (click)="exportPDF(quiz.id)" class="action-button"></p-button>
                             </p-buttonGroup>
-                            
+
                             <p-dialog header="Edit Quiz" [(visible)]="visibleDialogs[rowIndex]" class="edit-dialog">
                                 <app-paperwork-form [quiz]="quiz" (formSubmitted)="closeDialog($event)"></app-paperwork-form>
                             </p-dialog>
