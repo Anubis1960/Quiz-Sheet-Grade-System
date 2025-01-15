@@ -23,10 +23,7 @@ app = Flask(__name__)
 
 app.secret_key = os.urandom(24)
 
-CORS(app, resources={r"/api/*": {"origins": "*"}},
-     supports_credentials=True,
-     expose_headers=["Authorization", "Content-Type"],
-     allow_headers=["Authorization", "Content-Type"])
+CORS(app)
 
 # OAuth Manager Setup
 oauth_manager = OAuthManager(app)
