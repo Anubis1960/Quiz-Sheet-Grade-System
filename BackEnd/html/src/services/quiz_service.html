@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.5">
+<title>src.services.quiz_service API documentation</title>
+<meta name="description" content="">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>src.services.quiz_service</code></h1>
+</header>
+<section id="section-intro">
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="src.services.quiz_service.create_quiz"><code class="name flex">
+<span>def <span class="ident">create_quiz</span></span>(<span>quiz: <a title="src.models.quiz.Quiz" href="../models/quiz.html#src.models.quiz.Quiz">Quiz</a>) ‑> dict</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_quiz(quiz: Quiz) -&gt; dict:
+    &#34;&#34;&#34;
+    Adds a new quiz to the database.
+
+    Args:
+        quiz (Quiz): The quiz object to be added.
+
+    Returns:
+        dict: A dictionary containing the created quiz details or an error message if validation fails.
+    &#34;&#34;&#34;
+    try:
+        if len(quiz.title) == 0:
+            return {&#34;error&#34;: &#34;Title cannot be empty&#34;}
+        if len(quiz.questions) == 0:
+            return {&#34;error&#34;: &#34;Questions cannot be empty&#34;}
+        # if len(quiz.questions) &gt; 10:
+        #     return {&#34;error&#34;: f&#34;Questions cannot exceed 10&#34;}
+        if len(quiz.title) &gt; MAX_TITLE_LENGTH:
+            return {&#34;error&#34;: f&#34;Title cannot exceed {MAX_TITLE_LENGTH}&#34;}
+        if len(quiz.description) &gt; MAX_DESCRIPTION_LENGTH:
+            return {&#34;error&#34;: f&#34;Description cannot exceed {MAX_DESCRIPTION_LENGTH}&#34;}
+        _, quiz_ref = db.collection(COLLECTION_NAME).add(quiz.to_dict())
+        return QuizDTO(quiz_ref.id, quiz.title, quiz.description,
+                       [question.to_dict() for question in quiz.questions]).to_dict()
+
+    except KeyError as e:
+        return {&#34;error&#34;: f&#34;Key missing: {str(e)}&#34;}
+
+    except Exception as e:
+        return {&#34;error&#34;: f&#34;Unexpected error: {str(e)}&#34;}</code></pre>
+</details>
+<div class="desc"><p>Adds a new quiz to the database.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>quiz</code></strong> :&ensp;<code>Quiz</code></dt>
+<dd>The quiz object to be added.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>A dictionary containing the created quiz details or an error message if validation fails.</dd>
+</dl></div>
+</dd>
+<dt id="src.services.quiz_service.delete_quiz_by_id"><code class="name flex">
+<span>def <span class="ident">delete_quiz_by_id</span></span>(<span>quiz_id: str) ‑> dict</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def delete_quiz_by_id(quiz_id: str) -&gt; dict:
+    &#34;&#34;&#34;
+    Deletes a quiz by its ID.
+
+    Args:
+        quiz_id (str): The unique ID of the quiz to be deleted.
+
+    Returns:
+        dict: A dictionary containing the deleted quiz details or an error message if the quiz was not found.
+    &#34;&#34;&#34;
+    try:
+        quiz_ref = db.collection(COLLECTION_NAME).document(quiz_id)
+        quiz_snapshot = quiz_ref.get()
+
+        if not quiz_snapshot.exists:
+            return {&#34;error&#34;: f&#34;No data found for id: {quiz_id}&#34;}
+
+        quiz_data = quiz_snapshot.to_dict()
+
+        quiz_ref.delete()
+
+        return QuizDTO(quiz_id, quiz_data[&#39;title&#39;], quiz_data[&#39;description&#39;], quiz_data[&#39;questions&#39;]).to_dict()
+
+    except KeyError as e:
+        return {&#34;error&#34;: f&#34;Key missing: {str(e)}&#34;}
+
+    except Exception as e:
+        return {&#34;error&#34;: f&#34;Unexpected error: {str(e)}&#34;}</code></pre>
+</details>
+<div class="desc"><p>Deletes a quiz by its ID.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>quiz_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>The unique ID of the quiz to be deleted.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>A dictionary containing the deleted quiz details or an error message if the quiz was not found.</dd>
+</dl></div>
+</dd>
+<dt id="src.services.quiz_service.get_quiz_by_id"><code class="name flex">
+<span>def <span class="ident">get_quiz_by_id</span></span>(<span>quiz_id: str) ‑> dict</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_quiz_by_id(quiz_id: str) -&gt; dict:
+    &#34;&#34;&#34;
+    Retrieves a specific quiz by its ID.
+
+    Args:
+        quiz_id (str): The unique ID of the quiz to fetch.
+
+    Returns:
+        dict: A dictionary containing the quiz details (title, description, questions), or an empty dictionary
+        if not found.
+    &#34;&#34;&#34;
+    quiz_snapshot = db.collection(COLLECTION_NAME).document(quiz_id).get()
+
+    if not quiz_snapshot.exists:
+        return {}
+
+    return QuizDTO(quiz_id, quiz_snapshot.get(&#39;title&#39;), quiz_snapshot.get(&#39;description&#39;),
+                   quiz_snapshot.get(&#39;questions&#39;)).to_dict()</code></pre>
+</details>
+<div class="desc"><p>Retrieves a specific quiz by its ID.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>quiz_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>The unique ID of the quiz to fetch.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>A dictionary containing the quiz details (title, description, questions), or an empty dictionary</dd>
+</dl>
+<p>if not found.</p></div>
+</dd>
+<dt id="src.services.quiz_service.get_quizzes_by_teacher_id"><code class="name flex">
+<span>def <span class="ident">get_quizzes_by_teacher_id</span></span>(<span>teacher_id: str) ‑> list[dict]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_quizzes_by_teacher_id(teacher_id: str) -&gt; list[dict]:
+    &#34;&#34;&#34;
+    Retrieves all quizzes created by a specific teacher.
+
+    Args:
+        teacher_id (str): The unique ID of the teacher.
+
+    Returns:
+        list[dict]: A list of dictionaries containing quiz details (id, title, description, and questions).
+    &#34;&#34;&#34;
+    quizDTOs = [
+        QuizDTO(
+            quiz.id,
+            quiz.to_dict()[&#39;title&#39;],
+            quiz.to_dict()[&#39;description&#39;],
+            quiz.to_dict()[&#39;questions&#39;]
+        ).to_dict()
+        for quiz in db.collection(COLLECTION_NAME)
+        .where(&#39;teacher&#39;, &#39;==&#39;, teacher_id)
+        .stream()
+    ]
+    return quizDTOs</code></pre>
+</details>
+<div class="desc"><p>Retrieves all quizzes created by a specific teacher.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>teacher_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>The unique ID of the teacher.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list[dict]</code></dt>
+<dd>A list of dictionaries containing quiz details (id, title, description, and questions).</dd>
+</dl></div>
+</dd>
+<dt id="src.services.quiz_service.get_quizzes_data"><code class="name flex">
+<span>def <span class="ident">get_quizzes_data</span></span>(<span>) ‑> list[dict]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_quizzes_data() -&gt; list[dict]:
+    &#34;&#34;&#34;
+    Fetches all quizzes from the database.
+
+    Returns:
+        list[dict]: A list of dictionaries containing quiz details (id, title, description, and questions).
+    &#34;&#34;&#34;
+    quizDTOs = [QuizDTO(quiz.id, quiz.to_dict()[&#39;title&#39;], quiz.to_dict()[&#39;description&#39;],
+                        quiz.to_dict()[&#39;questions&#39;]).to_dict()
+                for quiz in db.collection(COLLECTION_NAME).stream()]
+    return quizDTOs</code></pre>
+</details>
+<div class="desc"><p>Fetches all quizzes from the database.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list[dict]</code></dt>
+<dd>A list of dictionaries containing quiz details (id, title, description, and questions).</dd>
+</dl></div>
+</dd>
+<dt id="src.services.quiz_service.get_teacher_id"><code class="name flex">
+<span>def <span class="ident">get_teacher_id</span></span>(<span>quiz_id: str) ‑> str</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_teacher_id(quiz_id: str) -&gt; str:
+    &#34;&#34;&#34;
+    Retrieves the teacher&#39;s ID associated with a specific quiz.
+
+    Args:
+        quiz_id (str): The unique ID of the quiz.
+
+    Returns:
+        str: The teacher&#39;s ID associated with the quiz.
+    &#34;&#34;&#34;
+    quiz_snapshot = db.collection(COLLECTION_NAME).document(quiz_id).get()
+    return quiz_snapshot.get(&#39;teacher&#39;)</code></pre>
+</details>
+<div class="desc"><p>Retrieves the teacher's ID associated with a specific quiz.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>quiz_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>The unique ID of the quiz.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>The teacher's ID associated with the quiz.</dd>
+</dl></div>
+</dd>
+<dt id="src.services.quiz_service.grade_quiz"><code class="name flex">
+<span>def <span class="ident">grade_quiz</span></span>(<span>img: cv2.Mat | numpy.ndarray) ‑> dict</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def grade_quiz(img: MatLike) -&gt; dict:
+    &#34;&#34;&#34;
+    Grades a quiz based on a bubble sheet image.
+
+    Args:
+        img (MatLike): The image of the bubble sheet to be graded.
+
+    Returns:
+        dict: A dictionary containing the student&#39;s score and a message, or an error message if something goes wrong.
+    &#34;&#34;&#34;
+    try:
+        resp = {}
+        bubble_sheet, student_id, quiz_id = parser(img)
+
+        if bubble_sheet is None:
+            return {&#34;error&#34;: &#34;No bubble sheet found&#34;}
+
+        if quiz_id == &#34;&#34;:
+            return {&#34;error&#34;: &#34;Quiz not found&#34;}
+
+        quiz = get_quiz_by_id(quiz_id)
+
+        if not quiz:
+            return {&#34;error&#34;: &#34;Quiz not found&#34;}
+
+        correct_answers = [q[&#39;correct_answers&#39;] for q in quiz[&#39;questions&#39;]]
+
+        idx = 0
+        total_correct = 0
+        for sheet in bubble_sheet:
+
+            ans, num_correct = solve_quiz(sheet, correct_answers[idx:min(idx + 10, len(correct_answers))])
+            idx += 10
+            total_correct += num_correct
+
+        score = (total_correct / len(correct_answers)) * 100
+        if student_id != &#34;&#34;:
+            students = get_student_by_unique_id(student_id)
+            if len(students) != 0:
+                email = students[0][&#39;email&#39;]
+                message = f&#34;Congratulations! You scored {score} on the {quiz[&#39;title&#39;]} quiz&#34;
+                send_email(&#34;Quiz Results&#34;, message, email)
+            else:
+                resp[&#34;message&#34;] = &#34;Student ID not found&#34;
+        else:
+            resp[&#34;message&#34;] = &#34;Student ID not found&#34;
+        resp[&#34;score&#34;] = score
+        return resp
+    except Exception as e:
+        return {&#34;error&#34;: f&#34;Unexpected error: {str(e)}&#34;}</code></pre>
+</details>
+<div class="desc"><p>Grades a quiz based on a bubble sheet image.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>img</code></strong> :&ensp;<code>MatLike</code></dt>
+<dd>The image of the bubble sheet to be graded.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>A dictionary containing the student's score and a message, or an error message if something goes wrong.</dd>
+</dl></div>
+</dd>
+<dt id="src.services.quiz_service.update_quiz_data"><code class="name flex">
+<span>def <span class="ident">update_quiz_data</span></span>(<span>updated_data: dict, quiz_id: str) ‑> dict</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_quiz_data(updated_data: dict, quiz_id: str) -&gt; dict:
+    &#34;&#34;&#34;
+    Updates an existing quiz&#39;s data.
+
+    Args:
+        updated_data (dict): A dictionary containing the updated quiz data.
+        quiz_id (str): The unique ID of the quiz to be updated.
+
+    Returns:
+        dict: A dictionary containing the updated quiz details or an error message if validation fails.
+    &#34;&#34;&#34;
+    try:
+        if len(updated_data[&#39;title&#39;]) == 0:
+            return {&#34;error&#34;: &#34;Title cannot be empty&#34;}
+        if len(updated_data[&#39;questions&#39;]) == 0:
+            return {&#34;error&#34;: &#34;Questions cannot be empty&#34;}
+        # if len(updated_data[&#39;questions&#39;]) &gt; 10:
+        #     return {&#34;error&#34;: f&#34;Questions cannot exceed 10&#34;}
+        if len(updated_data[&#39;title&#39;]) &gt; MAX_TITLE_LENGTH:
+            return {&#34;error&#34;: f&#34;Title cannot exceed {MAX_TITLE_LENGTH}&#34;}
+        if len(updated_data[&#39;description&#39;]) &gt; MAX_DESCRIPTION_LENGTH:
+            return {&#34;error&#34;: f&#34;Description cannot exceed {MAX_DESCRIPTION_LENGTH}&#34;}
+        quiz_ref = db.collection(COLLECTION_NAME).document(quiz_id)
+
+        quiz_snapshot = quiz_ref.get()
+        if not quiz_snapshot.exists:
+            return {&#34;error&#34;: f&#34;No data found for id: {quiz_id}&#34;}
+
+        quiz_ref.update(updated_data)
+        return QuizDTO(quiz_id, updated_data[&#39;title&#39;], updated_data[&#39;description&#39;], updated_data[&#39;questions&#39;]).to_dict()
+
+    except KeyError as e:
+        return {&#34;error&#34;: f&#34;Key missing: {str(e)}&#34;}
+
+    except Exception as e:
+        return {&#34;error&#34;: f&#34;Unexpected error: {str(e)}&#34;}</code></pre>
+</details>
+<div class="desc"><p>Updates an existing quiz's data.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>updated_data</code></strong> :&ensp;<code>dict</code></dt>
+<dd>A dictionary containing the updated quiz data.</dd>
+<dt><strong><code>quiz_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>The unique ID of the quiz to be updated.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>A dictionary containing the updated quiz details or an error message if validation fails.</dd>
+</dl></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="src.services" href="index.html">src.services</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="src.services.quiz_service.create_quiz" href="#src.services.quiz_service.create_quiz">create_quiz</a></code></li>
+<li><code><a title="src.services.quiz_service.delete_quiz_by_id" href="#src.services.quiz_service.delete_quiz_by_id">delete_quiz_by_id</a></code></li>
+<li><code><a title="src.services.quiz_service.get_quiz_by_id" href="#src.services.quiz_service.get_quiz_by_id">get_quiz_by_id</a></code></li>
+<li><code><a title="src.services.quiz_service.get_quizzes_by_teacher_id" href="#src.services.quiz_service.get_quizzes_by_teacher_id">get_quizzes_by_teacher_id</a></code></li>
+<li><code><a title="src.services.quiz_service.get_quizzes_data" href="#src.services.quiz_service.get_quizzes_data">get_quizzes_data</a></code></li>
+<li><code><a title="src.services.quiz_service.get_teacher_id" href="#src.services.quiz_service.get_teacher_id">get_teacher_id</a></code></li>
+<li><code><a title="src.services.quiz_service.grade_quiz" href="#src.services.quiz_service.grade_quiz">grade_quiz</a></code></li>
+<li><code><a title="src.services.quiz_service.update_quiz_data" href="#src.services.quiz_service.update_quiz_data">update_quiz_data</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.5</a>.</p>
+</footer>
+</body>
+</html>

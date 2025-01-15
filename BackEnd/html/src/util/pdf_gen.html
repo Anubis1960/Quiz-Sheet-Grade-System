@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.5">
+<title>src.util.pdf_gen API documentation</title>
+<meta name="description" content="">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>src.util.pdf_gen</code></h1>
+</header>
+<section id="section-intro">
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="src.util.pdf_gen.add_bubble_sheet"><code class="name flex">
+<span>def <span class="ident">add_bubble_sheet</span></span>(<span>c: reportlab.pdfgen.canvas.Canvas,<br>image_path: str,<br>x_position: float,<br>y_position: float,<br>width: float,<br>height: float)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_bubble_sheet(c: canvas.Canvas, image_path: str, x_position: float, y_position: float, width: float,
+                     height: float):
+    &#34;&#34;&#34;
+    Adds an image (bubble sheet) to the PDF at the specified location and size.
+
+    Args:
+        c (canvas.Canvas): The reportlab canvas to draw on.
+        image_path (str): The path to the bubble sheet image.
+        x_position (float): The X position to place the image.
+        y_position (float): The Y position to place the image.
+        width (float): The width of the image.
+        height (float): The height of the image.
+
+    Returns:
+        None
+    &#34;&#34;&#34;
+    c.drawImage(image_path, x_position, y_position, width=width, height=height)</code></pre>
+</details>
+<div class="desc"><p>Adds an image (bubble sheet) to the PDF at the specified location and size.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>c</code></strong> :&ensp;<code>canvas.Canvas</code></dt>
+<dd>The reportlab canvas to draw on.</dd>
+<dt><strong><code>image_path</code></strong> :&ensp;<code>str</code></dt>
+<dd>The path to the bubble sheet image.</dd>
+<dt><strong><code>x_position</code></strong> :&ensp;<code>float</code></dt>
+<dd>The X position to place the image.</dd>
+<dt><strong><code>y_position</code></strong> :&ensp;<code>float</code></dt>
+<dd>The Y position to place the image.</dd>
+<dt><strong><code>width</code></strong> :&ensp;<code>float</code></dt>
+<dd>The width of the image.</dd>
+<dt><strong><code>height</code></strong> :&ensp;<code>float</code></dt>
+<dd>The height of the image.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None</p></div>
+</dd>
+<dt id="src.util.pdf_gen.add_description_and_teacher"><code class="name flex">
+<span>def <span class="ident">add_description_and_teacher</span></span>(<span>c: reportlab.pdfgen.canvas.Canvas,<br>description: str,<br>teacher: str,<br>y_position: float) ‑> float</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_description_and_teacher(c: canvas.Canvas, description: str, teacher: str, y_position: float) -&gt; float:
+    &#34;&#34;&#34;
+    Adds the quiz description and teacher&#39;s name to the PDF.
+
+    Args:
+        c (canvas.Canvas): The reportlab canvas to draw on.
+        description (str): The description of the quiz.
+        teacher (str): The teacher&#39;s name.
+        y_position (float): The starting Y position to draw the text.
+
+    Returns:
+        float: The Y position after the description and teacher text have been added.
+    &#34;&#34;&#34;
+    c.setFont(&#34;Helvetica&#34;, SUBTITLE_FONT_SIZE)
+
+    # Wrap description text
+    description_lines = wrap(description, MAX_TEXT_WIDTH)
+    desc_y = y_position - SUBTITLE_FONT_SIZE - SPACING
+
+    # Draw description lines
+    for line in description_lines:
+        c.drawString(MARGIN, desc_y, line)
+        desc_y -= SPACING
+
+    # Add teacher&#39;s name
+    teacher_y = desc_y - SPACING
+    c.drawString(MARGIN, teacher_y, f&#34;Teacher: {teacher}&#34;)
+
+    return teacher_y - SPACING</code></pre>
+</details>
+<div class="desc"><p>Adds the quiz description and teacher's name to the PDF.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>c</code></strong> :&ensp;<code>canvas.Canvas</code></dt>
+<dd>The reportlab canvas to draw on.</dd>
+<dt><strong><code>description</code></strong> :&ensp;<code>str</code></dt>
+<dd>The description of the quiz.</dd>
+<dt><strong><code>teacher</code></strong> :&ensp;<code>str</code></dt>
+<dd>The teacher's name.</dd>
+<dt><strong><code>y_position</code></strong> :&ensp;<code>float</code></dt>
+<dd>The starting Y position to draw the text.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>float</code></dt>
+<dd>The Y position after the description and teacher text have been added.</dd>
+</dl></div>
+</dd>
+<dt id="src.util.pdf_gen.add_qr_code"><code class="name flex">
+<span>def <span class="ident">add_qr_code</span></span>(<span>c: reportlab.pdfgen.canvas.Canvas, quiz_id: str)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_qr_code(c: canvas.Canvas, quiz_id: str):
+    &#34;&#34;&#34;
+    Adds a QR code to the PDF at the specified location.
+
+    Args:
+        c (canvas.Canvas): The reportlab canvas to draw on.
+        quiz_id (str): The unique quiz identifier to encode in the QR code.
+
+    Returns:
+        None
+    &#34;&#34;&#34;
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(quiz_id)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color=&#34;black&#34;, back_color=&#34;white&#34;)
+
+    img_io = BytesIO()
+    img.save(img_io, format=&#34;PNG&#34;)
+    img_io.seek(0)
+    qr_image = ImageReader(img_io)
+
+    qr_y = PAGE_HEIGHT - MARGIN - QR_CODE_SIZE
+    c.drawImage(qr_image, MARGIN, qr_y, width=QR_CODE_SIZE, height=QR_CODE_SIZE)</code></pre>
+</details>
+<div class="desc"><p>Adds a QR code to the PDF at the specified location.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>c</code></strong> :&ensp;<code>canvas.Canvas</code></dt>
+<dd>The reportlab canvas to draw on.</dd>
+<dt><strong><code>quiz_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>The unique quiz identifier to encode in the QR code.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None</p></div>
+</dd>
+<dt id="src.util.pdf_gen.add_questions"><code class="name flex">
+<span>def <span class="ident">add_questions</span></span>(<span>c: reportlab.pdfgen.canvas.Canvas, questions: list)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_questions(c: canvas.Canvas, questions: list):
+    &#34;&#34;&#34;
+    Adds the quiz questions and options to the PDF.
+
+    Args:
+        c (canvas.Canvas): The reportlab canvas to draw on.
+        questions (list): A list of question dictionaries, where each contains the question text and options.
+
+    Returns:
+        None
+    &#34;&#34;&#34;
+    c.setFont(&#34;Helvetica&#34;, TEXT_FONT_SIZE)
+    y = PAGE_HEIGHT - MARGIN
+
+    for q_index, question in enumerate(questions):
+        # Wrap question text
+        question_text_lines = wrap(f&#34;{q_index + 1}: {question[&#39;text&#39;]}&#34;, MAX_TEXT_WIDTH)
+        question_height = len(question_text_lines) * SPACING
+
+        # Prepare options lines
+        option_lines = []
+        max_line_width = MAX_TEXT_WIDTH  # Maximum characters per line
+
+        for i, option in enumerate(question[&#39;options&#39;]):
+            wrapped_option = wrap(f&#34;{chr(65 + i)}. {option}&#34;, max_line_width)
+            option_lines.extend(wrapped_option)
+
+        options_height = len(option_lines) * SPACING
+
+        # Check if question and options fit on the current page
+        total_height = question_height + options_height + QUESTION_SPACING
+        if y - total_height &lt; MARGIN:
+            c.showPage()
+            y = PAGE_HEIGHT - MARGIN
+            c.setFont(&#34;Helvetica&#34;, TEXT_FONT_SIZE)
+
+        # Draw question text
+        for line in question_text_lines:
+            c.drawString(MARGIN, y, line)
+            y -= SPACING
+
+        # Draw options
+        for line in option_lines:
+            c.drawString(MARGIN, y, line)
+            y -= SPACING
+
+        # Add spacing between questions
+        y -= QUESTION_SPACING</code></pre>
+</details>
+<div class="desc"><p>Adds the quiz questions and options to the PDF.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>c</code></strong> :&ensp;<code>canvas.Canvas</code></dt>
+<dd>The reportlab canvas to draw on.</dd>
+<dt><strong><code>questions</code></strong> :&ensp;<code>list</code></dt>
+<dd>A list of question dictionaries, where each contains the question text and options.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None</p></div>
+</dd>
+<dt id="src.util.pdf_gen.add_student_id_box"><code class="name flex">
+<span>def <span class="ident">add_student_id_box</span></span>(<span>c: reportlab.pdfgen.canvas.Canvas, y_position: float) ‑> float</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_student_id_box(c: canvas.Canvas, y_position: float) -&gt; float:
+    &#34;&#34;&#34;
+    Adds a box for the student ID to the PDF.
+
+    Args:
+        c (canvas.Canvas): The reportlab canvas to draw on.
+        y_position (float): The Y position to place the student ID box.
+
+    Returns:
+        float: The Y position after the student ID box has been drawn.
+    &#34;&#34;&#34;
+    c.setFont(&#34;Helvetica&#34;, TEXT_FONT_SIZE)
+    student_id_label_y = y_position + SPACING
+
+    c.drawString(MARGIN, student_id_label_y, &#34;Student ID:&#34;)
+    c.rect(STUDENT_ID_BOX_MARGIN, student_id_label_y, STUDENT_ID_BOX_WIDTH, STUDENT_ID_BOX_HEIGHT)
+
+    return student_id_label_y - SPACING</code></pre>
+</details>
+<div class="desc"><p>Adds a box for the student ID to the PDF.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>c</code></strong> :&ensp;<code>canvas.Canvas</code></dt>
+<dd>The reportlab canvas to draw on.</dd>
+<dt><strong><code>y_position</code></strong> :&ensp;<code>float</code></dt>
+<dd>The Y position to place the student ID box.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>float</code></dt>
+<dd>The Y position after the student ID box has been drawn.</dd>
+</dl></div>
+</dd>
+<dt id="src.util.pdf_gen.add_title"><code class="name flex">
+<span>def <span class="ident">add_title</span></span>(<span>c: reportlab.pdfgen.canvas.Canvas, title: str, y_position: float)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_title(c: canvas.Canvas, title: str, y_position: float):
+    &#34;&#34;&#34;
+    Adds the quiz title to the PDF at the specified Y position.
+
+    Args:
+        c (canvas.Canvas): The reportlab canvas to draw on.
+        title (str): The title of the quiz.
+        y_position (float): The Y position to place the title.
+
+    Returns:
+        None
+    &#34;&#34;&#34;
+    c.setFont(&#34;Helvetica-Bold&#34;, TITLE_FONT_SIZE)
+    c.drawCentredString(PAGE_WIDTH / 2, y_position, title)</code></pre>
+</details>
+<div class="desc"><p>Adds the quiz title to the PDF at the specified Y position.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>c</code></strong> :&ensp;<code>canvas.Canvas</code></dt>
+<dd>The reportlab canvas to draw on.</dd>
+<dt><strong><code>title</code></strong> :&ensp;<code>str</code></dt>
+<dd>The title of the quiz.</dd>
+<dt><strong><code>y_position</code></strong> :&ensp;<code>float</code></dt>
+<dd>The Y position to place the title.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None</p></div>
+</dd>
+<dt id="src.util.pdf_gen.generate_pdf"><code class="name flex">
+<span>def <span class="ident">generate_pdf</span></span>(<span>quiz_id: str, quiz_data: dict, teacher_name: str) ‑> _io.BytesIO</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def generate_pdf(quiz_id: str, quiz_data: dict, teacher_name: str) -&gt; BytesIO:
+    &#34;&#34;&#34;
+    Generates a PDF for the quiz including a bubble sheet, QR code, title, description,
+    teacher&#39;s name, and a student ID box. Additionally, it includes a page for questions.
+
+    Args:
+        quiz_id (str): The unique identifier for the quiz (used for QR code).
+        quiz_data (dict): A dictionary containing quiz title, description, and questions.
+        teacher_name (str): The name of the teacher for the quiz.
+
+    Returns:
+        BytesIO: A file-like object containing the generated PDF.
+    &#34;&#34;&#34;
+    buf = BytesIO()
+    c = canvas.Canvas(buf, pagesize=A4)
+
+    # Add a bubble sheet
+    add_bubble_sheet(
+        c,
+        os.path.join(os.path.dirname(__file__), &#34;30sheetsolved.png&#34;),
+        BUBBLE_SHEET_X,
+        BUBBLE_SHEET_Y,
+        BUBBLE_SHEET_MARGIN,
+        BUBBLE_SHEET_HEIGHT
+    )
+
+    # Add a QR code with the quiz ID
+    add_qr_code(c, quiz_id)
+
+    # Add the title
+    title_y = PAGE_HEIGHT - MARGIN - QR_CODE_SIZE - SPACING
+    add_title(c, quiz_data[&#34;title&#34;], title_y)
+
+    # Add the description and teacher
+    add_description_and_teacher(c, quiz_data[&#34;description&#34;], teacher_name, title_y)
+
+    student_y_position = BUBBLE_SHEET_Y + BUBBLE_SHEET_HEIGHT + SPACING
+
+    # Add a box for the student ID
+    add_student_id_box(c, student_y_position)
+
+    # Start a new page for questions
+    c.showPage()
+    add_questions(c, quiz_data[&#34;questions&#34;])
+
+    # Save the PDF
+    c.save()
+    buf.seek(0)
+
+    return buf</code></pre>
+</details>
+<div class="desc"><p>Generates a PDF for the quiz including a bubble sheet, QR code, title, description,
+teacher's name, and a student ID box. Additionally, it includes a page for questions.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>quiz_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>The unique identifier for the quiz (used for QR code).</dd>
+<dt><strong><code>quiz_data</code></strong> :&ensp;<code>dict</code></dt>
+<dd>A dictionary containing quiz title, description, and questions.</dd>
+<dt><strong><code>teacher_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the teacher for the quiz.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>BytesIO</code></dt>
+<dd>A file-like object containing the generated PDF.</dd>
+</dl></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="src.util" href="index.html">src.util</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="src.util.pdf_gen.add_bubble_sheet" href="#src.util.pdf_gen.add_bubble_sheet">add_bubble_sheet</a></code></li>
+<li><code><a title="src.util.pdf_gen.add_description_and_teacher" href="#src.util.pdf_gen.add_description_and_teacher">add_description_and_teacher</a></code></li>
+<li><code><a title="src.util.pdf_gen.add_qr_code" href="#src.util.pdf_gen.add_qr_code">add_qr_code</a></code></li>
+<li><code><a title="src.util.pdf_gen.add_questions" href="#src.util.pdf_gen.add_questions">add_questions</a></code></li>
+<li><code><a title="src.util.pdf_gen.add_student_id_box" href="#src.util.pdf_gen.add_student_id_box">add_student_id_box</a></code></li>
+<li><code><a title="src.util.pdf_gen.add_title" href="#src.util.pdf_gen.add_title">add_title</a></code></li>
+<li><code><a title="src.util.pdf_gen.generate_pdf" href="#src.util.pdf_gen.generate_pdf">generate_pdf</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.5</a>.</p>
+</footer>
+</body>
+</html>

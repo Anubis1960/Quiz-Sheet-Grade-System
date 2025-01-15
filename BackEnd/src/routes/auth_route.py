@@ -9,20 +9,38 @@ from src.services.token_service import generate_token
 from src.util.encrypt import *
 
 #
-#   Authentification Blueprint
+#   Authentication Blueprint
 #
 auth_blueprint = Blueprint('auth', __name__)
 
 
 @auth_blueprint.route('/')
 def hello_world():
+    """
+    A test route to check if the user is logged in.
+
+    This route simply returns a message with the logged-in user's email, if available.
+
+    Returns:
+        str: A greeting message with the logged-in user's email, or a default message.
+    """
     email = dict(session).get('email', None)
-    return f'Hello, you are logged in as {email}!'
+    return f'Hello, you are logged in as {email}!' if email else 'Hello, you are not logged in!'
 
 
 @auth_blueprint.route('/login', methods=['GET', 'POST'])
 def login() -> jsonify:
-    # Handle login from the form
+    """
+    Handle login requests. Supports both regular login and OAuth2.0 login via Google.
+
+    On POST request, validates user credentials (email and password), creates a session, and returns a token.
+
+    On GET request, redirects the user to the OAuth provider (Google).
+
+    Returns:
+        jsonify: A response containing user data and token on successful login or error message on failure.
+        HTTPStatus: 200 OK if credentials are valid, 400 BAD REQUEST if invalid credentials are provided.
+    """
     if request.method == 'POST':
         # Fetch user credentials
         email = request.json.get('email')
@@ -59,7 +77,15 @@ def login() -> jsonify:
 
 @auth_blueprint.route('/authorize')
 def authorize() -> jsonify:
-    # Handle the OAuth callback from Google
+    """
+    Handle the OAuth callback from Google after the user grants permissions.
+
+    Retrieves the user's information (email and name) from the OAuth provider, checks if the user exists in the database,
+    and either creates a new user or logs the existing user in. Then, a token is generated for the user.
+
+    Returns:
+        redirect: Redirects to a callback URL with user data and token in the query parameters.
+    """
     google = current_app.oauth_manager.get_provider('google')
     token = google.authorize_access_token()
 
@@ -109,6 +135,14 @@ def authorize() -> jsonify:
 
 @auth_blueprint.route('/logout')
 def logout() -> redirect:
+    """
+    Logs the user out by clearing the session.
+
+    This route removes all keys from the session and then redirects the user to the home page.
+
+    Returns:
+        redirect: Redirects the user to the home page after logging out.
+    """
     for key in list(session.keys()):
         session.pop(key)
     return redirect('/')

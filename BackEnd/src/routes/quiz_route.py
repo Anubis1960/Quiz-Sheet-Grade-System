@@ -9,162 +9,224 @@ from src.models.question import Question
 from src.services.quiz_service import *
 from src.services.teacher_service import get_teacher_by_id
 
-#
-#	Define URL for quizzes
-#
 QUIZ_URL = '/api/quizzes'
-#
-#   Quiz Blueprint
-#
 quiz_blueprint = Blueprint('quiz', __name__, url_prefix=QUIZ_URL)
 
 
-#
-#	Route to display list of quizzes
-#
 @quiz_blueprint.route('/', methods=['GET'])
 def get_quizzes() -> jsonify:
-	quizzes_data = get_quizzes_data()
-	return jsonify(quizzes_data), HTTPStatus.OK
+    """
+    Retrieve the list of all quizzes.
+
+    This route returns a list of quizzes stored in the database.
+
+    Returns:
+        jsonify: A list of quizzes with a 200 OK status.
+    """
+    quizzes_data = get_quizzes_data()
+    return jsonify(quizzes_data), HTTPStatus.OK
 
 
 @quiz_blueprint.route("/<quiz_id>", methods=['GET'])
 def get_quiz(quiz_id: str) -> jsonify:
-	try:
-		quiz = get_quiz_by_id(quiz_id)
-		if not quiz:
-			return jsonify({"status": "error", "message": f"No data found for id: {quiz_id}"}), HTTPStatus.NOT_FOUND
+    """
+    Retrieve a specific quiz by its ID.
 
-		return jsonify(quiz), HTTPStatus.OK
+    This route retrieves a quiz based on the provided `quiz_id`. If no quiz is found, it returns a 404 error.
 
-	except Exception as e:
-		return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
+    Args:
+        quiz_id (str): The ID of the quiz to retrieve.
+
+    Returns:
+        jsonify: The quiz data with a 200 OK status, or an error message with a 404 status if not found.
+    """
+    try:
+        quiz = get_quiz_by_id(quiz_id)
+        if not quiz:
+            return jsonify({"status": "error", "message": f"No data found for id: {quiz_id}"}), HTTPStatus.NOT_FOUND
+
+        return jsonify(quiz), HTTPStatus.OK
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
-#
-#	Route to add a quiz into the Firestore Database
-#
 @quiz_blueprint.route('/', methods=['POST'])
 def add_quiz() -> jsonify:
-	try:
-		data = request.get_json()
+    """
+    Add a new quiz to the database.
 
-		title = data.get('title')
-		description = data.get('description')
-		questions = data.get('questions', [])
-		teacher_id = data.get('teacher')
+    This route accepts the quiz data (title, description, questions, and teacher ID) and creates a new quiz record.
 
-		quiz = create_quiz(
-			Quiz(title, description, teacher_id, [Question.from_dict(question) for question in questions]))
+    Returns:
+        jsonify: The created quiz data with a 201 CREATED status, or an error message with a 400 BAD REQUEST status.
+    """
+    try:
+        data = request.get_json()
 
-		if "error" in quiz:
-			return jsonify({"status": "error", "message": quiz["error"]}), HTTPStatus.BAD_REQUEST
+        title = data.get('title')
+        description = data.get('description')
+        questions = data.get('questions', [])
+        teacher_id = data.get('teacher')
 
-		return jsonify(quiz), HTTPStatus.CREATED
+        quiz = create_quiz(
+            Quiz(title, description, teacher_id, [Question.from_dict(question) for question in questions]))
 
-	except Exception as e:
-		return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
+        if "error" in quiz:
+            return jsonify({"status": "error", "message": quiz["error"]}), HTTPStatus.BAD_REQUEST
+
+        return jsonify(quiz), HTTPStatus.CREATED
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
-#
-#	Update quiz route
-#
 @quiz_blueprint.route("/<quiz_id>", methods=['PUT'])
 def update_quiz(quiz_id: str) -> jsonify:
-	try:
-		updated_data = request.get_json()
-		updated_quiz = update_quiz_data(updated_data, quiz_id)
+    """
+    Update an existing quiz.
 
-		if "error" in updated_quiz:
-			return jsonify({"status": "error", "message": updated_quiz["error"]}), HTTPStatus.BAD_REQUEST
+    This route allows updating quiz details based on the `quiz_id`. The provided data will overwrite the existing quiz.
 
-		return jsonify(updated_quiz), HTTPStatus.OK
+    Args:
+        quiz_id (str): The ID of the quiz to update.
 
-	except Exception as e:
-		return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
+    Returns:
+        jsonify: The updated quiz data with a 200 OK status, or an error message with a 400 BAD REQUEST status.
+    """
+    try:
+        updated_data = request.get_json()
+        updated_quiz = update_quiz_data(updated_data, quiz_id)
+
+        if "error" in updated_quiz:
+            return jsonify({"status": "error", "message": updated_quiz["error"]}), HTTPStatus.BAD_REQUEST
+
+        return jsonify(updated_quiz), HTTPStatus.OK
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
-#
-#	Delete quiz route
-#
 @quiz_blueprint.route("/<quiz_id>", methods=['DELETE'])
 def delete_quiz(quiz_id: str) -> jsonify:
-	try:
-		quiz = delete_quiz_by_id(quiz_id)
+    """
+    Delete a specific quiz by its ID.
 
-		if "error" in quiz:
-			return jsonify({"status": "error", "message": quiz["error"]}), HTTPStatus.BAD_REQUEST
+    This route deletes a quiz based on the provided `quiz_id`. If the quiz is not found, a 400 error is returned.
 
-		return jsonify(quiz), HTTPStatus.OK
+    Args:
+        quiz_id (str): The ID of the quiz to delete.
 
-	except Exception as e:
-		return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
+    Returns:
+        jsonify: The deletion result with a 200 OK status, or an error message with a 400 BAD REQUEST status.
+    """
+    try:
+        quiz = delete_quiz_by_id(quiz_id)
+
+        if "error" in quiz:
+            return jsonify({"status": "error", "message": quiz["error"]}), HTTPStatus.BAD_REQUEST
+
+        return jsonify(quiz), HTTPStatus.OK
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 @quiz_blueprint.route("/pdf/<quiz_id>", methods=['GET'])
 def export_pdf(quiz_id: str) -> jsonify:
-	try:
-		quiz = get_quiz_by_id(quiz_id)
+    """
+    Export a quiz to a PDF file.
 
-		if not quiz:
-			return jsonify({"status": "error", "message": f"No data found for id: {quiz_id}"}), HTTPStatus.NOT_FOUND
+    This route generates a PDF of the specified quiz and its associated teacher. The PDF is returned as an attachment.
 
-		teacher_id = get_teacher_id(quiz['id'])
-		if not teacher_id:
-			return jsonify({"status": "error", "message": f"No teacher found for quiz id: {quiz_id}"}), HTTPStatus.NOT_FOUND
+    Args:
+        quiz_id (str): The ID of the quiz to export to PDF.
 
-		teacher = get_teacher_by_id(teacher_id)
+    Returns:
+        send_file: The generated PDF file as a downloadable attachment, or an error message with a 400 status if
+        not found.
+    """
+    try:
+        quiz = get_quiz_by_id(quiz_id)
 
-		pdf_buffer = generate_pdf(quiz_id, quiz, teacher['name'])
+        if not quiz:
+            return jsonify({"status": "error", "message": f"No data found for id: {quiz_id}"}), HTTPStatus.NOT_FOUND
 
-		return send_file(
-			pdf_buffer,
-			as_attachment=True,
-			download_name=f"{quiz_id}.pdf",
-			mimetype="application/pdf"
-		)
+        teacher_id = get_teacher_id(quiz['id'])
+        if not teacher_id:
+            return (jsonify(
+                {"status": "error", "message": f"No teacher found for quiz id: {quiz_id}"}), HTTPStatus.NOT_FOUND)
 
-	except Exception as e:
-		return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
+        teacher = get_teacher_by_id(teacher_id)
+
+        pdf_buffer = generate_pdf(quiz_id, quiz, teacher['name'])
+
+        return send_file(
+            pdf_buffer,
+            as_attachment=True,
+            download_name=f"{quiz_id}.pdf",
+            mimetype="application/pdf"
+        )
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 @quiz_blueprint.route("/grade", methods=['POST'])
-def grade():
-	try:
-		if 'image' not in request.files:
-			return jsonify({"status": "error", "message": "No file part in the request"}), HTTPStatus.BAD_REQUEST
+def grade() -> jsonify:
+    """
+    Grade a quiz based on an image submission.
 
-		file = request.files['image']
+    This route accepts an image containing the completed quiz, processes it, and returns the grading results.
 
-		if file.filename == '':
-			return jsonify({"status": "error", "message": "No selected file"}), HTTPStatus.BAD_REQUEST
+    Returns:
+        jsonify: The grading results with a 200 OK status, or an error message with a 400 BAD REQUEST status.
+    """
+    try:
+        if 'image' not in request.files:
+            return jsonify({"status": "error", "message": "No file part in the request"}), HTTPStatus.BAD_REQUEST
 
-		b_file = file.read()
+        file = request.files['image']
 
-		nparr = np.frombuffer(b_file, np.uint8)
+        if file.filename == '':
+            return jsonify({"status": "error", "message": "No selected file"}), HTTPStatus.BAD_REQUEST
 
-		img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        b_file = file.read()
 
-		if img is None:
-			return jsonify({"status": "error", "message": "Failed to decode the image"}), HTTPStatus.BAD_REQUEST
+        nparr = np.frombuffer(b_file, np.uint8)
 
-		# Your image processing function
-		gr = grade_quiz(img)
+        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-		if "error" in gr:
-			return jsonify({"status": "error", "message": gr["error"]}), HTTPStatus.BAD_REQUEST
+        if img is None:
+            return jsonify({"status": "error", "message": "Failed to decode the image"}), HTTPStatus.BAD_REQUEST
 
-		return jsonify(gr), HTTPStatus.OK
+        # Your image processing function
+        gr = grade_quiz(img)
 
-	except Exception as e:
-		return jsonify({"status": "error", "message": f"An error occurred: {str(e)}"}), HTTPStatus.INTERNAL_SERVER_ERROR
+        if "error" in gr:
+            return jsonify({"status": "error", "message": gr["error"]}), HTTPStatus.BAD_REQUEST
+
+        return jsonify(gr), HTTPStatus.OK
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": f"An error occurred: {str(e)}"}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 @quiz_blueprint.route("/all/<teacher_id>", methods=['GET'])
 def get_by_teacher_id(teacher_id: str) -> jsonify:
-	try:
-		print(teacher_id)
-		quizzes = get_quizzes_by_teacher_id(teacher_id)
-		return jsonify(quizzes), HTTPStatus.OK
-	except Exception as e:
-		return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
+    """
+    Retrieve all quizzes created by a specific teacher.
+
+    This route returns a list of quizzes associated with the given teacher ID.
+
+    Args:
+        teacher_id (str): The ID of the teacher whose quizzes are to be retrieved.
+
+    Returns:
+        jsonify: A list of quizzes with a 200 OK status, or an error message with a 400 BAD REQUEST status.
+    """
+    try:
+        quizzes = get_quizzes_by_teacher_id(teacher_id)
+        return jsonify(quizzes), HTTPStatus.OK
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR

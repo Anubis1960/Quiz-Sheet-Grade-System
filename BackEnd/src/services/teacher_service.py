@@ -7,29 +7,44 @@ COLLECTION = 'teachers'
 REGEX = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
 
 
-#
-#  Retrieve teachers
-#
 def get_teachers_data() -> list[dict]:
+    """
+    Retrieve all teacher data from the database.
+
+    Returns:
+        list[dict]: A list of dictionaries containing teacher data.
+    """
     teachers_data = db.collection(COLLECTION).stream()
     teachers_list = [teacher.to_dict() for teacher in teachers_data]
     return teachers_list
 
 
-#
-#   Retrieve teacher by id
-#
 def get_teacher_by_id(teacher_id: str) -> dict:
+    """
+    Retrieve a teacher's data by their unique ID.
+
+    Args:
+        teacher_id (str): The ID of the teacher to retrieve.
+
+    Returns:
+        dict: A dictionary containing the teacher's data, or an empty dictionary if not found.
+    """
     teacher_snapshot = db.collection(COLLECTION).document(teacher_id).get()
     if teacher_snapshot.exists:
         return teacher_snapshot.to_dict()
     return {}
 
 
-#
-#   Add teacher
-#
 def create_teacher(teacher: Teacher) -> dict:
+    """
+    Add a new teacher to the database.
+
+    Args:
+        teacher (Teacher): The Teacher object containing the data to add.
+
+    Returns:
+        dict: A dictionary containing the added teacher's data or an error message.
+    """
     try:
         if not re.match(REGEX, teacher.email):
             return {"error": "Invalid email format."}
@@ -49,10 +64,17 @@ def create_teacher(teacher: Teacher) -> dict:
         return {"error": f"Unexpected error: {str(e)}"}
 
 
-#
-#   Update teacher by id
-#
 def update_teacher_by_id(teacher_id: str, teacher: Teacher) -> dict:
+    """
+    Update a teacher's data by their unique ID.
+
+    Args:
+        teacher_id (str): The ID of the teacher to update.
+        teacher (Teacher): The Teacher object containing the updated data.
+
+    Returns:
+        dict: A dictionary containing the updated teacher's data or an error message.
+    """
     try:
         teacher_ref = db.collection(COLLECTION).document(teacher_id)
 
@@ -77,10 +99,16 @@ def update_teacher_by_id(teacher_id: str, teacher: Teacher) -> dict:
         raise Exception(f"Unexpected error: {str(e)}")
 
 
-#
-#   Delete teacher by id
-#
 def delete_teacher_by_id(teacher_id: str) -> dict:
+    """
+    Delete a teacher's data by their unique ID.
+
+    Args:
+        teacher_id (str): The ID of the teacher to delete.
+
+    Returns:
+        dict: A dictionary containing the deleted teacher's data or an error message.
+    """
     try:
         teacher_ref = db.collection(COLLECTION).document(teacher_id)
 
@@ -98,10 +126,16 @@ def delete_teacher_by_id(teacher_id: str) -> dict:
         raise Exception(f"Unexpected error: {str(e)}")
 
 
-#
-#   Retrieve teacher by email
-#     
 def get_teacher_by_email(email: str) -> dict:
+    """
+    Retrieve a teacher's data by their email address.
+
+    Args:
+        email (str): The email address of the teacher to retrieve.
+
+    Returns:
+        dict: A dictionary containing the teacher's data or an empty dictionary if not found.
+    """
     teachers = list(db.collection(COLLECTION).where('email', '==', email).stream())
 
     if len(teachers) == 0:
@@ -115,10 +149,17 @@ def get_teacher_by_email(email: str) -> dict:
     return teacherDTO.to_dict()
 
 
-#
-#   Retrieve teacher by email and password
-#
 def get_teacher_by_email_and_password(email: str, password: str) -> dict:
+    """
+    Retrieve a teacher's data by their email address and password.
+
+    Args:
+        email (str): The email address of the teacher.
+        password (str): The password of the teacher.
+
+    Returns:
+        dict: A dictionary containing the teacher's data or an empty dictionary if not found.
+    """
     teachers = list(db.collection(COLLECTION)
                     .where('email', '==', email)
                     .where('password', '==', password)
