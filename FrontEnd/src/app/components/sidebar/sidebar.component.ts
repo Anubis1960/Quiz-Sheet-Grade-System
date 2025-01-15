@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import {TokenService} from "../../services/token.service";
-import {generate} from "rxjs";
 
 @Component({
   selector: 'app-sidebar',
@@ -83,7 +82,7 @@ export class SidebarComponent implements OnInit {
         console.log("URL:", this.generatedUrl);
       },
       error: (error) => {
-        console.error('Error generating token:', error);
+        console.error();
       }
     });
 
@@ -95,7 +94,7 @@ export class SidebarComponent implements OnInit {
         console.log('Text copied to clipboard');
       },
       (err) => {
-        console.error('Error copying text: ', err);
+        console.error();
       }
     );
   }

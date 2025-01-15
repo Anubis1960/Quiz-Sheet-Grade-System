@@ -1,10 +1,11 @@
-﻿from io import BytesIO
-import os
+﻿import os
+from io import BytesIO
+from textwrap import wrap
+
 import qrcode
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
-from textwrap import wrap
 
 # Define constants for layout
 PAGE_WIDTH, PAGE_HEIGHT = A4
@@ -13,22 +14,30 @@ QR_CODE_SIZE = 80
 TITLE_FONT_SIZE = 24
 SUBTITLE_FONT_SIZE = 14
 TEXT_FONT_SIZE = 12
+MAX_TEXT_WIDTH = 90
 SPACING = 15
 STUDENT_ID_BOX_WIDTH = 200
 STUDENT_ID_BOX_HEIGHT = 40
-BUBBLE_SHEET_HEIGHT = 500
-BUBBLE_SHEET_MARGIN = 200
+BUBBLE_SHEET_HEIGHT = 330
+BUBBLE_SHEET_MARGIN = 575
 STUDENT_ID_BOX_MARGIN = 120
 QUESTION_SPACING = 20
+BUBBLE_SHEET_X = 10
+BUBBLE_SHEET_Y = MARGIN
 
 
 def generate_pdf(quiz_id: str, quiz_data: dict, teacher_name: str) -> BytesIO:
     buf = BytesIO()
     c = canvas.Canvas(buf, pagesize=A4)
 
-    # Fixed position for the bubble sheet
-    bubble_sheet_y_position = MARGIN + 10  # 10 points spacing from the bottom
-    add_bubble_sheet(c, os.path.join(os.path.dirname(__file__), "sheet.png"), bubble_sheet_y_position)
+    add_bubble_sheet(
+        c,
+        os.path.join(os.path.dirname(__file__), "30sheetsolved.png"),
+        BUBBLE_SHEET_X,
+        BUBBLE_SHEET_Y,
+        BUBBLE_SHEET_MARGIN,
+        BUBBLE_SHEET_HEIGHT
+    )
 
     # Add a QR code with the quiz ID
     add_qr_code(c, quiz_id)
@@ -40,7 +49,7 @@ def generate_pdf(quiz_id: str, quiz_data: dict, teacher_name: str) -> BytesIO:
     # Add the description and teacher
     add_description_and_teacher(c, quiz_data["description"], teacher_name, title_y)
 
-    student_y_position = bubble_sheet_y_position + BUBBLE_SHEET_HEIGHT + SPACING
+    student_y_position = BUBBLE_SHEET_Y + BUBBLE_SHEET_HEIGHT + SPACING
 
     # Add a box for the student ID
     add_student_id_box(c, student_y_position)
@@ -84,7 +93,7 @@ def add_title(c: canvas.Canvas, title: str, y_position: float):
 def add_description_and_teacher(c: canvas.Canvas, description: str, teacher: str, y_position: float) -> float:
     c.setFont("Helvetica", SUBTITLE_FONT_SIZE)
 
-    description_lines = wrap(description, 90)  # Wrap description text
+    description_lines = wrap(description, MAX_TEXT_WIDTH)  # Wrap description text
     desc_y = y_position - SUBTITLE_FONT_SIZE - SPACING
 
     for line in description_lines:
@@ -107,8 +116,9 @@ def add_student_id_box(c: canvas.Canvas, y_position: float) -> float:
     return student_id_label_y - SPACING
 
 
-def add_bubble_sheet(c: canvas.Canvas, image_path: str, y_position: float):
-    c.drawImage(image_path, MARGIN, y_position, width=PAGE_WIDTH - BUBBLE_SHEET_MARGIN, height=BUBBLE_SHEET_HEIGHT)
+def add_bubble_sheet(c: canvas.Canvas, image_path: str, x_position: float, y_position: float, width: float,
+                     height: float):
+    c.drawImage(image_path, x_position, y_position, width=width, height=height)
 
 
 def add_questions(c: canvas.Canvas, questions: list):
@@ -117,12 +127,12 @@ def add_questions(c: canvas.Canvas, questions: list):
 
     for q_index, question in enumerate(questions):
         # Wrap question text
-        question_text_lines = wrap(f"{q_index + 1}: {question['text']}", 90)
+        question_text_lines = wrap(f"{q_index + 1}: {question['text']}", MAX_TEXT_WIDTH)
         question_height = len(question_text_lines) * SPACING
 
         # Prepare options lines
         option_lines = []
-        max_line_width = 90  # Maximum characters per line
+        max_line_width = MAX_TEXT_WIDTH  # Maximum characters per line
 
         for i, option in enumerate(question['options']):
             wrapped_option = wrap(f"{chr(65 + i)}. {option}", max_line_width)
@@ -275,7 +285,8 @@ if __name__ == '__main__':
                     "1"
                 ],
                 "options": [
-                    "33333333333333333333333333333333333333333333333333333333hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh33333333333333333333333333333333333333333333333333",
+                    "33333333333333333333333333333333333333333333333333333333hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh"
+                    "33333333333333333333333333333333333333333333333333",
                     "4",
                     "5"
                 ],
@@ -299,7 +310,7 @@ if __name__ == '__main__':
         "title": "Quiz Ti4tle 1"
     }
 
-    q_id = "5HOnQYKhJtrnC0MMDDFk"
+    q_id = "C8WZiauh1kD5gY57QyDe"
     b = generate_pdf(q_id, q_data, "John Dadaoe")
 
     with open(f"{q_id}.pdf", "wb") as f:

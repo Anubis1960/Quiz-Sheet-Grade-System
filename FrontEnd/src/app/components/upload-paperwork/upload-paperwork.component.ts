@@ -1,7 +1,6 @@
 import {Component} from '@angular/core';
 import {FileUploadEvent} from 'primeng/fileupload';
 import {QuizService} from "../../services/quiz.service";
-import {MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-upload-paperwork',
@@ -15,12 +14,14 @@ export class UploadPaperworkComponent {
   constructor(private quizService: QuizService) { }
 
   onUpload($event: FileUploadEvent) {
+    this.uploadedFiles = [];
     this.msg = '';
     for (let file of $event.files) {
       this.uploadedFiles.push(file);
     }
 
     for (let file of this.uploadedFiles) {
+      console.log(file);
       this.quizService.grade_paper(file).subscribe({
         next: (data: Object) => {
           this.msg = "Score: " + JSON.parse(data as string).score;

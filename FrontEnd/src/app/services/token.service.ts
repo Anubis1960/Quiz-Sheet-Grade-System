@@ -1,14 +1,13 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {ActivatedRoute, ActivatedRouteSnapshot} from "@angular/router";
 
 const BASE_URL = 'http://localhost:5000/';
 @Injectable({
   providedIn: 'root'
 })
 export class TokenService {
-  constructor(private http: HttpClient, private route: ActivatedRoute) {
+  constructor(private http: HttpClient) {
   }
 
   validateUrlToken(token: string): Observable<any> {

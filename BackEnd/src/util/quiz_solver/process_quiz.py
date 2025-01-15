@@ -1,4 +1,6 @@
-﻿from numpy import ndarray
+﻿import imutils
+from imutils.perspective import four_point_transform
+from numpy import ndarray
 from qreader import QReader
 
 from src.util.pdf_gen import *
@@ -119,28 +121,37 @@ def parser(image: MatLike) -> tuple[ndarray | None, str, str]:
     return bubble_sheet, student_id, quiz_id
 
 
-def crop_bubble_sheet(paper: MatLike) -> MatLike:
+def crop_bubble_sheet(paper: MatLike) -> list[ndarray]:
     # Dynamically calculate bubble sheet coordinates using constants and scaling
-    bubble_sheet_y_position = MARGIN + 10  # Positioned 10 points from the bottom of the page
-
-    bubble_x = MARGIN
-    bubble_y = int(PAGE_HEIGHT - bubble_sheet_y_position - BUBBLE_SHEET_HEIGHT)  # Adjust to bottom alignment
-    bubble_width = int(PAGE_WIDTH - BUBBLE_SHEET_MARGIN)
+    bubble_sheets = []
+    bubble_width = int(BUBBLE_SHEET_MARGIN / 3)
     bubble_height = int(BUBBLE_SHEET_HEIGHT)
 
-    # Crop the bubble sheet from the paper
-    bubble_sheet = paper[bubble_y - 10:bubble_y + bubble_height + 10, bubble_x:bubble_x + bubble_width + 10]
+    # Start position
+    bubble_y = int(PAGE_HEIGHT - (MARGIN + bubble_height))  # Align to bottom
+    bubble_x = BUBBLE_SHEET_X
+    for i in range(3):
+        print(f"X: {bubble_x}, Y: {bubble_y}")
 
-    return bubble_sheet
+        # Crop the bubble sheet from the paper with a small buffer
+        cropped_sheet = paper[
+                        bubble_y - 10:bubble_y + bubble_height + 20,  # Y-coordinates
+                        bubble_x:bubble_x + bubble_width + 10  # X-coordinates
+                        ]
+        cropped_sheet = rescale_image(cropped_sheet, width=455, height=749)
+        bubble_sheets.append(cropped_sheet)
+        bubble_x += bubble_width
+
+    return bubble_sheets
 
 
 def crop_id_box(paper: MatLike) -> MatLike:
     # Dynamically calculate student ID box coordinates using constants and scaling
-    student_id_box_y = int(PAGE_HEIGHT - BUBBLE_SHEET_HEIGHT - MARGIN - 10 - 2 * SPACING - STUDENT_ID_BOX_HEIGHT)
+    student_id_box_y = int(PAGE_HEIGHT - BUBBLE_SHEET_HEIGHT - MARGIN - 2 * SPACING - STUDENT_ID_BOX_HEIGHT)
     student_id_box_x = STUDENT_ID_BOX_MARGIN
 
     student_id_box = paper[student_id_box_y - 10:student_id_box_y + STUDENT_ID_BOX_HEIGHT + 10,
-                            student_id_box_x - 10:student_id_box_x + STUDENT_ID_BOX_WIDTH + 10]
+                     student_id_box_x - 10:student_id_box_x + STUDENT_ID_BOX_WIDTH + 10]
 
     return student_id_box
 
@@ -153,7 +164,7 @@ def scan_qr_code(image: MatLike) -> str:
 
 
 if __name__ == "__main__":
-    img = cv2.imread("tid.png")
+    img = cv2.imread("30sh.JPG")
     parser(img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()

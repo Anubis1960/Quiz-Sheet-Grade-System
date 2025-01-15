@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { User } from '../../models/user-model';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -15,7 +14,7 @@ export class RegisterComponent {
   email: string;
   password: string;
 
-  constructor(private httpClient: HttpClient, private router: Router, private authSerrvice: AuthService) {
+  constructor(private router: Router, private authSerrvice: AuthService) {
     this.name = '';
     this.email = '';
     this.password = '';
@@ -23,16 +22,12 @@ export class RegisterComponent {
 
   onRegister() {
     this.authSerrvice.register(this.name, this.email, this.password).subscribe({
-      next: (res) => {
+      next: () => {
 
         this.router.navigateByUrl('')
       },
-      error: (error) => {
+      error: () => {
       }
     })
-  }
-
-  goToLogin() {
-    this.router.navigateByUrl('')
   }
 }

@@ -5,7 +5,6 @@ import {MessageService} from "primeng/api";
 import {Question} from "../../models/question-model";
 import {Quiz} from "../../models/quiz-model";
 import { User } from '../../models/user-model';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-paperwork-form',
@@ -20,12 +19,11 @@ export class PaperworkFormComponent implements OnInit {
   quizForm!: FormGroup;
   errorMessage: string = '';
   maxAnswers: number = 5;
-  maxQuestions: number = 10;
+  maxQuestions: number = 30;
   user: User | undefined;
 
   constructor(
     private quiz_service: QuizService,
-    private router: Router,
     private fb: FormBuilder,
     private messageService: MessageService,
   ) {}
@@ -127,7 +125,7 @@ export class PaperworkFormComponent implements OnInit {
     }
     answers.removeAt(answers.length - 1);
   }
-  
+
 
   toggleCorrectAnswer(questionIndex: number, answerIndex: number) {
     let is_correct = this.getAnswers(questionIndex).at(answerIndex).get('is_correct')?.get('value');
@@ -171,7 +169,7 @@ export class PaperworkFormComponent implements OnInit {
           this.formSubmitted.emit(n_quiz);
         },
         error: (error) => {
-          console.error('Error updating quiz:', error);
+          console.error();
           this.errorMessage = 'Could not update quiz. Please try again later.';
         }
       });
@@ -185,7 +183,7 @@ export class PaperworkFormComponent implements OnInit {
           questions
         )
         .subscribe({
-          next: (data) => {
+          next: () => {
             this.refreshForm();
             // this.router.navigateByUrl('/home')
           },

@@ -8,8 +8,4 @@ export class Question{
         this.options = options;
         this.correct_answers = correct_answers;
     }
-
-    static fromJSON(json: any): Question {
-        return new Question(json.text, json.options, json.correct_answers);
-    }
 }

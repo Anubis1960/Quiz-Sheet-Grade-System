@@ -38,7 +38,7 @@ export class HomePageComponent implements OnInit{
       },
 
       error: (error) => {
-        console.error('Error fetching quizzes:', error);
+        console.error();
         this.errorMessage = 'Could not fetch quizzes. Please try again later.';
       }
     });
@@ -47,11 +47,11 @@ export class HomePageComponent implements OnInit{
   deleteQuiz(id: string, idx: number){
     if(confirm("Are you sure that you want to delete this quiz?")){
       this.quizService.delete_quiz(id).subscribe({
-        next: (data) => {
+        next: () => {
           this.quizzes.splice(idx, 1);
         },
         error: (error) => {
-          console.error('Error deleting quiz:', error);
+          console.error();
           this.errorMessage = 'Could not delete quiz. Please try again later.';
         }
       });
@@ -82,7 +82,7 @@ export class HomePageComponent implements OnInit{
         window.open(url);
       },
       error: (error) => {
-        console.error('Error exporting PDF:', error);
+        console.error();
         this.errorMessage = 'Could not export PDF. Please try again later.';
       }
     });

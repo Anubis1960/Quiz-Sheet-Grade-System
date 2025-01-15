@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { User } from '../../models/user-model';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
@@ -14,7 +13,7 @@ export class LoginComponent {
   password: string;
   user: User | undefined;
 
-  constructor(private http: HttpClient, private authService: AuthService,
+  constructor(private authService: AuthService,
     private router: Router) {
       this.email = '';
       this.password = '';
@@ -29,7 +28,7 @@ export class LoginComponent {
         this.router.navigateByUrl('/home');
       },
       error: (error) => {
-        console.log("Failed to loggin.")
+        console.error();
       }
     });
   }
@@ -37,9 +36,5 @@ export class LoginComponent {
   loginWithGoogle() {
     console.log("Google Auth selected...")
     window.location.href = 'http://localhost:5000/login';
-  }
-
-  goToRegister() {
-    this.router.navigate(['/register']);
   }
 }

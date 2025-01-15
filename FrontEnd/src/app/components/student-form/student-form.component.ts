@@ -13,9 +13,9 @@ export class StudentFormComponent {
 
   onSubmit() {
     this.studentService.add_student(this.unique_id, this.email).subscribe({
-      next: (data) => {
+      next: () => {
       },
-      error: (error) => {
+      error: () => {
       }
     });
   }

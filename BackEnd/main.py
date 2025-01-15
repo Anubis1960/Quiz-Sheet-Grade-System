@@ -1,13 +1,5 @@
-import os
 import logging
-from flask import Flask
-from src.routes.teacher_route import teacher_blueprint
-from src.routes.student_route import student_blueprint
-from src.routes.quiz_route import quiz_blueprint
-from src.routes.auth_route import auth_blueprint
-from src.models.oauthmanager import OAuthManager
-from flask_cors import CORS
-
+import os
 ####################
 #
 #   Add the path to the project
@@ -15,6 +7,14 @@ from flask_cors import CORS
 ####################
 import sys
 
+from flask import Flask
+from flask_cors import CORS
+
+from src.models.oauthmanager import OAuthManager
+from src.routes.auth_route import auth_blueprint
+from src.routes.quiz_route import quiz_blueprint
+from src.routes.student_route import student_blueprint
+from src.routes.teacher_route import teacher_blueprint
 from src.routes.token_route import token_blueprint
 
 sys.path.append("src")
@@ -23,10 +23,7 @@ app = Flask(__name__)
 
 app.secret_key = os.urandom(24)
 
-CORS(app, resources={r"/api/*": {"origins": "*"}},
-     supports_credentials=True,
-     expose_headers=["Authorization", "Content-Type"],
-     allow_headers=["Authorization", "Content-Type"])
+CORS(app)
 
 # OAuth Manager Setup
 oauth_manager = OAuthManager(app)

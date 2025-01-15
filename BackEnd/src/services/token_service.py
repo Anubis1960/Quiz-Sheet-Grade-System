@@ -1,7 +1,8 @@
-import jwt
 import time
+
+import jwt
+
 from src.services.teacher_service import get_teacher_by_id
-from src.util.mail_gen import send_email
 
 EKEY = 'f98d5d2f2f0142e2a8b2d9db07d5a92f302b'
 

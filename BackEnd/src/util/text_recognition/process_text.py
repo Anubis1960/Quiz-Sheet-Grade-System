@@ -1,9 +1,8 @@
 import os
+
 import cv2
-import imutils
 import numpy as np
 from cv2.typing import MatLike
-from imutils.perspective import four_point_transform
 from tensorflow.keras import models
 
 
@@ -75,6 +74,8 @@ def read_id(image: MatLike) -> str:
 
     image = get_box_contours(image)
     image = image[2: -2, 2: -2]
+    # cv2.imshow("Image", image)
+    # cv2.waitKey(0)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     # Preprocess the image

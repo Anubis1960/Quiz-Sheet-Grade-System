@@ -45,8 +45,8 @@ def create_quiz(quiz: Quiz) -> dict:
             return {"error": "Title cannot be empty"}
         if len(quiz.questions) == 0:
             return {"error": "Questions cannot be empty"}
-        if len(quiz.questions) > 10:
-            return {"error": f"Questions cannot exceed 10"}
+        # if len(quiz.questions) > 10:
+        #     return {"error": f"Questions cannot exceed 10"}
         if len(quiz.title) > MAX_TITLE_LENGTH:
             return {"error": f"Title cannot exceed {MAX_TITLE_LENGTH}"}
         if len(quiz.description) > MAX_DESCRIPTION_LENGTH:
@@ -71,8 +71,8 @@ def update_quiz_data(updated_data: dict, quiz_id: str) -> dict:
             return {"error": "Title cannot be empty"}
         if len(updated_data['questions']) == 0:
             return {"error": "Questions cannot be empty"}
-        if len(updated_data['questions']) > 10:
-            return {"error": f"Questions cannot exceed 10"}
+        # if len(updated_data['questions']) > 10:
+        #     return {"error": f"Questions cannot exceed 10"}
         if len(updated_data['title']) > MAX_TITLE_LENGTH:
             return {"error": f"Title cannot exceed {MAX_TITLE_LENGTH}"}
         if len(updated_data['description']) > MAX_DESCRIPTION_LENGTH:
@@ -138,7 +138,15 @@ def grade_quiz(img: MatLike) -> dict:
         correct_answers = [q['correct_answers'] for q in quiz['questions']]
         print(correct_answers)
 
-        ans, score = solve_quiz(bubble_sheet, correct_answers)
+        idx = 0
+        total_correct = 0
+        for sheet in bubble_sheet:
+            print(idx)
+            ans, num_correct = solve_quiz(sheet, correct_answers[idx:min(idx + 10, len(correct_answers))])
+            idx += 10
+            total_correct += num_correct
+
+        score = (total_correct / len(correct_answers)) * 100
         if student_id != "":
             students = get_student_by_unique_id(student_id)
             if len(students) != 0:
