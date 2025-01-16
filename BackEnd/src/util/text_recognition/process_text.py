@@ -9,11 +9,31 @@ from tensorflow.keras import models
 
 # Load the model
 def load_model(name: str) -> models.Model:
+    """
+    Load a pre-trained Keras model from a file.
+    The full model and training data can be found at: https://github.com/Anubis1960/text-recognizer.git
+
+    Args:
+        name (str): The file path to the model file.
+
+    Returns:
+        models.Model: The loaded Keras model.
+    """
     model = models.load_model(name)
     return model
 
 
 def get_box_contours(image: MatLike) -> MatLike:
+    """
+    Extracts the largest contour from an image and applies a perspective transformation to
+    obtain a rectangular region of interest (ROI).
+
+    Args:
+        image (MatLike): The input image on which the contour extraction and transformation will be performed.
+
+    Returns:
+        MatLike: The warped image (rectangular region of interest), or the original image if no quadrilateral is found.
+    """
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     thresh = cv2.adaptiveThreshold(
@@ -71,6 +91,17 @@ def get_box_contours(image: MatLike) -> MatLike:
 
 
 def read_id(image: MatLike) -> str:
+    """
+    Extracts an alphanumeric ID from an image containing a text-based ID. This function uses
+    contour detection and a pre-trained machine learning model to identify each character in
+    the ID and return the corresponding text string.
+
+    Args:
+        image (MatLike): The input image containing the ID to be read.
+
+    Returns:
+        str: The predicted alphanumeric ID as a string.
+    """
     model = load_model(os.path.dirname(__file__) + "/text-recognizer.keras")
 
     image = get_box_contours(image)
