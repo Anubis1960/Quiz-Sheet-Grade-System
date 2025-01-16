@@ -52,9 +52,9 @@ To generate the documentation, run the following:
 
 ## Screenshots
 
-![Login](https://imgur.com/KjHg1UW)
-![Home](https://imgur.com/iC3AsT5)
-![Upload](https://imgur.com/6XT18W1)
+![Login](https://i.imgur.com/KjHg1UW.jpg)
+![Home](https://i.imgur.com/AA6JyVI.jpg)
+![Upload](https://i.imgur.com/6XT18W1.jpg)
 
 
 ## Authors
