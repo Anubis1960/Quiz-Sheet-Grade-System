@@ -15,6 +15,7 @@ export class UploadPaperworkComponent {
   constructor(private quizService: QuizService) { }
 
   onUpload($event: FileUploadEvent) {
+    this.uploadedFiles = [];
     this.msg = '';
     for (let file of $event.files) {
       this.uploadedFiles.push(file);

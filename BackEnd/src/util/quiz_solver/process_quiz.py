@@ -6,6 +6,16 @@ from src.util.text_recognition.process_text import *
 
 
 def retry_on_failure(image: MatLike) -> ndarray | None:
+    """
+    Attempts to process an image and extract the document region even if initial processing fails.
+    It applies several image processing techniques to find and extract the document.
+
+    Args:
+        image (MatLike): The input image to process.
+
+    Returns:
+        ndarray | None: The extracted document region, or None if extraction fails.
+    """
     image = rescale_image(image)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     blurred = cv2.GaussianBlur(gray, (5, 5), 0)
@@ -46,6 +56,16 @@ def retry_on_failure(image: MatLike) -> ndarray | None:
 
 
 def get_document_contours(image: MatLike) -> None | ndarray:
+    """
+    Attempts to extract the document from an image by detecting its contours.
+    This function is used to detect the document region, resize it, and apply edge detection.
+
+    Args:
+        image (MatLike): The input image to process.
+
+    Returns:
+        None | ndarray: The extracted document region, or None if extraction fails.
+    """
     ratio = image.shape[0] / 500.0
     orig = image.copy()
     copy = imutils.resize(image, height=500)
@@ -78,11 +98,32 @@ def get_document_contours(image: MatLike) -> None | ndarray:
 
 
 def rescale_image(image: MatLike, width: int = 595, height: int = 842) -> MatLike:
+    """
+    Rescales the image to a specified width and height.
+
+    Args:
+        image (MatLike): The input image to be rescaled.
+        width (int): The target width.
+        height (int): The target height.
+
+    Returns:
+        MatLike: The rescaled image.
+    """
     scaled_image = cv2.resize(image, (width, height))
     return scaled_image
 
 
 def parser(image: MatLike) -> tuple[ndarray | None, str, str]:
+    """
+    Processes an image, scans for a QR code, detects the document, extracts the student ID,
+    and returns the processed data including bubble sheet and quiz ID.
+
+    Args:
+        image (MatLike): The input image to process.
+
+    Returns:
+        tuple: A tuple containing the bubble sheet (ndarray), student ID (str), and quiz ID (str).
+    """
     copy = image.copy()
 
     quiz_id = scan_qr_code(image)
@@ -120,6 +161,15 @@ def parser(image: MatLike) -> tuple[ndarray | None, str, str]:
 
 
 def crop_bubble_sheet(paper: MatLike) -> MatLike:
+    """
+    Crops the bubble sheet section from the document based on predefined coordinates.
+
+    Args:
+        paper (MatLike): The document image from which to extract the bubble sheet.
+
+    Returns:
+        list[ndarray]: A list of cropped bubble sheets.
+    """
     # Dynamically calculate bubble sheet coordinates using constants and scaling
     bubble_sheet_y_position = MARGIN + 10  # Positioned 10 points from the bottom of the page
 
@@ -135,6 +185,15 @@ def crop_bubble_sheet(paper: MatLike) -> MatLike:
 
 
 def crop_id_box(paper: MatLike) -> MatLike:
+    """
+    Crops the student ID box section from the document.
+
+    Args:
+        paper (MatLike): The document image from which to extract the student ID box.
+
+    Returns:
+        MatLike: The cropped student ID box.
+    """
     # Dynamically calculate student ID box coordinates using constants and scaling
     student_id_box_y = int(PAGE_HEIGHT - BUBBLE_SHEET_HEIGHT - MARGIN - 10 - 2 * SPACING - STUDENT_ID_BOX_HEIGHT)
     student_id_box_x = STUDENT_ID_BOX_MARGIN
@@ -146,6 +205,15 @@ def crop_id_box(paper: MatLike) -> MatLike:
 
 
 def scan_qr_code(image: MatLike) -> str:
+    """
+    Scans a QR code from the given image using the QReader library.
+
+    Args:
+        image (MatLike): The image to scan for a QR code.
+
+    Returns:
+        str: The QR code data, if found, otherwise an empty string.
+    """
     qreader = QReader()
     decoded_text = qreader.detect_and_decode(image=image)
     # print(f"Decoded text: {decoded_text[0]}")

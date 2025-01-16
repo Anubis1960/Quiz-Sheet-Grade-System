@@ -10,6 +10,16 @@ QUESTIONS = [[1, 2, 3, 4], [4], [0], [3], [1], [1], [1], [1], [1], [1]]
 
 
 def get_bubble_contours(thresh: MatLike) -> MatLike:
+    """
+    Extracts the bubble contours from the thresholded image. This function will retry if it doesn't find exactly
+    50 bubbles (one for each possible question).
+
+    Args:
+        thresh: The thresholded binary image.
+
+    Returns:
+        A list of bubble contours.
+    """
     # finding contours in the thresholded image, then initializing the list of contours that correspond to questions
     cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
@@ -33,6 +43,17 @@ def get_bubble_contours(thresh: MatLike) -> MatLike:
 
 
 def stabilize_threshold_level(bubble_contours: List[MatLike], thresh: MatLike) -> int:
+    """
+    Adjusts the threshold level based on the bubble contours by calculating the number of non-zero pixels in the
+    detected bubble regions. This helps refine the detection of the bubbles.
+
+    Args:
+        bubble_contours: The contours of the detected bubbles.
+        thresh: The thresholded binary image.
+
+    Returns:
+        An adjusted threshold value.
+    """
     # initialize a list of bubble regions
     bubble_regions = []
 
@@ -60,6 +81,16 @@ def stabilize_threshold_level(bubble_contours: List[MatLike], thresh: MatLike) -
 
 
 def solve_quiz(image: MatLike, ans: List[List[int]]):
+    """
+    Solves a quiz by detecting and analyzing the bubbled answers in the image.
+
+    Args:
+        image: The input image of the quiz sheet.
+        ans: The list of correct answers for each question.
+
+    Returns:
+        A tuple with the answers and the score.
+    """
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU
                            )[1]
@@ -77,6 +108,18 @@ def solve_quiz(image: MatLike, ans: List[List[int]]):
 
 def solve(thresh: MatLike, bubble_contours: List[MatLike], questions: List[List[int]], nz_threshold: int = 1000) -> (
         tuple)[Dict[int, List[int]], float]:
+    """
+    Solves the quiz by iterating through the bubbles and comparing with the correct answers.
+
+    Args:
+        thresh: The thresholded binary image.
+        bubble_contours: The contours of the bubbles.
+        questions: The list of correct answers for each question.
+        nz_threshold: The minimum number of non-zero pixels required to consider an answer as bubbled.
+
+    Returns:
+        A tuple containing the detected answers and the score.
+    """
     num_correct = 0
     a = {}
 

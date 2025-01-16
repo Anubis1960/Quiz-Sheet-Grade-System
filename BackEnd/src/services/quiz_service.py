@@ -13,20 +13,30 @@ MAX_TITLE_LENGTH = 100
 MAX_DESCRIPTION_LENGTH = 200
 
 
-#
-#   Retrieve all quizzes
-#
 def get_quizzes_data() -> list[dict]:
+    """
+        Fetches all quizzes from the database.
+
+        Returns:
+            list[dict]: A list of dictionaries containing quiz details (id, title, description, and questions).
+    """
     quizDTOs = [QuizDTO(quiz.id, quiz.to_dict()['title'], quiz.to_dict()['description'],
                         quiz.to_dict()['questions']).to_dict()
                 for quiz in db.collection(COLLECTION_NAME).stream()]
     return quizDTOs
 
 
-#
-# 	Retrieve quiz by id
-# 	
 def get_quiz_by_id(quiz_id: str) -> dict:
+    """
+    Retrieves a specific quiz by its ID.
+
+    Args:
+        quiz_id (str): The unique ID of the quiz to fetch.
+
+    Returns:
+        dict: A dictionary containing the quiz details (title, description, questions), or an empty dictionary
+        if not found.
+    """
     quiz_snapshot = db.collection(COLLECTION_NAME).document(quiz_id).get()
 
     if not quiz_snapshot.exists:
@@ -36,10 +46,16 @@ def get_quiz_by_id(quiz_id: str) -> dict:
                    quiz_snapshot.get('questions')).to_dict()
 
 
-#
-#   Add
-#
 def create_quiz(quiz: Quiz) -> dict:
+    """
+    Adds a new quiz to the database.
+
+    Args:
+        quiz (Quiz): The quiz object to be added.
+
+    Returns:
+        dict: A dictionary containing the created quiz details or an error message if validation fails.
+    """
     try:
         if len(quiz.title) == 0:
             return {"error": "Title cannot be empty"}
@@ -62,10 +78,17 @@ def create_quiz(quiz: Quiz) -> dict:
         return {"error": f"Unexpected error: {str(e)}"}
 
 
-#
-#	Update
-#
 def update_quiz_data(updated_data: dict, quiz_id: str) -> dict:
+    """
+    Updates an existing quiz's data.
+
+    Args:
+        updated_data (dict): A dictionary containing the updated quiz data.
+        quiz_id (str): The unique ID of the quiz to be updated.
+
+    Returns:
+        dict: A dictionary containing the updated quiz details or an error message if validation fails.
+    """
     try:
         if len(updated_data['title']) == 0:
             return {"error": "Title cannot be empty"}
@@ -93,10 +116,16 @@ def update_quiz_data(updated_data: dict, quiz_id: str) -> dict:
         return {"error": f"Unexpected error: {str(e)}"}
 
 
-#
-#	Delete
-#
 def delete_quiz_by_id(quiz_id: str) -> dict:
+    """
+    Deletes a quiz by its ID.
+
+    Args:
+        quiz_id (str): The unique ID of the quiz to be deleted.
+
+    Returns:
+        dict: A dictionary containing the deleted quiz details or an error message if the quiz was not found.
+    """
     try:
         quiz_ref = db.collection(COLLECTION_NAME).document(quiz_id)
         quiz_snapshot = quiz_ref.get()
@@ -118,12 +147,18 @@ def delete_quiz_by_id(quiz_id: str) -> dict:
 
 
 def grade_quiz(img: MatLike) -> dict:
+    """
+    Grades a quiz based on a bubble sheet image.
+
+    Args:
+        img (MatLike): The image of the bubble sheet to be graded.
+
+    Returns:
+        dict: A dictionary containing the student's score and a message, or an error message if something goes wrong.
+    """
     try:
         resp = {}
         bubble_sheet, student_id, quiz_id = parser(img)
-        print(student_id)
-        print(quiz_id)
-
         if bubble_sheet is None:
             return {"error": "No bubble sheet found"}
 
@@ -136,7 +171,6 @@ def grade_quiz(img: MatLike) -> dict:
             return {"error": "Quiz not found"}
 
         correct_answers = [q['correct_answers'] for q in quiz['questions']]
-        print(correct_answers)
 
         ans, score = solve_quiz(bubble_sheet, correct_answers)
         if student_id != "":
@@ -156,12 +190,29 @@ def grade_quiz(img: MatLike) -> dict:
 
 
 def get_teacher_id(quiz_id: str) -> str:
+    """
+    Retrieves the teacher's ID associated with a specific quiz.
+
+    Args:
+        quiz_id (str): The unique ID of the quiz.
+
+    Returns:
+        str: The teacher's ID associated with the quiz.
+    """
     quiz_snapshot = db.collection(COLLECTION_NAME).document(quiz_id).get()
-    print(quiz_snapshot.to_dict())
     return quiz_snapshot.get('teacher')
 
 
 def get_quizzes_by_teacher_id(teacher_id: str) -> list[dict]:
+    """
+    Retrieves all quizzes created by a specific teacher.
+
+    Args:
+        teacher_id (str): The unique ID of the teacher.
+
+    Returns:
+        list[dict]: A list of dictionaries containing quiz details (id, title, description, and questions).
+    """
     quizDTOs = [
         QuizDTO(
             quiz.id,
@@ -173,5 +224,4 @@ def get_quizzes_by_teacher_id(teacher_id: str) -> list[dict]:
         .where('teacher', '==', teacher_id)
         .stream()
     ]
-    print(quizDTOs)
     return quizDTOs
