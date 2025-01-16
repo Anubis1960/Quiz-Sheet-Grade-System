@@ -45,7 +45,7 @@ def generate_pdf(quiz_id: str, quiz_data: dict, teacher_name: str) -> BytesIO:
     # Add a bubble sheet
     add_bubble_sheet(
         c,
-        os.path.join(os.path.dirname(__file__), "30sheetsolved.png"),
+        os.path.join(os.path.dirname(__file__), "30sheet.png"),
         BUBBLE_SHEET_X,
         BUBBLE_SHEET_Y,
         BUBBLE_SHEET_MARGIN,
