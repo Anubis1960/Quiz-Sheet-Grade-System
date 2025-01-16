@@ -1,19 +1,25 @@
-pip install firebase_admin
-pip install flask
-pip install tensorflow
-pip install numpy
-pip install pandas
-pip install matplotlib
-pip install scikit-learn
-pip install opencv-python
-pip install hashlib
-pip install uuid
-pip install imutils
-pip install qreader
-pip install reportlab
-pip install qrcode
-pip install tensorflow
-pip install flask_cors
-pip install flask-oauthlib
-pip install flask flask-login requests-oauthlib
-pip install python-dotenv
+firebase_admin
+flask
+tensorflow
+numpy
+pandas
+matplotlib
+scikit-learn
+opencv-python
+hashlib
+uuid
+imutils
+qreader
+reportlab
+qrcode
+tensorflow
+flask_cors
+flask-oauthlib
+flask
+flask-login
+requests-oauthlib
+python-dotenv
+PyJWT
+pdoc
+httplib2
+urllib3

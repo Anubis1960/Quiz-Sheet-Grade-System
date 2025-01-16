@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RouterOutlet } from '@angular/router';
@@ -36,6 +35,14 @@ import { StudentFormComponent } from './components/student-form/student-form.com
 import { ButtonModule } from 'primeng/button';
 import { ButtonGroupModule } from 'primeng/buttongroup';
 
+/**
+ * @module AppModule
+ *
+ * The root module for the Angular application. It imports essential Angular
+ * and third-party libraries, sets up routing, and declares all components used
+ * in the application.
+ *
+ */
 @NgModule({
   declarations: [
     AppComponent,

@@ -18,7 +18,6 @@ def retry_on_failure(image: MatLike) -> ndarray | None:
     Returns:
         ndarray | None: The extracted document region, or None if extraction fails.
     """
-    # Rescale image to fit a consistent size
     image = rescale_image(image)
 
     # Convert to grayscale, apply Gaussian blur and edge detection
@@ -70,7 +69,6 @@ def get_document_contours(image: MatLike) -> None | ndarray:
     Returns:
         None | ndarray: The extracted document region, or None if extraction fails.
     """
-    # Rescale the image for consistent size
     ratio = image.shape[0] / 500.0
     orig = image.copy()
     copy = imutils.resize(image, height=500)
@@ -169,7 +167,7 @@ def parser(image: MatLike) -> tuple[ndarray | None, str, str]:
     return bubble_sheet, student_id, quiz_id
 
 
-def crop_bubble_sheet(paper: MatLike) -> list[ndarray]:
+def crop_bubble_sheet(paper: MatLike) -> MatLike:
     """
     Crops the bubble sheet section from the document based on predefined coordinates.
 
@@ -179,6 +177,7 @@ def crop_bubble_sheet(paper: MatLike) -> list[ndarray]:
     Returns:
         list[ndarray]: A list of cropped bubble sheets.
     """
+    # Dynamically calculate bubble sheet coordinates using constants and scaling
     bubble_sheets = []
     bubble_width = int(BUBBLE_SHEET_MARGIN / 3)
     bubble_height = int(BUBBLE_SHEET_HEIGHT)

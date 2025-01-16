@@ -8,6 +8,7 @@ from tensorflow.keras import models
 def load_model(name: str) -> models.Model:
     """
     Load a pre-trained Keras model from a file.
+    The full model and training data can be found at: https://github.com/Anubis1960/text-recognizer.git
 
     Args:
         name (str): The file path to the model file.
@@ -30,7 +31,6 @@ def get_box_contours(image: MatLike) -> MatLike:
     Returns:
         MatLike: The warped image (rectangular region of interest), or the original image if no quadrilateral is found.
     """
-    # Convert the image to grayscale for easier processing
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     # Apply adaptive thresholding to highlight the contours
@@ -101,7 +101,6 @@ def read_id(image: MatLike) -> str:
     Returns:
         str: The predicted alphanumeric ID as a string.
     """
-    # Load the pre-trained text recognition model
     model = load_model(os.path.dirname(__file__) + "/text-recognizer.keras")
 
     # Extract the region of interest (ROI) from the image using contours

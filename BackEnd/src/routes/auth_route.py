@@ -8,9 +8,6 @@ from src.services.teacher_service import create_teacher, get_teacher_by_email_an
 from src.services.token_service import generate_token
 from src.util.encrypt import *
 
-#
-#   Authentication Blueprint
-#
 auth_blueprint = Blueprint('auth', __name__)
 
 

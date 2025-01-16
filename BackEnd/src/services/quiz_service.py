@@ -115,9 +115,6 @@ def update_quiz_data(updated_data: dict, quiz_id: str) -> dict:
         return {"error": f"Unexpected error: {str(e)}"}
 
 
-#
-# Delete quiz by ID
-#
 def delete_quiz_by_id(quiz_id: str) -> dict:
     """
     Deletes a quiz by its ID.
